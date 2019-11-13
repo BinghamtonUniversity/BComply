@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tincan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://projecttincan.com/tincan.xsd">
+	<activities>
+		<activity id="http://6iZLzReFbmf_course_id" type="http://adlnet.gov/expapi/activities/course">
+			<name lang="und">ComplianceTESTv1_TinCan</name>
+			<description lang="und" />
+			<launch lang="und">story.html</launch>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/5suJojtDrZB" type="http://adlnet.gov/expapi/activities/objective">
+			<name lang="und">ComplianceTESTv1_TinCan</name>
+			<description lang="und">ComplianceTESTv1_TinCan</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6BxvAwqqltS" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Binghamton University Compliance
+2019 – Internal Controls</name>
+			<description lang="und">Binghamton University Compliance
+2019 – Internal Controls</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6PxQc7Le933" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Please complete the following sentence: A primary purpose of internal controls is to identify risks associated with the achievement of the University’s objectives and to do what is necessary to ______ .</name>
+			<description lang="und">Please complete the following sentence: A primary purpose of internal controls is to identify risks associated with the achievement of the University’s objectives and to do what is necessary to ______ .</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6PxQc7Le933/6F0FDWUTQ5q" type="http://adlnet.gov/expapi/activities/cmi.interaction">
+			<name lang="und">Please complete the following sentence: A primary purpose of internal controls is to identify risks associated with the achievement of the University’s objectives and to do what is necessary to ______ .</name>
+			<description lang="und">Please complete the following sentence: A primary purpose of internal controls is to identify risks associated with the achievement of the University’s objectives and to do what is necessary to ______ .</description>
+			<interactionType>choice</interactionType>
+			<correctResponsePatterns>
+				<correctResponsePattern>choice_6iyxHVTCmEQ</correctResponsePattern>
+			</correctResponsePatterns>
+			<choices>
+				<component>
+					<id>choice_5Y0Qe5Sp8Nl</id>
+					<description lang="und">Eliminate those risks.</description>
+				</component>
+				<component>
+					<id>choice_6iyxHVTCmEQ</id>
+					<description lang="und">Manage those risks.</description>
+				</component>
+				<component>
+					<id>choice_6D3fnEu9Ht9</id>
+					<description lang="und">Achieve those objectives.</description>
+				</component>
+			</choices>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6qraDkSBlZH" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Wrap-up</name>
+			<description lang="und">Wrap-up</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/5yUdKg7OcCw" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Internal Control Quiz</name>
+			<description lang="und">Internal Control Quiz</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6f13vygujnz" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Results Slide</name>
+			<description lang="und">Results Slide</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6Y8SG5knEAT" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Control activities are tools that help identify, prevent or reduce the risks that can impede accomplishment of our objectives. Which is true of those control activities?</name>
+			<description lang="und">Control activities are tools that help identify, prevent or reduce the risks that can impede accomplishment of our objectives. Which is true of those control activities?</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6Y8SG5knEAT/6RUHXtgZXaG" type="http://adlnet.gov/expapi/activities/cmi.interaction">
+			<name lang="und">Control activities are tools that help identify, prevent or reduce the risks that can impede accomplishment of our objectives. Which is true of those control activities?</name>
+			<description lang="und">Control activities are tools that help identify, prevent or reduce the risks that can impede accomplishment of our objectives. Which is true of those control activities?</description>
+			<interactionType>choice</interactionType>
+			<correctResponsePatterns>
+				<correctResponsePattern>choice_6ZWANbkcEtA</correctResponsePattern>
+			</correctResponsePatterns>
+			<choices>
+				<component>
+					<id>choice_6ZWANbkcEtA</id>
+					<description lang="und">They may be manual or automated.</description>
+				</component>
+				<component>
+					<id>choice_5w5cd22XnTu</id>
+					<description lang="und">Most are people doing things.</description>
+				</component>
+				<component>
+					<id>choice_6p4YTfR7Tf0</id>
+					<description lang="und">Most are things put in place by people.</description>
+				</component>
+			</choices>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6nUQa6MR47A" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Test</name>
+			<description lang="und">Test</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/6nUQa6MR47A/5tv6mH9i7X5" type="http://adlnet.gov/expapi/activities/cmi.interaction">
+			<name lang="und">Test</name>
+			<description lang="und">Test</description>
+			<interactionType>choice</interactionType>
+			<correctResponsePatterns>
+				<correctResponsePattern>choice_6ezFASpU53e</correctResponsePattern>
+			</correctResponsePatterns>
+			<choices>
+				<component>
+					<id>choice_6ezFASpU53e</id>
+					<description lang="und">testte</description>
+				</component>
+				<component>
+					<id>choice_5xPPQf371cD</id>
+					<description lang="und">testttt</description>
+				</component>
+			</choices>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/5lpkMbzDBM2" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Simone, who is new to the University, is attending a seminar on Internal Controls. She raises her hand and asks, “Who is responsible for managing our internal controls?” What answer should she expect?</name>
+			<description lang="und">Simone, who is new to the University, is attending a seminar on Internal Controls. She raises her hand and asks, “Who is responsible for managing our internal controls?” What answer should she expect?</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/5lpkMbzDBM2/5bKstjH6usz" type="http://adlnet.gov/expapi/activities/cmi.interaction">
+			<name lang="und">Simone, who is new to the University, is attending a seminar on Internal Controls. She raises her hand and asks, “Who is responsible for managing our internal controls?” What answer should she expect?</name>
+			<description lang="und">Simone, who is new to the University, is attending a seminar on Internal Controls. She raises her hand and asks, “Who is responsible for managing our internal controls?” What answer should she expect?</description>
+			<interactionType>choice</interactionType>
+			<correctResponsePatterns>
+				<correctResponsePattern>choice_5nSwGUqjPpd</correctResponsePattern>
+			</correctResponsePatterns>
+			<choices>
+				<component>
+					<id>choice_5nSwGUqjPpd</id>
+					<description lang="und">All employees.</description>
+				</component>
+				<component>
+					<id>choice_5ufwVjprCvS</id>
+					<description lang="und">Management.</description>
+				</component>
+				<component>
+					<id>choice_5fiqKyab9lC</id>
+					<description lang="und">Federal government.</description>
+				</component>
+				<component>
+					<id>choice_6IPM2596DwD</id>
+					<description lang="und">An outside agency we contract with.</description>
+				</component>
+			</choices>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/67mRyXNfmYQ" type="http://adlnet.gov/expapi/activities/module">
+			<name lang="und">Which of the following workplace conditions should raise concerns about the effectiveness of the University’s internal controls?</name>
+			<description lang="und">Which of the following workplace conditions should raise concerns about the effectiveness of the University’s internal controls?</description>
+		</activity>
+		<activity id="http://6iZLzReFbmf_course_id/67mRyXNfmYQ/5lYeGumv6fm" type="http://adlnet.gov/expapi/activities/cmi.interaction">
+			<name lang="und">Which of the following workplace conditions should raise concerns about the effectiveness of the University’s internal controls?</name>
+			<description lang="und">Which of the following workplace conditions should raise concerns about the effectiveness of the University’s internal controls?</description>
+			<interactionType>choice</interactionType>
+			<correctResponsePatterns>
+				<correctResponsePattern>choice_6hHzjvjPBdC</correctResponsePattern>
+			</correctResponsePatterns>
+			<choices>
+				<component>
+					<id>choice_6KPniYvbAqe</id>
+					<description lang="und">The employee who receives goods also distributes them to various departments. </description>
+				</component>
+				<component>
+					<id>choice_60wxK17DBQl</id>
+					<description lang="und">Physical inventories are rarely carried out by independent personnel. </description>
+				</component>
+				<component>
+					<id>choice_5gUTXzE71fF</id>
+					<description lang="und">Some pre-numbered receipts are missing. </description>
+				</component>
+				<component>
+					<id>choice_69gxKCjxEEU</id>
+					<description lang="und">Purchases have been made that are inconsistent with past trends. </description>
+				</component>
+				<component>
+					<id>choice_5swHckhBsEq</id>
+					<description lang="und">A large number of payroll checks are manually prepared. </description>
+				</component>
+				<component>
+					<id>choice_5jpIJ3bbpDo</id>
+					<description lang="und">The organization has no policy regarding disposal of obsolete or surplus materials. </description>
+				</component>
+				<component>
+					<id>choice_6hHzjvjPBdC</id>
+					<description lang="und">All of the above.</description>
+				</component>
+			</choices>
+		</activity>
+	</activities>
+</tincan>

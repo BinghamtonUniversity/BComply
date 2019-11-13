@@ -11,6 +11,15 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', ['uses'=>'UserDashboardController@home']);
+
+Route::any('/demo', ['uses' => 'DemoController@list']);
+
+Route::group(['prefix' => 'api'], function () {
+    Route::get('/tincan/activities/state', 'TinCanController@get_state');
+    Route::put('/tincan/activities/state', 'TinCanController@set_state');
+    Route::put('/tincan/statements', 'TinCanController@register_statement');
 });
