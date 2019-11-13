@@ -20,7 +20,7 @@ class CreateUserPermissionsTable extends Migration
 //            $table->index('user_id');
 
             //          FOREIGN KEYS
-//            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

@@ -23,8 +23,8 @@ class CreateModulePermissionsTable extends Migration
             //           FOREIGN KEYS
             $table->foreign('module_id')->references('id')->on('modules');
 
-//            $table->foreign('user_id')->references('id')->on('users');
-//            $table->foreign('updated_by_user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('updated_by_user_id')->references('id')->on('users');
         });
     }
 

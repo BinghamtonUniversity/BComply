@@ -23,7 +23,7 @@ class CreateUserActionLogsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             //           FOREIGN KEYS
-//            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
