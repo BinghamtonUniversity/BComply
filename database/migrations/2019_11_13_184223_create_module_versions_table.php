@@ -17,9 +17,9 @@ class CreateModuleVersionsTable extends Migration
             function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('name');
-                $table->unsignedBigInteger('module_id')->index();
-                $table->enum('type',['1.1','1.2']);
-                $table->json('reference');
+                $table->unsignedBigInteger('module_id')->nullable()->default(null);
+                $table->enum('type',['tincan','scorm1.1','scorm1.2']);
+                $table->json('reference')->nullable()->default(null);
                 $table->timestamps();
                 //           FOREIGN KEYS
                 $table->foreign('module_id')->references('id')->on('modules');

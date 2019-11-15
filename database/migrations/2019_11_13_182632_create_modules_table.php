@@ -17,9 +17,9 @@ class CreateModulesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('description');
-            $table->unsignedBigInteger('owner_user_id')->index();
-            $table->json('message_configuration');
-            $table->json('assignment_configuration');
+            $table->unsignedBigInteger('owner_user_id')->nullable()->default(null);
+            $table->json('message_configuration')->nullable()->default(null);
+            $table->json('assignment_configuration')->nullable()->default(null);
             $table->timestamps();
 
             //           FOREIGN KEYS

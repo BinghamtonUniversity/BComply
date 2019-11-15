@@ -15,18 +15,17 @@ class CreateModuleAssignmentsTable extends Migration
     {
         Schema::create('module_assignments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('user_id')->unique();
+            $table->string('user_id');
             $table->unsignedBigInteger('module_version_id')->index();
             $table->unsignedBigInteger('module_id')->index();
-
-            $table->date('date_assigned');
-            $table->date('date_due');
-            $table->date('date_started');
-            $table->date('date_completed');
-
-            $table->unsignedBigInteger('updated_by_user_id')->index();
-            $table->unsignedBigInteger('assigned_by_user_id')->index();
-            $table->json('current_state');
+            $table->timestamp('date_assigned')->nullable()->default(null);
+            $table->timestamp('date_due')->nullable()->default(null);
+            $table->timestamp('date_started')->nullable()->default(null);
+            $table->timestamp('date_completed')->nullable()->default(null);
+            $table->unsignedBigInteger('updated_by_user_id')->nullable()->default(null);
+            $table->unsignedBigInteger('assigned_by_user_id')->nullable()->default(null);
+            $table->json('current_state')->nullable()->default(null);
+            $table->unique(['user_id','module_version_id']);
 
 //           FOREIGN KEYS
             $table->foreign('module_id')

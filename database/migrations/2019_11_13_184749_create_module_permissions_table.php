@@ -17,7 +17,7 @@ class CreateModulePermissionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('module_id')->index();
             $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedBigInteger('updated_by_user_id')->index();
+            $table->unsignedBigInteger('updated_by_user_id')->nullable()->default(null);
             $table->enum('permission',[true,false]);
             $table->timestamps();
             //           FOREIGN KEYS
