@@ -11,6 +11,56 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        $user1 = new App\User([
+            'unique_id' => '_demo_tim',
+            'first_name' => 'Tim',
+            'last_name' => 'Cortesi',
+            'email' => 'tcortesi@binghamton.edu'
+        ]);
+        $user1->save();
+
+        $user2 = new App\User([
+            'unique_id' => '_demo_ali',
+            'first_name' => 'Ali',
+            'last_name' => 'Tanriverdi',
+            'email' => 'antanrive@binghamton.edu'
+        ]);
+        $user2->save();
+
+        $module = new App\Module([
+            'name' => 'Test Module',
+            'description' => 'This is the first test module',
+            'owner_user_id' => $user1->id,
+            'message_configuration' => (Object)[],
+            'assignment_configuration' => (Object)[],
+        ]);
+        $module->save();
+
+        $moduleVersion = new App\ModuleVersion([
+            'name' => 'Test Module',
+            'module_id' => $module->id,
+            'type' => 'tincan',
+            'reference' => (Object)['filename'=>'story.html'],
+        ]);
+        $moduleVersion->save();
+
+        $moduleAssignment1 = new App\ModuleAssignment([
+            'user_id' => $user1->id,
+            'module_version_id' => $moduleVersion->id,
+            'module_id' => $moduleVersion->module_id,
+            'date_assigned' => now(),
+            'date_due' => now()->addDays(30),
+            'assigned_by_user_id' => $user1->id,
+        ]);
+        $moduleAssignment1->save();
+        $moduleAssignment2 = new App\ModuleAssignment([
+            'user_id' => $user2->id,
+            'module_version_id' => $moduleVersion->id,
+            'module_id' => $moduleVersion->module_id,
+            'date_assigned' => now(),
+            'date_due' => now()->addDays(30),
+            'assigned_by_user_id' => $user1->id,
+        ]);
+        $moduleAssignment2->save();
     }
 }
