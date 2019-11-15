@@ -8,19 +8,26 @@
         <center><h1 style="text-align:center;">Welcome to BComply!</h1></center>
         <div class="row">
             <div class="col-sm-6 col-sm-offset-3">
-            @if(count($modules) > 0)
+            @if(count($assignments) > 0)
                 <center><h3 style="text-align:center;">Please Select a Module</h1></center>
                 <div class="list-group">
-                @foreach ($modules as $module)
-                    <a class="list-group-item" 
-                       href="/modules/{{$module->module_id}}/versions/{{$module->module_version_id}}/{{$module->filename}}?endpoint={{url('/api/tincan')}}&auth=0&actor=<?php echo htmlentities(json_encode(["name"=>Auth::user()->first_name.' '.Auth::user()->last_name,"mbox"=>Auth::user()->email]));?>">
-                        {{$module->name}}
-                    </a>
+                @foreach ($assignments as $assignment)
+                    @if ($assignment->version->type === 'tincan')
+                        <a class="list-group-item" 
+                        href="/modules/{{$assignment->module_id}}/versions/{{$assignment->module_version_id}}/{{$assignment->version->reference->filename}}?activity_id={{$assignment->id}}&endpoint={{url('/api/tincan')}}&auth=0&actor=<?php echo htmlentities(json_encode(["name"=>Auth::user()->first_name.' '.Auth::user()->last_name,"mbox"=>Auth::user()->email]));?>">
+                            @if(!is_null($assignment->date_completed)) 
+                                <div class="badge pull-right">Complete</div>
+                            @elseif(!is_null($assignment->date_started)) 
+                                <div class="badge pull-right">In Progress</div>
+                            @endif
+                            {{$assignment->version->name}}
+                        </a>
+                    @endif
                 @endforeach
                 </div>
             @else
                 <div class="alert alert-warning">
-                    <h4 style="margin-top:0px;">You do not have any modules!</h4>
+                    <h4 style="margin-top:0px;">You do not have any assigned modules!</h4>
                     <div>Contact someone if you feel that this is in error.</div>
                 </div>
             @endif

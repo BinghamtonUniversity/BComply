@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\ModuleAssignment;
 
 class UserDashboardController extends Controller
 {
@@ -11,14 +12,11 @@ class UserDashboardController extends Controller
         if (!Auth::check()) {
             return redirect('/demo');
         }
-        return view('home',['modules'=>[
-            (Object)[
-                'name'=>'Test Module',
-                'module_id'=>1,
-                'module_version_id'=>1,
-                'filename'=>'story.html',
-            ],
-        ],'user'=>Auth::user()]);
+        $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
+            ->where('date_assigned','<=',now())
+            ->with('version')->get();
+        // return $assignments;
+        return view('home',['assignments'=>$assignments,'user'=>Auth::user()]);
     }
 
 }
