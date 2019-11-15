@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\ModuleAssignment;
+use App\ModuleVersion;
 
 class UserController extends Controller
 {
@@ -32,6 +34,7 @@ class UserController extends Controller
     public function assign_module(Request $request, User $user, ModuleVersion $module_version) {
         if ($request->has('due_date')) {
             $due_date = $request->due_date;
+//            dd()
         } else {
             $due_date = null;
         }
@@ -41,7 +44,7 @@ class UserController extends Controller
             'module_id' => $module_version->module_id,
             'date_assigned' => now(),
             'date_due' => $due_date,
-            'assigned_by_user_id' => Auth::user()->id,
+            'assigned_by_user_id' => 2,
         ]);
         $module_assignment->save();
         return $module_assignment;
@@ -58,4 +61,8 @@ class UserController extends Controller
             }
         }
     }
+
+//    public function add_to_group(Request $request, User $user, Group $group){
+//        Group::where('group_id',$group->id)->
+//    }
 }

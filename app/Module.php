@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+
+
 class Module extends Model
 {
     protected $fillable = ['name','description','owner_user_id','message_configuration','assignment_configuration'];
