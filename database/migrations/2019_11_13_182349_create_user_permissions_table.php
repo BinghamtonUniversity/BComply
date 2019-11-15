@@ -16,7 +16,12 @@ class CreateUserPermissionsTable extends Migration
         Schema::create('user_permissions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->index();
-            $table->enum('permission',[true,false]);
+            $table->enum('permission',[
+                'manage_users',
+                'view_users',
+                'manage_modules',
+                'assign_modules'
+            ]);
 //            $table->index('user_id');
 
             //          FOREIGN KEYS
