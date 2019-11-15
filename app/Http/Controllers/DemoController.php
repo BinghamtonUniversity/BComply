@@ -17,6 +17,7 @@ class DemoController extends Controller
             $user = User::where('unique_id','like','_demo%')
                 ->where('unique_id',$request->accountId)
                 ->first();
+
             if (!is_null($user)) {
                 Auth::login($user,true);
                 return redirect('/');
