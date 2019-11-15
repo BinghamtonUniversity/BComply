@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class ModuleAssignment extends Model
 {
+    protected $fillable = ['user_id','module_version_id','module_id','date_assigned','date_due','updated_by_user_id','assigned_by_user_id','current_state'];
+    protected $casts = ['current_state' => 'object'];
+
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo('App\User','user_id');
     }
     public function version(){
-        return $this->belongsTo(ModuleVersion::class);
+        return $this->belongsTo('App\ModuleVersion','module_version_id');
     }
 }
