@@ -15,22 +15,27 @@ class UserController extends Controller
         $users = User::all();
         return $users;
     }
+
     public function get_user(Request $request, User $user) {
         return $user;
     }
+
     public function add_user(Request $request) {
         $user = new User($request->all());
         $user->save();
         return $user;
     }
+
     public function update_user(Request $request, User $user) {
         $user->update($request->all());
         return $user;
     }
+
     public function delete_user(Request $request, User $user) {
         $user->delete();
         return true;
     }
+
     public function assign_module(Request $request, User $user, ModuleVersion $module_version) {
         if ($request->has('due_date')) {
             $due_date = $request->due_date;
@@ -49,8 +54,9 @@ class UserController extends Controller
         $module_assignment->save();
         return $module_assignment;
     }
+
     public function set_permissions(Request $request, User $user) {
-        UserPermission::where('user_id',$user->id)->delete();
+        UserPermission::where('user_id',$user->id )->delete();
         if ($request->has('permissions')) {
             foreach($request->permissions as $permission) {
                 $permission = new UserPermission([
@@ -62,7 +68,4 @@ class UserController extends Controller
         }
     }
 
-//    public function add_to_group(Request $request, User $user, Group $group){
-//        Group::where('group_id',$group->id)->
-//    }
 }

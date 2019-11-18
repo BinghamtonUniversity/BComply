@@ -28,7 +28,7 @@ class ModuleController extends Controller
     }
     public function delete_module(Request $request,Module $module){
         $module->delete();
-        return true;
+        return 'Success';
     }
     public function set_permissions(Request $request, User $module)
     {
