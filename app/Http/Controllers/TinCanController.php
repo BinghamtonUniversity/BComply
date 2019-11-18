@@ -35,25 +35,30 @@ class TinCanController extends Controller
     public function register_statement(Request $request) {
         $activity_id_arr = explode('/',$request->object['id']);
         $activity_id = $activity_id_arr[0];
-        if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/passed') {
-            $assignment = ModuleAssignment::where('user_id',Auth::user()->id)
-                ->where('id',$activity_id)
-                ->whereNull('date_completed')->first();
-            if (!is_null($assignment)) {
-                $assignment->date_completed = now();
-                $assignment->updated_by_user_id = Auth::user()->id;
-                $assignment->update();
+        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where('id',$activity_id)->first();
+        if (!is_null($assignment)) {
+            if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/passed') {
+                if (is_null($assignment->date_completed)) {
+                    $assignment->date_completed = now();
+                    $assignment->score = $request->result['score']['scaled'];
+                    $assignment->status = 'passed';
+                }
             }
-        }
-        if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/experienced') {
-            $assignment = ModuleAssignment::where('user_id',Auth::user()->id)
-                ->where('id',$activity_id)
-                ->whereNull('date_started')->first();
-            if (!is_null($assignment)) {
-                $assignment->date_started = now();
-                $assignment->updated_by_user_id = Auth::user()->id;
-                $assignment->update();
+            if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/failed') {
+                if (is_null($assignment->date_completed)) {
+                    $assignment->date_completed = now();
+                    $assignment->score = $request->result['score']['scaled'];
+                    $assignment->status = 'failed';
+                }
             }
+            if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/experienced') {
+                if (is_null($assignment->date_started)) {
+                    $assignment->date_started = now();
+                    $assignment->status = 'in_progress';
+                }
+            }
+            $assignment->updated_by_user_id = Auth::user()->id;
+            $assignment->save();
         }
         return ['response'=>'acknowledged'];
     }

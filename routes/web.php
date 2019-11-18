@@ -15,6 +15,7 @@
 //     return view('welcome');
 // });
 Route::get('/', ['uses'=>'UserDashboardController@home']);
+Route::get('/admin/{page?}', ['uses'=>'AdminController@admin']);
 
 Route::any('/demo', ['uses' => 'DemoController@list']);
 

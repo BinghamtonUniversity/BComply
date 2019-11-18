@@ -24,7 +24,11 @@ class CreateModuleAssignmentsTable extends Migration
             $table->timestamp('date_completed')->nullable()->default(null);
             $table->unsignedBigInteger('updated_by_user_id')->nullable()->default(null);
             $table->unsignedBigInteger('assigned_by_user_id')->nullable()->default(null);
+            $table->enum('status',['assigned','in_progress','passed','failed','completed'])->default('assigned');
+            $table->string('score')->nullable()->default(null);
+            $table->unsignedInteger('duration')->default(0);
             $table->json('current_state')->nullable()->default(null);
+            $table->timestamps();
             $table->unique(['user_id','module_version_id']);
 
 //           FOREIGN KEYS
@@ -42,7 +46,6 @@ class CreateModuleAssignmentsTable extends Migration
             $table->foreign('assigned_by_user_id')
                 ->references('id')
                 ->on('users');
-            $table->timestamps();
 
         });
     }

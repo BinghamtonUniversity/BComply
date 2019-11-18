@@ -43,6 +43,13 @@ class DatabaseSeeder extends Seeder
             'reference' => (Object)['filename'=>'story.html'],
         ]);
         $moduleVersion->save();
+        $moduleVersion2 = new App\ModuleVersion([
+            'name' => 'Test Module 2 11/18/19',
+            'module_id' => $module->id,
+            'type' => 'tincan',
+            'reference' => (Object)['filename'=>'story.html'],
+        ]);
+        $moduleVersion2->save();
 
         $moduleAssignment1 = new App\ModuleAssignment([
             'user_id' => $user1->id,
@@ -62,5 +69,15 @@ class DatabaseSeeder extends Seeder
             'assigned_by_user_id' => $user1->id,
         ]);
         $moduleAssignment2->save();
+        $moduleAssignment3 = new App\ModuleAssignment([
+            'user_id' => $user1->id,
+            'module_version_id' => $moduleVersion2->id,
+            'module_id' => $moduleVersion2->module_id,
+            'date_assigned' => now(),
+            'date_due' => now()->addDays(30),
+            'assigned_by_user_id' => $user1->id,
+        ]);
+        $moduleAssignment3->save();
+
     }
 }

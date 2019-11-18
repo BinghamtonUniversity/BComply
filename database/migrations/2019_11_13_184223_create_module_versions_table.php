@@ -18,7 +18,7 @@ class CreateModuleVersionsTable extends Migration
                 $table->bigIncrements('id');
                 $table->string('name');
                 $table->unsignedBigInteger('module_id')->nullable()->default(null);
-                $table->enum('type',['tincan','scorm1.1','scorm1.2']);
+                $table->enum('type',['tincan','scorm1.1','scorm1.2','youtube']);
                 $table->json('reference')->nullable()->default(null);
                 $table->timestamps();
                 //           FOREIGN KEYS
