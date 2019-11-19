@@ -30,6 +30,10 @@ ajax.get('/api/users',function(data) {
         ajax.put('/api/users/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
         });
+    }).on("model:created",function(grid_event) {
+        ajax.post('/api/users',grid_event.model.attributes,function(data) {
+            grid_event.model.attributes = data;
+        });
     }).on("model:deleted",function(grid_event) {
         ajax.delete('/api/users/'+grid_event.model.attributes.id,{},function(data) {});
     }).on("model:edit_perm",function(grid_event) {
@@ -59,7 +63,7 @@ ajax.get('/api/users',function(data) {
                 {"type":"save"}
             ]}
         ).modal().on('save',function(form_event) {
-            ajax.post('/api/users/'+user_id+'/permissions',form_event.form.get(),function(data) {
+            ajax.put('/api/users/'+user_id+'/permissions',form_event.form.get(),function(data) {
                 form_event.form.trigger('close');
             });
         });

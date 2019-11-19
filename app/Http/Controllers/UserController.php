@@ -58,7 +58,7 @@ class UserController extends Controller
 
     public function set_permissions(Request $request, User $user) {
         $request->validate([
-            'permissions' => 'required',
+            'permissions' => 'array',
         ]);
         UserPermission::where('user_id',$user->id)->delete();
         foreach($request->permissions as $permission) {
