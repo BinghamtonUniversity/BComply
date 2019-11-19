@@ -19,4 +19,14 @@ class UserDashboardController extends Controller
         return view('home',['assignments'=>$assignments,'user'=>Auth::user()]);
     }
 
+    public function logout(){
+//        if(!Auth::check())
+            Auth::logout();
+        return redirect('demo');
+    }
+
+    public function admin(){
+        return redirect('home');
+    }
+
 }

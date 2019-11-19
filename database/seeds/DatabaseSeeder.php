@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             'unique_id' => '_demo_ali',
             'first_name' => 'Ali',
             'last_name' => 'Tanriverdi',
-            'email' => 'antanrive@binghamton.edu'
+            'email' => 'atanrive@binghamton.edu'
         ]);
         $user2->save();
 

@@ -15,6 +15,12 @@ class CreateGroupMembershipsTable extends Migration
     {
         Schema::create('group_memberships', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('group_id')->index();
+            $table->unsignedBigInteger('user_id')->index();
+            $table->unique(['user_id','group_id']);
+
+            $table->foreign('group_id')->references('id')->on('groups');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
