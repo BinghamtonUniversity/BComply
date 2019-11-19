@@ -18,7 +18,6 @@ class CreateUserPermissionsTable extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->enum('permission',[
                 'manage_users',
-                'view_users',
                 'manage_modules',
                 'assign_modules'
             ]);

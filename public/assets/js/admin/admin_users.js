@@ -12,6 +12,7 @@ ajax.get('/api/users',function(data) {
     ],
     count:4,
     schema:[
+        {type:"hidden", name:"id"},
         {type:"text", name:"first_name", label:"First Name"},
         {type:"text", name:"last_name", label:"Last Name"},
         {type:"text", name:"unique_id", label:"Unique ID"},

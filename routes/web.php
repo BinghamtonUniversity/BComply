@@ -15,7 +15,15 @@
 //     return view('welcome');
 // });
 Route::get('/', ['uses'=>'UserDashboardController@home']);
-Route::get('/admin/{page?}', ['uses'=>'AdminController@admin']);
+
+/* Admin Pages */
+Route::get('/admin/', ['uses'=>'AdminController@admin']);
+Route::get('/admin/users', ['uses'=>'AdminController@users']);
+Route::get('/admin/groups', ['uses'=>'AdminController@groups']);
+Route::get('/admin/modules', ['uses'=>'AdminController@modules']);
+Route::get('/admin/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
+/* End Admin Pages */
+
 Route::get('/logout','UserDashboardController@logout');
 
 Route::any('/demo', ['uses' => 'DemoController@list']);
@@ -29,12 +37,13 @@ Route::group(['prefix' => 'api'], function () {
     /* User Methods */
     Route::get('/users','UserController@get_all_users');
     Route::get('/users/{user}','UserController@get_user');
-    Route::post('/users','UserController@add_user');
-    Route::put('/users/{user}','UserController@update_user');
-    Route::delete('/users/{user}','UserController@delete_user');
+    Route::post('/users','UserController@add_user')->middleware('can:manage_users,App\User');
+    Route::put('/users/{user}','UserController@update_user')->middleware('can:manage_users,App\User');
+    Route::delete('/users/{user}','UserController@delete_user')->middleware('can:manage_users,App\User');
+    Route::put('/users/{user}/permissions','UserController@set_permissions')->middleware('can:manage_users,App\User');
+    Route::get('/users/{user}/permissions','UserController@get_permissions')->middleware('can:manage_users,App\User');
     Route::post('/users/{user}/assign/{module_version}','UserController@assign_module');
-    Route::put('/users/{user}/permissions','UserController@set_permissions');
-    Route::get('/users/{user}/permissions','UserController@get_permissions');
+
     // Route::post('/users/{user}/groups/{group}');
     // Route::delete('/users/{user}/groups/{group}');
 
@@ -44,6 +53,10 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('/modules','ModuleController@add_module');
     Route::put('/modules/{module}','ModuleController@update_module');
     Route::delete('/modules/{module}','ModuleController@delete_module');
+    Route::get('/modules/{module}/versions','ModuleController@get_module_versions');
+    Route::post('/modules/{module}/versions','ModuleController@add_module_version');
+    Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version');
+    Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version');
     Route::post('/modules/{module}/permissions','ModuleController@set_permissions');
 
     /* Group Methods */

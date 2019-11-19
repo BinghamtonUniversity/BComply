@@ -95,6 +95,7 @@
     <script src='/assets/js/vendor/gform_bootstrap.min.js'></script> 
     <script src='/assets/js/vendor/GrapheneDataGrid.min.js'></script> 
     <script src="/assets/js/admin/admin.js"></script>
+    <script>@if(!is_null($id)) id={{$id}}; @endif </script>
     <script src="/assets/js/admin/admin_{{$page}}.js"></script>
   </body>
 </html>
