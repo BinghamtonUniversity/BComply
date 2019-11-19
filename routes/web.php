@@ -32,6 +32,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::delete('/users/{user}','UserController@delete_user');
     Route::post('/users/{user}/assign/{module_version}','UserController@assign_module');
     Route::post('/users/{user}/permissions','UserController@set_permissions');
+    Route::get('/users/{user}/permissions','UserController@get_permissions');
     Route::post('/users/{user}/groups/{group}');
     Route::delete('/users/{user}/groups/{group}');
 

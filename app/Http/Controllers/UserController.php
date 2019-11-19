@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\ModuleAssignment;
+use App\UserPermission;
 
 class UserController extends Controller
 {
@@ -27,7 +28,7 @@ class UserController extends Controller
     }
     public function delete_user(Request $request, User $user) {
         $user->delete();
-        return true;
+        return "1";
     }
     public function assign_module(Request $request, User $user, ModuleVersion $module_version) {
         if ($request->has('due_date')) {
@@ -47,15 +48,21 @@ class UserController extends Controller
         return $module_assignment;
     }
     public function set_permissions(Request $request, User $user) {
+        $request->validate([
+            'permissions' => 'required',
+        ]);
         UserPermission::where('user_id',$user->id)->delete();
-        if ($request->has('permissions')) {
-            foreach($request->permissions as $permission) {
-                $permission = new UserPermission([
-                    'user_id' =>$user->id,
-                    'permission' => $permission
-                ]);
-                $permission->save();
-            }
+        foreach($request->permissions as $permission) {
+            $permission = new UserPermission([
+                'user_id' =>$user->id,
+                'permission' => $permission
+            ]);
+            $permission->save();
         }
+        return $request->permissions;
     }
+    public function get_permissions(Request $request, User $user) {
+        return $user->user_permissions;
+    }
+
 }

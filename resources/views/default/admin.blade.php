@@ -64,27 +64,7 @@
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right visible-xs-block">
-            @can('manage','App\User')
-            <li><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
-            @endcan
-            @can('manage','App\Team')
-            <li><a href="/admin/teams"><i class="fa fa-users fa-fw"></i>&nbsp; Teams</a></li>
-            @endcan
-            @can('manage','App\Scenario')
-            <li><a href="/admin/scenarios"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Scenarios</a></li>
-            @endcan
-            @can('manage_product','App\Library')
-            <li><a href="/admin/products" ><i class="fa fa-pills fa-fw"></i>&nbsp; Products</a></li>
-            @endcan
-            @can('manage_prescriber','App\Library')
-            <li><a href="/admin/prescribers" ><i class="fa fa-user-md fa-fw"></i>&nbsp; Prescribers</a></li>
-            @endcan
-            @can('manage_solution','App\Library')
-            <li><a href="/admin/solutions" ><i class="fa fa-user-md fa-fw"></i>&nbsp; Solutions</a></li>
-            @endcan
-            @can('manage_lab','App\Library')
-            <li><a href="/admin/labs" ><i class="fa fa-flask fa-fw"></i>&nbsp; Labs</a></li>
-            @endcan
+              <!-- Insert Links Here -->
           </ul>
         </div>
       </div>
@@ -92,34 +72,16 @@
     <div class="col-sm-3 col-md-2 sidebar">
 
       <ul class="nav nav-sidebar">
-        @can('manage','App\User')
         <li class="@if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
-        @endcan
-        @can('manage','App\Team')
-        <li class="@if($page=="teams" || $page=="members" || $page=="notes" || $page=="messages") active @endif"><a href="/admin/teams"><i class="fa fa-users fa-fw"></i>&nbsp; Teams</a></li>
-        @endcan
-        @can('manage','App\Scenario')
-        <li class="@if($page=="scenarios") active @endif"><a href="/admin/scenarios"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Scenarios</a></li>
-        @endcan
-        @can('manage_product','App\Library')
-        <li class="@if($page=="products") active @endif"><a href="/admin/products" ><i class="fa fa-pills fa-fw"></i>&nbsp; Products</a></li>
-        @endcan
-        @can('manage_prescriber','App\Library')
-        <li class="@if($page=="prescribers") active @endif"><a href="/admin/prescribers" ><i class="fa fa-user-md fa-fw"></i>&nbsp; Prescribers</a></li>
-        @endcan
-        @can('manage_solution','App\Library')
-        <li class="@if($page=="solutions") active @endif"><a href="/admin/solutions" ><i class="fa fa-user-md fa-fw"></i>&nbsp; Solutions</a></li>
-        @endcan
-        @can('manage_lab','App\Library')
-        <li class="@if($page=="labs") active @endif"><a href="/admin/labs" ><i class="fa fa-flask fa-fw"></i>&nbsp; Labs</a></li>
-        @endcan
+        <li class="@if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
+        <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
       </ul>
     </div>
     <div class="container-fluid" id="main-container">
       <div class="row">
         <div class="col-sm-12 admin-main">
             <div id="content">
-              <div id="dataGrid"></div>
+              <div id="adminDataGrid"></div>
             </div>
         </div>
       </div>
@@ -131,25 +93,8 @@
     <script src='/assets/js/vendor/hogan.min.js'></script>
     <script src='/assets/js/vendor/toastr.min.js'></script> 
     <script src='/assets/js/vendor/gform_bootstrap.min.js'></script> 
-    <script src="/assets/js/admin/fields.js"></script>
-    <script src="/assets/js/admin/ajax_handler.js"></script>
-    <script src='/assets/js/vendor/berry.full.js'></script> 
-    <script src='/assets/js/vendor/bootstrap.full.berry.js'></script> 
-    <script src='/assets/js/vendor/berrytables.full.js'></script> 
-    <script src="/assets/js/admin/libs.js"></script>
+    <script src='/assets/js/vendor/GrapheneDataGrid.min.js'></script> 
     <script src="/assets/js/admin/admin.js"></script>
-<script>
-
-this.app=ajax;
-this.data = {};
-page = "{{ $page }}";
-if (page!=='') {
-    id = {{ is_null($id)?"null":$id }};
-    this.app.get(page,{id:id},function(data) {
-    this.data[page] = data;
-    build_table.call(this, "{{ $page }}", {container:'#dataGrid'});
-    });
-}
-</script>
+    <script src="/assets/js/admin/admin_{{$page}}.js"></script>
   </body>
 </html>
