@@ -81,11 +81,44 @@
       <div class="row">
         <div class="col-sm-12 admin-main">
             <div id="content">
-              <div id="adminDataGrid"></div>
+                <nav aria-label="breadcrumb">
+                    <?php $crumbs = explode('_',$page); ?>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/admin/{{$crumbs[0]}}">{{ucwords($crumbs[0])}}</a></li>
+                        @if (!is_null($id))
+                            <li class="breadcrumb-item"><a href="/admin/{{$crumbs[0]}}/{{$id}}/{{$crumbs[1]}}">{{ucwords($crumbs[1])}}</a></li>
+                        @endif
+                    </ol>
+                </nav>
+                @if(isset($help))
+                    <div class="alert alert-info">{{$help}}</div>
+                @endif
+                <div id="adminDataGrid"></div>
             </div>
         </div>
       </div>
     </div>
+    
+<!-- Begin Modal -->
+<div class="modal fade" id="adminModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Modal -->
+
     <script src='/assets/js/vendor/jquery.min.js'></script>
     <script src="/assets/js/vendor/bootstrap.min.js"></script>
     <script src="/assets/js/vendor/lodash.min.js"></script>
@@ -94,6 +127,8 @@
     <script src='/assets/js/vendor/toastr.min.js'></script> 
     <script src='/assets/js/vendor/gform_bootstrap.min.js'></script> 
     <script src='/assets/js/vendor/GrapheneDataGrid.min.js'></script> 
+    <script src='/assets/js/vendor/moment.js'></script> 
+    <script src='/assets/js/vendor/bootstrap-datetimepicker.min.js'></script> 
     <script src="/assets/js/admin/admin.js"></script>
     <script>@if(!is_null($id)) id={{$id}}; @endif </script>
     <script src="/assets/js/admin/admin_{{$page}}.js"></script>

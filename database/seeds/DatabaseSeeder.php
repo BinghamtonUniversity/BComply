@@ -79,5 +79,15 @@ class DatabaseSeeder extends Seeder
         ]);
         $moduleAssignment3->save();
 
+        $userPermission1 = new App\UserPermission([
+            'user_id' => $user1->id,
+            'permission' => 'manage_users',
+        ]);
+        $userPermission1->save();
+        $userPermission2 = new App\UserPermission([
+            'user_id' => $user2->id,
+            'permission' => 'manage_users',
+        ]);
+        $userPermission2->save();
     }
 }

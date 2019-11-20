@@ -27,25 +27,25 @@ class GroupController extends Controller
     }
     public function delete_group(Request $request, Group $group){
         $group->delete();
-        return true;
+        return 'Success';
     }
 
-    public function get_group_memberships(){
-        $group_membership =GroupMembership::all();
-        return $group_membership;
+    public function get_members(Group $group){
+        return GroupMembership::where('group_id',$group->id)->with('user')->get();
     }
 
-    public function add_group_membership(Group $group,User $user){
+    public function add_member(Request $request, Group $group){
         $group_membership = new GroupMembership([
            'group_id'=>$group->id,
-           'user_id'=>$user->id
+           'user_id'=>$request->user_id
         ]);
         $group_membership->save();
-        return $group_membership;
+        return GroupMembership::where('id',$group_membership->id)->with('user')->first();
     }
 
-    public function delete_group_membership(GroupMembership $groupMembership,Group $group,User $user)
+    public function delete_member(GroupMembership $groupMembership,Group $group,User $user)
     {
-        return (GroupMembership::where('group_id', $group and 'user_id', $user)->delete());
+        GroupMembership::where('group_id',$group->id)->where('user_id',$user->id)->delete();
+        return 'success';
     }
 }

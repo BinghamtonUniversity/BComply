@@ -64,3 +64,23 @@ window.ajax.delete = function(url,data,callback_success,callback_error) {
         }
     });
 }
+
+gform.types['user']= _.extend({}, gform.types['smallcombo'], {
+    toString: function(name,display){
+      if(!display){
+        if(typeof this.combo !== 'undefined'){
+          return '<dt>'+this.label+'</dt> <dd>'+(this.combo.innerText||'(empty)')+'</dd><hr>'
+        }else{
+          return '<dt>'+this.label+'</dt> <dd>'+(this.get()||'(empty)')+'</dd><hr>'
+        }
+      }else{
+        if(typeof this.options !== 'undefined' && this.options.length){
+          return _.find(this.options,{id:this.value})||this.value;
+        }else{
+          return this.value;
+        }
+      }
+    },
+    defaults:{strict:true,search:"/api/users/search/{{search}}{{value}}",format:{title:'{{{label}}}{{^label}}User{{/label}} <span class="text-success pull-right">{{value}}</span>',label:"{{first_name}}{{#last_name}} {{last_name}}{{/last_name}}",value:"{{id}}", display:'{{first_name}} {{last_name}}<div style="color:#aaa">{{email}}</div>'}}
+  })
+  

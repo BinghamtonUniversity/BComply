@@ -3,13 +3,13 @@ ajax.get('/api/modules',function(data) {
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
     actions:[
-        {"name":"create"},
+        {"name":"create","label":"Create New Module"},
         '',
-        {"name":"edit"},
+        {"name":"edit","label":"Update Existing Module"},
         {"label":"Manage Versions","name":"manage_versions","min":1,"max":1,"type":"default"},
-        {"label":"Manage Admins","name":"manage_admins","min":1,"max":1,"type":"default"},
+        {"label":"Admin Permissions","name":"manage_admins","min":1,"max":1,"type":"default"},
         '',
-        {"name":"delete"}
+        {"name":"delete","label":"Delete Module"}
     ],
     count:4,
     schema:[
@@ -30,6 +30,8 @@ ajax.get('/api/modules',function(data) {
         ajax.delete('/api/modules/'+grid_event.model.attributes.id,{},function(data) {});
     }).on("model:manage_versions",function(grid_event) {
         window.location = '/admin/modules/'+grid_event.model.attributes.id+'/versions';
+    }).on("model:manage_admins",function(grid_event) {
+        window.location = '/admin/modules/'+grid_event.model.attributes.id+'/permissions';
     })
 });
 

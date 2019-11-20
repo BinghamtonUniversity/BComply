@@ -3,12 +3,13 @@ ajax.get('/api/users',function(data) {
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
     actions:[
-        {"name":"create"},
+        {"name":"create","label":"Add User"},
         '',
-        {"name":"edit"},
+        {"name":"edit","label":"Edit User"},
         {"label":"Edit Permissions","name":"edit_perm","min":1,"max":1,"type":"default"},
+        {"label":"Manage Assignments","name":"assignments","min":1,"max":1,"type":"default"},
         '',
-        {"name":"delete"}
+        {"name":"delete","label":"Delete User"}
     ],
     count:4,
     schema:[
@@ -16,13 +17,19 @@ ajax.get('/api/users',function(data) {
         {type:"text", name:"first_name", label:"First Name"},
         {type:"text", name:"last_name", label:"Last Name"},
         {type:"text", name:"unique_id", label:"Unique ID"},
-        {type:"text", name:"email", label:"Email"}
-        // ,{
+        {type:"email", name:"email", label:"Email"},
+        // {
         //     label: "Additional Parameters",
         //     name: "params",
         //     array: false,
         //     fields: [
-        //         {name:"test","label":"Test"}
+        //         {type:"text", name:"payroll_code", label:"Payroll Code"},
+        //         {type:"text", name:"supervisor", label:"Supervisor"},
+        //         {type:"text", name:"org", label:"Org (Department)"},
+        //         {type:"text", name:"l3org", label:"L3 Org"},
+        //         {type:"text", name:"job_title", label:"Job Title"},
+        //         {type:"text", name:"preferred_name", label:"Preferred Name"},
+        //         {type:"checkbox", name:"active", label:"Active"},
         //     ],
         //     type: "fieldset"
         // }
@@ -68,6 +75,8 @@ ajax.get('/api/users',function(data) {
                 form_event.form.trigger('close');
             });
         });
+    }).on("model:assignments",function(grid_event) {
+        window.location = '/admin/users/'+grid_event.model.attributes.id+'/assignments';
     })
 });
 

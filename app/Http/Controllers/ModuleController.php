@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Module;
+use App\User;
 use App\ModulePermission;
 use Illuminate\Http\Request;
 use App\ModuleVersion;
+use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
@@ -47,17 +49,23 @@ class ModuleController extends Controller
         $module->delete();
         return 'Success';
     }
-    public function set_permissions(Request $request, User $module)
-    {
-        ModulePermission::where('module_id', $module->id)->delete();
-        if ($request->has('permissions')) {
-            foreach ($request->permissions as $permission) {
-                $permission = new ModulePermission([
-                    'module_id' => $module->id,
-                    'permission' => $permission
-                ]);
-                $permission->save();
-            }
-        }
+    public function get_module_permissions(Request $request, Module $module) {
+        return ModulePermission::where('module_id', $module->id)
+            ->with('user')->get();        
+    }
+    public function set_module_permission(Request $request, Module $module) {
+        $request->validate(['permission' => 'required']);
+        $permission = new ModulePermission([
+            'user_id' =>$request->user_id,
+            'permission' => $request->permission,
+            'updated_by_user_id' => Auth::user()->id,
+        ]);
+        $permission->module_id = $module->id;
+        $permission->save();
+        return ModulePermission::where('id', $permission->id)->with('user')->first();
+    }
+    public function delete_module_permission(Request $request, Module $module, ModulePermission $module_permission) {
+        return ModulePermission::where('module_id', $module->id)->where('id',$module_permission->id)->delete();   
+        return 'Success';     
     }
 }
