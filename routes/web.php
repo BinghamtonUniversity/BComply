@@ -25,6 +25,7 @@ Route::get('/admin/groups/{group}/members', ['uses'=>'AdminController@group_memb
 Route::get('/admin/modules', ['uses'=>'AdminController@modules']);
 Route::get('/admin/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
 Route::get('/admin/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);
+Route::get('/admin/reports', ['uses'=>'AdminController@reports']);
 
 /* End Admin Pages */
 
@@ -33,6 +34,10 @@ Route::get('/logout','UserDashboardController@logout');
 Route::any('/demo', ['uses' => 'DemoController@list']);
 
 Route::group(['prefix' => 'api'], function () {
+    Route::get('/reports/tables', 'ReportController@get_tables');
+    Route::get('/reports/tables/columns', 'ReportController@get_columns');
+    Route::post('/reports/query', 'ReportController@query');
+
     Route::get('/tincan/activities/state', 'TinCanController@get_state');
     Route::put('/tincan/activities/state', 'TinCanController@set_state');
     Route::put('/tincan/statements', 'TinCanController@register_statement');

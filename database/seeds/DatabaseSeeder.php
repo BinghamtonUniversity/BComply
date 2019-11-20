@@ -83,12 +83,12 @@ class DatabaseSeeder extends Seeder
 
         $userPermission1 = new App\UserPermission([
             'user_id' => $user1->id,
-            'permission' => 'manage_users',
+            'permission' => 'manage_user_permissions',
         ]);
         $userPermission1->save();
         $userPermission2 = new App\UserPermission([
             'user_id' => $user2->id,
-            'permission' => 'manage_users',
+            'permission' => 'manage_user_permissions',
         ]);
         $userPermission2->save();
     }

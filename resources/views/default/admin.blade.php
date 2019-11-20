@@ -75,6 +75,7 @@
         <li class="@if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
         <li class="@if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
         <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
+        <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
       </ul>
     </div>
     <div class="container-fluid" id="main-container">
@@ -112,7 +113,6 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

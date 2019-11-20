@@ -6,6 +6,8 @@ use App\User;
 use App\Group;
 use App\Module;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+
 
 use Illuminate\Http\Request;
 
@@ -13,7 +15,6 @@ class AdminController extends Controller
 {
     public function __construct() {
     }
-
     public function admin(Request $request) {
         return view('default.admin',['page'=>null,'id'=>null,'title'=>'Admin']);
     }
@@ -56,6 +57,11 @@ class AdminController extends Controller
         return view('default.admin',['page'=>'modules_permissions','id'=>$module->id,'title'=>$module->name.' Admin Permissions','help'=>
             'Use this page to manage module permissions within the BComply Application.  You may 
             add new permissions for a specified user, or remove existing permissions for that use.'
+        ]);
+    }
+    public function reports(Request $request) {
+        return view('default.admin',['page'=>'reports','id'=>null,'title'=>'Reports','help'=>
+            'Build Reports.'
         ]);
     }
 

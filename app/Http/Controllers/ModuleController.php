@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class ModuleController extends Controller
 {
     public function get_alL_modules(){
-        return Module::all();
+        return Module::with('owner')->get();
     }
     public function get_module(Request $request, Module $module){
         return $module;

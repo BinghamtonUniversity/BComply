@@ -21,6 +21,9 @@ class Module extends Model
     public function permissions(){
         return $this->hasMany(ModulePermission::class);
     }
+    public function owner(){
+        return $this->belongsTo(User::class,'owner_user_id');
+    }
     public function getModulePermissionsAttribute() {
         $permissions = $this->permissions()->get();
         $permissions_arr = [];
