@@ -51,6 +51,8 @@ class DatabaseSeeder extends Seeder
         ]);
         $moduleVersion2->save();
 
+
+
         $moduleAssignment1 = new App\ModuleAssignment([
             'user_id' => $user1->id,
             'module_version_id' => $moduleVersion->id,

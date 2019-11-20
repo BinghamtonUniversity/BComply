@@ -13,8 +13,7 @@ use App\ModuleVersion;
 class UserController extends Controller
 {
     public function get_all_users() {
-        $users = User::all();
-        return $users;
+        return User::all();
     }
 
     public function get_user(Request $request, User $user) {
@@ -52,7 +51,7 @@ class UserController extends Controller
             'module_id' => $module_version->module_id,
             'date_assigned' => now(),
             'date_due' => $due_date,
-            'assigned_by_user_id' => 2,
+            'assigned_by_user_id' => $user->id,
         ]);
         $module_assignment->save();
         return $module_assignment;

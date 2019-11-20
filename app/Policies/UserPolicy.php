@@ -15,5 +15,10 @@ class UserPolicy
             return true;
         }
     }
+    public function manage_user_permissions(User $user){
+        if(in_array('manage_user_permissions',$user->user_permissions)){
+            return true;
+        }
+    }
 
 }

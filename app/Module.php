@@ -10,12 +10,24 @@ class Module extends Model
 {
     protected $fillable = ['name','description','owner_user_id','message_configuration','assignment_configuration'];
     protected $casts = ['message_configuration' => 'object','assignment_configuration'=>'object'];
+    protected $hidden = ['permissions'];
+    protected $appends = ['module_permissions'];
+    protected $with = ['permissions'];
+
 
     public function version(){
         return $this->belongsTo(ModuleVersion::class);
     }
     public function permissions(){
         return $this->hasMany(ModulePermission::class);
+    }
+    public function getModulePermissionsAttribute() {
+        $permissions = $this->permissions()->get();
+        $permissions_arr = [];
+        foreach($permissions as $permission) {
+            $permissions_arr[] = $permission->permission;
+        }
+        return $permissions_arr;
     }
 
 }
