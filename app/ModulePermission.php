@@ -11,7 +11,7 @@ class ModulePermission extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
-    public function modules(){
+    public function module(){
         return$this->belongsTo(Module::class);
     }
 }
