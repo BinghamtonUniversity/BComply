@@ -60,24 +60,23 @@ Route::group(['prefix' => 'api'], function () {
     // Route::delete('/users/{user}/groups/{group}');
 
     /* Modules Methods */
-//    Route::get('/modules','ModuleController@get_all_modules');
-    Route::get('/modules','ModuleController@get_user_modules');
+    Route::get('/modules','ModuleController@get_all_modules');
     Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:run_report,module');
     Route::post('/modules','ModuleController@add_module')->middleware('can:manage_modules,App\Module');
     Route::put('/modules/{module}','ModuleController@update_module')->middleware('can:manage_modules,App\Module');
     Route::delete('/modules/{module}','ModuleController@delete_module')->middleware('can:manage_modules,App\Module');
 
-    Route::get('/modules/{module}/versions','ModuleController@get_module_versions')->middleware('can:run_report,App\Module');
+    Route::get('/modules/{module}/versions','ModuleController@get_module_versions');
     Route::post('/modules/{module}/versions','ModuleController@add_module_version')->middleware('can:manage_modules,App\Module');
     Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version')->middleware('can:manage_modules,App\Module');
     Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_modules,App\Module');
 
-    Route::get('/modules/{module}/permissions','ModuleController@get_module_permissions')->middleware('can:run_report,App\Module');
+    Route::get('/modules/{module}/permissions','ModuleController@get_module_permissions');
     Route::put('/modules/{module}/permissions','ModuleController@set_module_permission')->middleware('can:manage_modules,App\Module');
     Route::delete('/modules/{module}/permissions/{module_permission}','ModuleController@delete_module_permission')->middleware('can:manage_modules,App\Module');
 
     /* Group Methods */
-    Route::get('/groups','GroupController@get_all_groups')->middleware('can:manage_groups,App\Group');
+    Route::get('/groups','GroupController@get_all_groups');
     Route::get('/groups/{group}','GroupController@get_group')->middleware('can:manage_groups,App\Group');
     Route::post('/groups','GroupController@add_group')->middleware('can:manage_groups,App\Group');
     Route::put('/groups/{group}','GroupController@update_group')->middleware('can:manage_groups,App\Group');
