@@ -31,8 +31,8 @@ Route::get('/admin/reports/{report}/run', ['uses'=>'AdminController@run_report']
 /* End Admin Pages */
 
 Route::get('/logout','UserDashboardController@logout');
-
 Route::any('/demo', ['uses' => 'DemoController@list']);
+Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');
 
 Route::group(['prefix' => 'api'], function () {
 
@@ -67,6 +67,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::delete('/modules/{module}','ModuleController@delete_module')->middleware('can:manage_modules,App\Module');
 
     Route::get('/modules/{module}/versions','ModuleController@get_module_versions');
+    Route::get('/module_versions','ModuleController@get_module_versions');
     Route::post('/modules/{module}/versions','ModuleController@add_module_version')->middleware('can:manage_modules,App\Module');
     Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version')->middleware('can:manage_modules,App\Module');
     Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_modules,App\Module');

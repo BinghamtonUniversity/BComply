@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
-    public function get_alL_modules(){
+    public function get_all_modules(){
         // If user can manage modules, return all modules
         if (in_array('manage_modules',Auth::user()->user_permissions)) {
             return Module::with('owner')->get();
@@ -27,9 +27,12 @@ class ModuleController extends Controller
 //        dd($request);
         return Module::where('owner_user_id','=',Auth::user()->id) ->get();
     }
-
-    public function get_module_versions(Request $request, Module $module){
-        return ModuleVersion::where('module_id', $module->id)->get();
+    public function get_module_versions(Request $request, Module $module=null){
+        if (!is_null($module)) {
+            return ModuleVersion::where('module_id', $module->id)->get();
+        } else {
+            return ModuleVersion::get();
+        }
     }
     public function add_module(Request $request,Module $module){
         $module = new Module($request->all());

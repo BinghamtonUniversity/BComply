@@ -16,12 +16,11 @@ class CreateModulesTable extends Migration
         Schema::create('modules', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('description');
+            $table->longText('description')->nullable()->default(null);
             $table->unsignedBigInteger('owner_user_id')->nullable()->default(null);
             $table->json('message_configuration')->nullable()->default(null);
             $table->json('assignment_configuration')->nullable()->default(null);
             $table->timestamps();
-
             //           FOREIGN KEYS
             $table->foreign('owner_user_id')
                 ->references('id')

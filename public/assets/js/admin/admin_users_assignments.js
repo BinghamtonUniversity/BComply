@@ -13,7 +13,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
     count:4,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"select", name:"module_version_id", label:"Module Version",options:"/api/modules/1/versions",format:{label:"{{name}}", value:"{{id}}"}},
+        {type:"select", name:"module_version_id", label:"Module Version",options:"/api/module_versions",format:{label:"{{name}}", value:"{{id}}"}},
         {type:"datetime", name:"date_assigned", label:"Date Assigned",format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},

@@ -13,8 +13,16 @@
                 <div class="list-group">
                 @foreach ($assignments as $assignment)
                     @if ($assignment->version->type === 'tincan')
-                        <a class="list-group-item" 
-                        href="/modules/{{$assignment->module_id}}/versions/{{$assignment->module_version_id}}/{{$assignment->version->reference->filename}}?activity_id={{$assignment->id}}&endpoint={{url('/api/tincan')}}&auth=0&actor=<?php echo htmlentities(json_encode(["name"=>Auth::user()->first_name.' '.Auth::user()->last_name,"mbox"=>Auth::user()->email]));?>">
+                        <a class="list-group-item" href="/assignment/{{$assignment->id}}">
+                            @if(!is_null($assignment->date_completed)) 
+                                <div class="badge pull-right">{{$assignment->status}} ({{$assignment->score * 100}}%)</div>
+                            @elseif(!is_null($assignment->date_started)) 
+                                <div class="badge pull-right">{{$assignment->status}}</div>
+                            @endif
+                            {{$assignment->version->name}}
+                        </a>
+                    @elseif ($assignment->version->type === 'youtube')
+                        <a class="list-group-item" href="/assignment/{{$assignment->id}}">
                             @if(!is_null($assignment->date_completed)) 
                                 <div class="badge pull-right">{{$assignment->status}} ({{$assignment->score * 100}}%)</div>
                             @elseif(!is_null($assignment->date_started)) 
