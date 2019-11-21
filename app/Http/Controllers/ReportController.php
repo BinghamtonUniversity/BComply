@@ -39,10 +39,15 @@ class ReportController extends Controller
                 $join->on('module_assignments.module_version_id', '=', 'module_versions.id');
             })->leftJoin('modules', function ($join) {
                 $join->on('module_versions.module_id', '=', 'modules.id');
+            })->leftJoin('group_memberships', function ($join) {
+                $join->on('users.id', '=', 'group_memberships.user_id');
+            })->leftJoin('groups', function ($join) {
+                $join->on('group_memberships.group_id', '=', 'groups.id');
             })
-            ->where('modules.id','=',1)
             ->select('first_name','last_name','email','modules.name as module_name','module_versions.name as module_version_name',
-            'date_assigned','date_started','date_due','date_completed','status','score','duration');
+            'date_assigned','date_started','date_due','date_completed','status','score','duration')
+            ->distinct();
+            
         foreach($request->block as $qblock_out) {
             foreach($qblock_out['check'] as $qblock_in) {
                 $q->where($qblock_in['column'],$qblock_in['conditional'],$qblock_in['value']);

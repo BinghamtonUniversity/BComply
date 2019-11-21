@@ -1,7 +1,30 @@
 new gform(
     {
         "fields": [
-            {
+                {
+                    "type": "select",
+                    "label": "AND / OR",
+                    "name": "and_or",
+                    "value": "and",
+                    "multiple": false,
+                    "options": [
+                        {
+                            "label": "",
+                            "type": "optgroup",
+                            "options": [
+                                {
+                                    "label": "AND",
+                                    "value": "and"
+                                },
+                                {
+                                    "label": "OR",
+                                    "value": "or"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                 "label": false,
                 "name": "block",
                 "array": {

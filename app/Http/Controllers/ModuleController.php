@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Auth;
 class ModuleController extends Controller
 {
     public function get_alL_modules(){
-        return Module::with('owner')->get();
+        // If user can manage modules, return all modules
+        if (in_array('manage_modules',Auth::user()->user_permissions)) {
+            return Module::with('owner')->get();
+        // Only return modules where the user has admin permissions
+        } else {
+            return Module::with('owner')->whereIn('id',array_keys(Auth::user()->module_permissions));
+        }
     }
     public function get_module(Request $request, Module $module){
         return $module;
