@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Group;
 use App\Module;
+use App\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
@@ -61,7 +62,11 @@ class AdminController extends Controller
     }
     public function reports(Request $request) {
         return view('default.admin',['page'=>'reports','id'=>null,'title'=>'Reports','help'=>
-            'Build Reports.'
+            'Build and Manage Reports'
+        ]);
+    }
+    public function run_report(Request $request, Report $report) {
+        return view('default.admin',['page'=>'reports_execute','id'=>$report->id,'title'=>$report->name,'help'=>$report->description
         ]);
     }
 
