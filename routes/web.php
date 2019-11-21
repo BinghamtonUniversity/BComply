@@ -26,6 +26,7 @@ Route::get('/admin/modules', ['uses'=>'AdminController@modules']);
 Route::get('/admin/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
 Route::get('/admin/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);
 Route::get('/admin/reports', ['uses'=>'AdminController@reports']);
+Route::get('/admin/reports/{report}/run', ['uses'=>'AdminController@run_report']);
 
 /* End Admin Pages */
 
@@ -34,9 +35,6 @@ Route::get('/logout','UserDashboardController@logout');
 Route::any('/demo', ['uses' => 'DemoController@list']);
 
 Route::group(['prefix' => 'api'], function () {
-    Route::get('/reports/tables', 'ReportController@get_tables');
-    Route::get('/reports/tables/columns', 'ReportController@get_columns');
-    Route::post('/reports/query', 'ReportController@query');
 
     Route::get('/tincan/activities/state', 'TinCanController@get_state');
     Route::put('/tincan/activities/state', 'TinCanController@set_state');
@@ -91,4 +89,15 @@ Route::group(['prefix' => 'api'], function () {
 //    Route::get('/groups/users','GroupController@get_group_memberships');
     Route::post('/groups/{group}/users/{user}','GroupController@add_group_membership')->middleware('can:manage_groups,App\Group');
     Route::delete('/groups/{group}/users/{user}','GroupController@delete_group_membership')->middleware('can:manage_groups,App\Group');
+
+    Route::get('/reports','ReportController@get_all_reports');
+    Route::get('/reports/{report}','ReportController@get_report');
+    Route::post('/reports','ReportController@add_report');
+    Route::put('/reports/{report}','ReportController@update_report');
+    Route::delete('/reports/{report}','ReportController@delete_report');
+    Route::get('/reports/tables', 'ReportController@get_tables');
+    Route::get('/reports/tables/columns', 'ReportController@get_columns');
+    Route::get('/reports/{report}/execute', 'ReportController@execute');
+
+
 });

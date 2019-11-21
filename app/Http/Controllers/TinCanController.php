@@ -37,6 +37,9 @@ class TinCanController extends Controller
         $activity_id = $activity_id_arr[0];
         $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where('id',$activity_id)->first();
         if (!is_null($assignment)) {
+            if (!is_null($assignment->date_started) && is_null($assignment->date_completed)) {
+                $assignment->duration = $assignment->date_started->diffInSeconds();
+            }
             if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/passed') {
                 if (is_null($assignment->date_completed)) {
                     $assignment->date_completed = now();
