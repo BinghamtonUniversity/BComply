@@ -64,13 +64,17 @@ ajax.get('/api/users',function(data) {
                             "value": "manage_user_permissions"
                         },
                         {
+                            "label": "Report",
+                            "value": "report"
+                        },
+                        {
                             "label": "Manage Groups",
                             "value": "manage_groups"
                         },
                         {
                             "label": "Manage Modules",
                             "value": "manage_modules"
-                        }
+                        },
                     ]
                 }    
             ],

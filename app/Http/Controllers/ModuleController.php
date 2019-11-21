@@ -23,6 +23,11 @@ class ModuleController extends Controller
     public function get_module(Request $request, Module $module){
         return $module;
     }
+    public function get_user_modules(Request $request, Module $module, User $user){
+//        dd($request);
+        return Module::where('owner_user_id','=',Auth::user()->id) ->get();
+    }
+
     public function get_module_versions(Request $request, Module $module){
         return ModuleVersion::where('module_id', $module->id)->get();
     }

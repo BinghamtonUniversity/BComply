@@ -13,10 +13,11 @@ ajax.get('/api/modules/'+id+'/permissions',function(data) {
         {type:"hidden", name:"id"},
         {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
         {type:"select", name:"permission", label:"Permission",options:[
-            'all','view','update','create','assign'
+            'manage','report'
         ]},
     ], data: data
     }).on("model:created",function(grid_event) {
+        console.log(id);
         ajax.put('/api/modules/'+id+'/permissions/',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
             grid_event.model.draw();

@@ -22,5 +22,11 @@ class ModulePolicy
             return true;
         }
     }
+//    public function run_report(User $user, Module $module)
+//    {
+//        if(((in_array('report',$user->user_permissions)) && (in_array('report', $user->module_permissions->{$module->id})) ) || in_array('manage_modules',$user->user_permissions)){
+//            return true;
+//        }
+//    }
 
 }

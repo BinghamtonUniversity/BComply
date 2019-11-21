@@ -21,7 +21,8 @@ class CreateUserPermissionsTable extends Migration
                 'manage_groups',
                 'manage_users',
                 'manage_modules',
-                'assign_modules'
+                'assign_modules',
+                'report'
             ]);
 //            $table->index('user_id');
 
