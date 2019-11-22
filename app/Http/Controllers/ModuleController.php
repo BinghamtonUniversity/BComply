@@ -15,9 +15,10 @@ class ModuleController extends Controller
         // If user can manage modules, return all modules
         if (in_array('manage_modules',Auth::user()->user_permissions)) {
             return Module::with('owner')->get();
-        // Only return modules where the user has admin permissions
-        } else {
-            return Module::with('owner')->whereIn('id',array_keys((Array)(Auth::user()->module_permissions)))->get();
+            // Only return modules where the user has admin permissions
+        }
+        else {
+            return Module::where('id',array_keys((Array)(Auth::user()->module_permissions)))->with('owner')->get();
         }
     }
     public function get_module(Request $request, Module $module){

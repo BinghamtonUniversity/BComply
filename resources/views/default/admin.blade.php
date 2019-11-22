@@ -54,7 +54,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle user-info" data-toggle="dropdown" role="button">
                 <img class="gravatar" src="https://www.gravatar.com/avatar/{{ md5(Auth::user()->email) }}?d=mm" /> 
-                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }} 
+                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
@@ -70,13 +70,20 @@
       </div>
     </nav>
     <div class="col-sm-3 col-md-2 sidebar">
-{{--    @can()--}}
-      <ul class="nav nav-sidebar">
-        <li class="@if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
-        <li class="@if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
-        <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
-        <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
-      </ul>
+        <ul class="nav nav-sidebar">
+            @can('manage_users')
+                <li class="@if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
+            @endcan
+            @can('manage_groups','App\Group')
+                <li class="@if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
+            @endcan
+            @can('manage_all_modules','App\Module')
+                <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
+            @endcan
+            @can('manage_reports','App\Report')
+                <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
+            @endcan
+        </ul>
     </div>
     <div class="container-fluid" id="main-container">
       <div class="row">

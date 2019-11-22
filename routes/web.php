@@ -62,19 +62,19 @@ Route::group(['prefix' => 'api'], function () {
     /* Modules Methods */
     Route::get('/modules','ModuleController@get_all_modules');
     Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:run_report,module');
-    Route::post('/modules','ModuleController@add_module')->middleware('can:manage_modules,App\Module');
-    Route::put('/modules/{module}','ModuleController@update_module')->middleware('can:manage_modules,App\Module');
-    Route::delete('/modules/{module}','ModuleController@delete_module')->middleware('can:manage_modules,App\Module');
+    Route::post('/modules','ModuleController@add_module')->middleware('can:manage_all_modules,App\Module');
+    Route::put('/modules/{module}','ModuleController@update_module')->middleware('can:manage_module,module');
+    Route::delete('/modules/{module}','ModuleController@delete_module')->middleware('can:manage_module,module');
 
     Route::get('/modules/{module}/versions','ModuleController@get_module_versions');
     Route::get('/module_versions','ModuleController@get_module_versions');
-    Route::post('/modules/{module}/versions','ModuleController@add_module_version')->middleware('can:manage_modules,App\Module');
-    Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version')->middleware('can:manage_modules,App\Module');
-    Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_modules,App\Module');
+    Route::post('/modules/{module}/versions','ModuleController@add_module_version')->middleware('can:manage_module,module');
+    Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version')->middleware('can:manage_module,module');
+    Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_module,module');
 
     Route::get('/modules/{module}/permissions','ModuleController@get_module_permissions');
-    Route::put('/modules/{module}/permissions','ModuleController@set_module_permission')->middleware('can:manage_modules,App\Module');
-    Route::delete('/modules/{module}/permissions/{module_permission}','ModuleController@delete_module_permission')->middleware('can:manage_modules,App\Module');
+    Route::put('/modules/{module}/permissions','ModuleController@set_module_permission')->middleware('can:manage_module,module');
+    Route::delete('/modules/{module}/permissions/{module_permission}','ModuleController@delete_module_permission')->middleware('can:manage_module,module');
 
     /* Group Methods */
     Route::get('/groups','GroupController@get_all_groups');
@@ -98,6 +98,4 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/reports/tables', 'ReportController@get_tables');
     Route::get('/reports/tables/columns', 'ReportController@get_columns');
     Route::get('/reports/{report}/execute', 'ReportController@execute');
-
-
 });

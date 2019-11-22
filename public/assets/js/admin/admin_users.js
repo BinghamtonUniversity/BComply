@@ -14,10 +14,18 @@ ajax.get('/api/users',function(data) {
     count:4,
     schema:[
         {type:"hidden", name:"id"},
+        {type:"checkbox", name:"status", label:"Active"},
         {type:"text", name:"first_name", label:"First Name"},
         {type:"text", name:"last_name", label:"Last Name"},
         {type:"text", name:"unique_id", label:"Unique ID"},
         {type:"email", name:"email", label:"Email"},
+        {type:"text", name:"p_code", label:"Payroll Code"},
+        {type:"text", name:"supervisor", label:"Supervisor"},
+        {type:"text", name:"department", label:"Department"},
+        {type:"text", name:"division", label:"Division"},
+        {type:"text", name:"title", label:"Title"},
+        {type:"text", name:"preferred_name", label:"Preferred Name"},
+
         // {
         //     label: "Additional Parameters",
         //     name: "params",
@@ -85,6 +93,8 @@ ajax.get('/api/users',function(data) {
         ).modal().on('save',function(form_event) {
             ajax.put('/api/users/'+user_id+'/permissions',form_event.form.get(),function(data) {
                 form_event.form.trigger('close');
+                window.setTimeout(function(){window.location.reload()}, 1000);
+
             });
         });
     }).on("model:assignments",function(grid_event) {
