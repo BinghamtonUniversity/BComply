@@ -12,7 +12,7 @@ class User extends Authenticatable
     use Notifiable;
     protected $fillable = ['first_name', 'last_name','middle_initial','unique_id', 'email', 'password','p_code','supervisor','department','division','title','preferred_name','status'];
     protected $hidden = ['password', 'remember_token','created_at','updated_at','user_perms','module_perms'];
-    protected $casts = ['params' => 'object'];
+    protected $casts = ['params' => 'object', 'status'=>'boolean'];
     protected $appends = ['user_permissions','module_permissions'];
     protected $with = ['user_perms','module_perms'];
 

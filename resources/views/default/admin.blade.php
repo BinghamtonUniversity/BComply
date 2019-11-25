@@ -71,7 +71,7 @@
     </nav>
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
-            @can('manage_users')
+            @can('manage_users','App\User')
                 <li class="@if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
             @endcan
             @can('manage_groups','App\Group')

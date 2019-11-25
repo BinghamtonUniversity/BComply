@@ -21,9 +21,13 @@ ajax.get('/api/modules/'+id+'/permissions',function(data) {
         ajax.put('/api/modules/'+id+'/permissions/',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
             grid_event.model.draw();
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/modules/'+id+'/permissions/'+grid_event.model.attributes.id,{},function(data) {});
+        ajax.delete('/api/modules/'+id+'/permissions/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+            grid_event.model.undo();
+        });
     }).on("model:upload_module",function(grid_event) {
         toastr.error('This doesn\'t do anything!');
     })

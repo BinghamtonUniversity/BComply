@@ -22,14 +22,20 @@ ajax.get('/api/reports',function(data) {
         ajax.post('/api/reports',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
             grid_event.model.draw();
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/reports/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
             grid_event.model.draw();
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/reports/'+grid_event.model.attributes.id,{},function(data) {});
+        ajax.delete('/api/reports/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+            grid_event.model.undo();
+        });
     }).on("model:run_report",function(grid_event) {
         window.location = '/admin/reports/'+grid_event.model.attributes.id+'/run';
     }).on("model:configure_query",function(grid_event) {
@@ -50,7 +56,7 @@ ajax.get('/api/reports',function(data) {
                             {"label": "date_started", "value": "date_started"},
                             {"label": "date_due", "value": "date_due"},
                             {"label": "date_completed", "value": "date_completed"},
-                            {"label": "status", "value": "status"},
+                            {"label": "status", "value": "module_assignments.status as status"},
                             {"label": "score", "value": "score"},
                             {"label": "duration", "value": "duration"},
                         ]

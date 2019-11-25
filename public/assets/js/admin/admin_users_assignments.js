@@ -29,10 +29,14 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
     //         grid_event.model.attributes = data;
     //     });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/users/'+id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {});
+        ajax.delete('/api/users/'+id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+            grid_event.model.undo();
+        });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/users/'+id+'/assignments',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:report",function(grid_event) {
         template = `

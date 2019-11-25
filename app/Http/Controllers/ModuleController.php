@@ -12,20 +12,20 @@ use Illuminate\Support\Facades\Auth;
 class ModuleController extends Controller
 {
     public function get_all_modules(){
-        // If user can manage modules, return all modules
         if (in_array('manage_modules',Auth::user()->user_permissions)) {
+            // If user can manage modules, return all modules
             return Module::with('owner')->get();
-            // Only return modules where the user has admin permissions
         }
         else {
-            return Module::where('id',array_keys((Array)(Auth::user()->module_permissions)))->with('owner')->get();
+            // Only return modules where the user has admin permissions
+            return Module::whereIn('id',array_keys((Array)(Auth::user()->module_permissions)))
+                ->orWhere('owner_user_id','=',Auth::user()->id)->with('owner')->get();
         }
     }
     public function get_module(Request $request, Module $module){
         return $module;
     }
     public function get_user_modules(Request $request, Module $module, User $user){
-//        dd($request);
         return Module::where('owner_user_id','=',Auth::user()->id) ->get();
     }
     public function get_module_versions(Request $request, Module $module=null){

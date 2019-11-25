@@ -21,13 +21,19 @@ ajax.get('/api/modules',function(data) {
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/modules/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/modules',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/modules/'+grid_event.model.attributes.id,{},function(data) {});
+        ajax.delete('/api/modules/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+            grid_event.model.undo();
+        });
     }).on("model:manage_versions",function(grid_event) {
         window.location = '/admin/modules/'+grid_event.model.attributes.id+'/versions';
     }).on("model:manage_admins",function(grid_event) {

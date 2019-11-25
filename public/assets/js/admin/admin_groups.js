@@ -18,13 +18,19 @@ ajax.get('/api/groups',function(data) {
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/groups/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/groups',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+        },function(data) {
+            grid_event.model.undo();
         });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/groups/'+grid_event.model.attributes.id,{},function(data) {});
+        ajax.delete('/api/groups/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+            grid_event.model.undo();
+        });
     }).on("model:manage_members",function(grid_event) {
         window.location = '/admin/groups/'+grid_event.model.attributes.id+'/members';
     })

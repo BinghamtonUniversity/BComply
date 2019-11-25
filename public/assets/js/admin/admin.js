@@ -45,7 +45,6 @@ window.ajax.put = function(url,data,callback_success,callback_error) {
             toastr.error("An Error Occurred During Update")
             if (typeof callback_error !== 'undefined') {callback_error(data);}
         }
-
     });
 }
 window.ajax.delete = function(url,data,callback_success,callback_error) {
