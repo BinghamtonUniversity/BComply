@@ -14,33 +14,16 @@ ajax.get('/api/users',function(data) {
     count:4,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"checkbox", name:"status", label:"Active", "template":"{{#attributes.status}}Yes{{/attributes.status}}{{^attributes.status}}No{{/attributes.status}}"},
+        {type:"checkbox", name:"active", label:"Active", "template":"{{#attributes.active}}Yes{{/attributes.active}}{{^attributes.active}}No{{/attributes.active}}"},
         {type:"text", name:"first_name", label:"First Name"},
         {type:"text", name:"last_name", label:"Last Name"},
         {type:"text", name:"unique_id", label:"Unique ID"},
         {type:"email", name:"email", label:"Email"},
-        {type:"text", name:"p_code", label:"Payroll Code"},
+        {type:"text", name:"code", label:"Code"},
         {type:"text", name:"supervisor", label:"Supervisor"},
         {type:"text", name:"department", label:"Department"},
         {type:"text", name:"division", label:"Division"},
         {type:"text", name:"title", label:"Title"},
-        {type:"text", name:"preferred_name", label:"Preferred Name"},
-
-        // {
-        //     label: "Additional Parameters",
-        //     name: "params",
-        //     array: false,
-        //     fields: [
-        //         {type:"text", name:"payroll_code", label:"Payroll Code"},
-        //         {type:"text", name:"supervisor", label:"Supervisor"},
-        //         {type:"text", name:"org", label:"Org (Department)"},
-        //         {type:"text", name:"l3org", label:"L3 Org"},
-        //         {type:"text", name:"job_title", label:"Job Title"},
-        //         {type:"text", name:"preferred_name", label:"Preferred Name"},
-        //         {type:"checkbox", name:"active", label:"Active"},
-        //     ],
-        //     type: "fieldset"
-        // }
     ], data: data
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/users/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
@@ -80,8 +63,12 @@ ajax.get('/api/users',function(data) {
                             "value": "manage_user_permissions"
                         },
                         {
-                            "label": "Report",
-                            "value": "report"
+                            "label": "Manage Reports",
+                            "value": "manage_reports"
+                        },
+                        {
+                            "label": "Run Reports",
+                            "value": "run_reports"
                         },
                         {
                             "label": "Manage Groups",
@@ -90,6 +77,10 @@ ajax.get('/api/users',function(data) {
                         {
                             "label": "Manage Modules",
                             "value": "manage_modules"
+                        },
+                        {
+                            "label": "Assign Modules",
+                            "value": "assign_modules"
                         },
                     ]
                 }    

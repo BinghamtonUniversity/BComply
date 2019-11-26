@@ -10,9 +10,9 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use Notifiable;
-    protected $fillable = ['first_name', 'last_name','middle_initial','unique_id', 'email', 'password','p_code','supervisor','department','division','title','preferred_name','status'];
+    protected $fillable = ['unique_id','first_name', 'last_name','email','code','supervisor','department','division','title','active'];
     protected $hidden = ['password', 'remember_token','created_at','updated_at','user_perms','module_perms'];
-    protected $casts = ['params' => 'object', 'status'=>'boolean'];
+    protected $casts = ['active'=>'boolean'];
     protected $appends = ['user_permissions','module_permissions'];
     protected $with = ['user_perms','module_perms'];
 
@@ -51,5 +51,4 @@ class User extends Authenticatable
         }
         return (Object)$permissions_arr;
     }
-    
 }
