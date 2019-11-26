@@ -13,7 +13,7 @@ ajax.get('/api/modules/'+id+'/permissions',function(data) {
         {type:"hidden", name:"id"},
         {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
         {type:"select", name:"permission", label:"Permission",options:[
-            'manage','report','assign'
+            'manage','report'
         ]},
     ], data: data
     }).on("model:created",function(grid_event) {

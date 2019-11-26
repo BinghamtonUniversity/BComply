@@ -25,21 +25,7 @@ class ReportController extends Controller
     // Route::delete('/reports/{report}','ReportController@delete_report');
 
     public function get_all_reports(Request $request) {
-        if(Auth::user()){
-           if (in_array('manage_reports',Auth::user()->user_permissions)){
-                return Report::all();
-            }
-            elseif(in_array('run_reports',Auth::user()->user_permissions)&& in_array('manage_reports',Auth::user()->user_permissions)){
-                return Report::all();
-            }
-            else {
-                return Report::where('owner_user_id',Auth::user()->id)->get();
-            }
-        }
-        else{
-            return "Failed to authenticate";
-        }
-
+        return Report::all();
     }
 
     public function get_report(Request $request, Report $report) {

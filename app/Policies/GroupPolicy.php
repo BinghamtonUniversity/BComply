@@ -22,12 +22,6 @@ class GroupPolicy
             return true;
         }
     }
-    public function manage_group_membership(User $user){
-        if(in_array('manage_groups',$user->user_permissions)
-        || in_array('manage_users',$user->user_permissions) ){
-            return true;
-        }
-    }
 
     /**
      * Determine whether the user can view the group.

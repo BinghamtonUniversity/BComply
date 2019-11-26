@@ -51,8 +51,8 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/users/{user}/permissions','UserController@get_permissions')->middleware('can:manage_user_permissions,App\User');
     
     Route::get('/users/{user}/assignments','UserController@get_assignments')->middleware('can:manage_users,App\User');
-    Route::post('/users/{user}/assignments','UserController@set_assignment')->middleware('can:assign_module_version,App\User');
-    Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:delete_assignment,App\User,module_assignment');
+    Route::post('/users/{user}/assignments','UserController@set_assignment')->middleware('can:manage_users,App\User');
+    Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:manage_users,App\User');
     // Can you update an assignment?  I'm thinking no...
     // Route::put('/users/{user}/assignments/{module_assignment}','UserController@update_assignment');
 
@@ -61,10 +61,10 @@ Route::group(['prefix' => 'api'], function () {
 
     /* Modules Methods */
     Route::get('/modules','ModuleController@get_all_modules');
-    Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:view_module,module');
-    Route::post('/modules','ModuleController@add_module')->middleware('can:create_modules,App\Module');
+    Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:run_report,module');
+    Route::post('/modules','ModuleController@add_module')->middleware('can:manage_all_modules,App\Module');
     Route::put('/modules/{module}','ModuleController@update_module')->middleware('can:manage_module,module');
-    Route::delete('/modules/{module}','ModuleController@delete_module')->middleware('can:delete_module,module');
+    Route::delete('/modules/{module}','ModuleController@delete_module')->middleware('can:manage_module,module');
 
     Route::get('/modules/{module}/versions','ModuleController@get_module_versions');
     Route::get('/module_versions','ModuleController@get_module_versions');
@@ -86,19 +86,16 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('/groups/{group}/members','GroupController@add_member')->middleware('can:manage_groups,App\Group');
     Route::delete('/groups/{group}/members/{user}','GroupController@delete_member')->middleware('can:manage_groups,App\Group');
 
-    Route::post('/groups/{group}/users/{user}','GroupController@add_group_membership')->middleware('can:manage_group_membership,App\Group');
-    Route::delete('/groups/{group}/users/{user}','GroupController@delete_group_membership')->middleware('can:manage_group_membership,App\Group');
+//    Route::get('/groups/users','GroupController@get_group_memberships');
+    Route::post('/groups/{group}/users/{user}','GroupController@add_group_membership')->middleware('can:manage_groups,App\Group');
+    Route::delete('/groups/{group}/users/{user}','GroupController@delete_group_membership')->middleware('can:manage_groups,App\Group');
 
-
-    /* Report Methods */
     Route::get('/reports','ReportController@get_all_reports');
-    Route::get('/reports/{report}','ReportController@get_report')->middleware('can:run_reports, report');
-
-    Route::post('/reports','ReportController@add_report')->middleware('can:manage_reports, App\Report');
-    Route::put('/reports/{report}','ReportController@update_report')->middleware('can:update_report,report');
-    Route::delete('/reports/{report}','ReportController@delete_report')->middleware('can:manage_reports, report');
-
-    Route::get('/reports/tables', 'ReportController@get_tables')->middleware('can:view_reports, App\Report');
-    Route::get('/reports/tables/columns', 'ReportController@get_columns')->middleware('can:view_reports, App\Report');
-    Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:run_reports,report');
+    Route::get('/reports/{report}','ReportController@get_report');
+    Route::post('/reports','ReportController@add_report');
+    Route::put('/reports/{report}','ReportController@update_report');
+    Route::delete('/reports/{report}','ReportController@delete_report');
+    Route::get('/reports/tables', 'ReportController@get_tables');
+    Route::get('/reports/tables/columns', 'ReportController@get_columns');
+    Route::get('/reports/{report}/execute', 'ReportController@execute');
 });
