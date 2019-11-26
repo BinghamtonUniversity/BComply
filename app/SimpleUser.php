@@ -11,7 +11,7 @@ class SimpleUser extends Model
     protected $table = 'users';
 
     public function group_memberships(){
-        return $this->hasMany(GroupMembership::class);
+        return $this->hasMany(GroupMembership::class,'group_id');
     }
     public function assignments(){
         return $this->hasMany(ModuleAssignment::class);

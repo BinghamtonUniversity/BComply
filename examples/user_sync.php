@@ -37,6 +37,11 @@ class BComplyUserSync {
         ],
     ];
 
+    static private $groups = [
+        'STUDENTS'=>[1,2],
+        'STAFF'=>[2,3,4],
+      ];    
+
     static private $bcomply_url = 'http://localhost:8000';
     static private $bcomply_user = 'defaultuser';
     static private $bcomply_pass = 'defaultpass';
@@ -45,12 +50,12 @@ class BComplyUserSync {
         $httphelper = new HTTPHelper();
         $response = $httphelper->http_fetch(
             self::$bcomply_url.'/api/public/sync',
-            'PUT',
-            ['users'=>self::$users],
+            'POST',
+            ['users'=>self::$users,'groups'=>self::$groups],
             self::$bcomply_user,
             self::$bcomply_pass
         );
-        var_dump($response);
+        var_dump($response['content']);
     }
 }
 

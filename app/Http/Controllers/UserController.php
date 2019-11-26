@@ -22,14 +22,12 @@ class UserController extends Controller
 
     public function add_user(Request $request) {
         $user = new User($request->all());
-        // $user->params = (Object)$request->except(['first_name','last_name','unique_id','id','email']);
         $user->save();
         return $user;
     }
 
     public function update_user(Request $request, User $user) {
         $user->update($request->all());
-        // $user->params = (Object)$request->except(['first_name','last_name','unique_id','id','email']);
         return $user;
     }
 
@@ -100,7 +98,7 @@ class UserController extends Controller
         $search = []; $users = [];
         if (count($search_elements_parsed) === 1 && $search_elements_parsed[0]!='') {
             $search[0] = $search_elements_parsed[0];
-            $users = User::select('id','unique_id','first_name','last_name','email','params')
+            $users = User::select('id','unique_id','first_name','last_name','email')
                 ->where(function ($query) use ($search) {
                     $query->where('unique_id',$search[0])
                         ->orWhere('id',$search[0])
@@ -112,7 +110,7 @@ class UserController extends Controller
         } else if (count($search_elements_parsed) > 1) {
             $search[0] = $search_elements_parsed[0];
             $search[1] = $search_elements_parsed[count($search_elements_parsed)-1];
-            $users = User::select('id','unique_id','first_name','last_name','email','params')
+            $users = User::select('id','unique_id','first_name','last_name','email')
                 ->where(function ($query) use ($search) {
                     $query->where(function ($query) use ($search) {
                         $query->where('first_name','like',$search[0].'%')
@@ -125,7 +123,7 @@ class UserController extends Controller
                     ->limit(25)->get()->toArray();
         }
         foreach($users as $index => $user) {
-            $users[$index] = array_intersect_key($user, array_flip(['id','unique_id','first_name','last_name','email','params']));
+            $users[$index] = array_intersect_key($user, array_flip(['id','unique_id','first_name','last_name','email']));
         }
         return $users;
     }

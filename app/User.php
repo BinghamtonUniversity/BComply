@@ -17,7 +17,7 @@ class User extends Authenticatable
     protected $with = ['user_perms','module_perms'];
 
     public function group_memberships(){
-        return $this->hasMany(GroupMembership::class);
+        return $this->hasMany(GroupMembership::class,'group_id');
     }
     public function assignments(){
         return $this->hasMany(ModuleAssignment::class);

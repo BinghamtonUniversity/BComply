@@ -17,11 +17,6 @@ class ModulePolicy
      * @param  \App\User  $user
      * @return mixed
      */
-//    public function view_modules(User $user){
-//        $is_report_owner = is_null(Module::where('owner_user_id',$user->id)->select('id')->first())?false:true;
-//        if($this->manage_module($user,$module)||)
-//
-//    }
     public function manage_all_modules(User $user)
     {
         if(in_array('manage_modules',$user->user_permissions) || sizeof((Array)$user->module_permissions)>0){
@@ -38,10 +33,14 @@ class ModulePolicy
     //To update and assign
     public function manage_module(User $user, Module $module)
     {
-//        dd($module);
-        if(in_array('manage_modules',$user->user_permissions)
-            || $module->owner_user_id === $user->id
-            || in_array('manage',$user->module_permissions->{$module->id})){
+        if(in_array('manage_modules',$user->user_permissions)) {
+            return true;
+        }
+        if ($module->owner_user_id === $user->id) {
+            return true;
+        }
+        if (property_exists($user->module_permissions,$module->id) &&
+            in_array('manage',$user->module_permissions->{$module->id})){
             return true;
         }
     }
@@ -52,14 +51,15 @@ class ModulePolicy
         }
     }
 
-
-
-
     public function view_module(User $user, Module $module)
     {
         $is_report_owner = is_null(Module::where('owner_user_id',$user->id)->select('id')->first())?false:true;
-        if(in_array('report',$user->module_permissions->{$module->id})
-            || $this->manage_module($user,$module)){
+        if( property_exists($user->module_permissions,$module->id) &&
+            in_array('report',$user->module_permissions->{$module->id})) {
+            return true;
+        }
+        
+        if ($this->manage_module($user,$module)){
             return true;
         }
     }
