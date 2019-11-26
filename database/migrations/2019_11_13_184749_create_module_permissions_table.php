@@ -18,7 +18,7 @@ class CreateModulePermissionsTable extends Migration
             $table->unsignedBigInteger('module_id')->index();
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('updated_by_user_id')->nullable()->default(null);
-            $table->enum('permission',['manage','report']);
+            $table->enum('permission',['manage','report','assign']);
             $table->timestamps();
             $table->unique(['module_id',"user_id",'permission']);
             $table->foreign('module_id')->references('id')->on('modules');
