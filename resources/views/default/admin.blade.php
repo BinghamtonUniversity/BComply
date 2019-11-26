@@ -77,10 +77,10 @@
             @can('manage_groups','App\Group')
                 <li class="@if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
             @endcan
-            @can('view_modules','App\User')
+            @can('manage_all_modules','App\Module')
                 <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
             @endcan
-            @can('view_reports','App\Report')
+            @can('manage_reports','App\Report')
                 <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
             @endcan
         </ul>
