@@ -38,9 +38,7 @@ class UserPolicy
 
     }
 
-    public function assign_module_version(User $user) {
-        $module_version_id = request()->module_version_id;
-        $module_version = ModuleVersion::where('id',$module_version_id)->first();
+    public function assign_module_version(User $user, ModuleVersion $module_version) {
         $module = Module::where('id',$module_version->module_id)->first();
         if(in_array('assign_modules',$user->user_permissions)){
             return true;

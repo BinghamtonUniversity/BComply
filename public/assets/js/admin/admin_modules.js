@@ -38,7 +38,7 @@ ajax.get('/api/modules',function(data) {
         window.location = '/admin/modules/'+grid_event.model.attributes.id+'/versions';
     }).on("model:manage_admins",function(grid_event) {
         window.location = '/admin/modules/'+grid_event.model.attributes.id+'/permissions';
-    })
+    });
 });
 
 // Built-In Events:

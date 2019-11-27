@@ -76,8 +76,8 @@ class UserController extends Controller
     public function get_assignments(Request $request, User $user) {
         return ModuleAssignment::where('user_id',$user->id)->with('version')->with('user')->get();
     }
-    public function set_assignment(Request $request, User $user) {
-        $module_version = ModuleVersion::where('id',$request->module_version_id)->first();
+    public function set_assignment(Request $request, User $user, ModuleVersion $module_version) {
+        $module_version = ModuleVersion::where('id',$module_version->id)->first();
         $module_assignment = new ModuleAssignment([
             'module_version_id' =>$module_version->id,
             'module_id' => $module_version->module_id,
@@ -86,7 +86,7 @@ class UserController extends Controller
             'date_due' => $request->date_due,
         ]);
         $module_assignment->save();
-        return ModuleAssignment::where('id',$module_assignment->id)->with('version')->with('user')->get();;
+        return ModuleAssignment::where('id',$module_assignment->id)->with('version')->with('user')->first();
     }
     public function delete_assignment(Request $request, User $user, ModuleAssignment $module_assignment) {
         $module_assignment->delete();

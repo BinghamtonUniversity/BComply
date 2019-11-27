@@ -92,9 +92,14 @@
                 <nav aria-label="breadcrumb">
                     <?php $crumbs = explode('_',$page); ?>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/admin/{{$crumbs[0]}}">{{ucwords($crumbs[0])}}</a></li>
-                        @if (!is_null($id))
-                            <li class="breadcrumb-item"><a href="/admin/{{$crumbs[0]}}/{{$id}}/{{$crumbs[1]}}">{{ucwords($crumbs[1])}}</a></li>
+                        @if (isset($ids))
+                            @foreach($crumbs as $index => $crumb)
+                                <li class="breadcrumb-item"><a href="/admin<?php
+                                    for($i=0;$i<=$index;$i++) {
+                                        echo (isset($ids[$i-1])?('/'.$ids[$i-1]):'').'/'.$crumbs[$i];
+                                    }
+                                ?>">{{ucwords($crumb)}}</a></li>
+                            @endforeach
                         @endif
                     </ol>
                 </nav>
@@ -137,7 +142,12 @@
     <script src='/assets/js/vendor/moment.js'></script> 
     <script src='/assets/js/vendor/bootstrap-datetimepicker.min.js'></script> 
     <script src="/assets/js/admin/admin.js"></script>
-    <script>@if(!is_null($id)) id={{$id}}; @endif </script>
+    <script>
+        @if(isset($ids)) window.ids={{json_encode($ids)}}; @endif 
+        if (typeof window.ids !== 'undefined' && Array.isArray(window.ids)) {
+            window.id = window.ids[window.ids.length-1]
+        }
+    </script>
     <script src="/assets/js/admin/admin_{{$page}}.js"></script>
   </body>
 </html>
