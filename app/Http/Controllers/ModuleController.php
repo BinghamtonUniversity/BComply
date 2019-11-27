@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Auth;
 class ModuleController extends Controller
 {
     public function get_all_modules(){
-        if (in_array('manage_modules',Auth::user()->user_permissions)) {
+        if (in_array('manage_modules',Auth::user()->user_permissions) ||
+            in_array('assign_modules',Auth::user()->user_permissions)) {
             // If user can manage modules, return all modules
-
             return Module::with('owner')->get();
         }
         else {
