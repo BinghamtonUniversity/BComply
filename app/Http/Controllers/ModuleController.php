@@ -7,6 +7,7 @@ use App\User;
 use App\ModulePermission;
 use Illuminate\Http\Request;
 use App\ModuleVersion;
+use App\ModuleAssignment;
 use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
@@ -56,6 +57,9 @@ class ModuleController extends Controller
     public function delete_module_version(Request $request,Module $module, ModuleVersion $module_version){
         $module_version->delete();
         return 'Success';
+    }
+    public function get_module_version_assignments(Request $request,Module $module, ModuleVersion $module_version){
+        return ModuleAssignment::where('module_version_id',$module_version->id)->with('version')->with('user')->get();
     }
     public function update_module(Request $request,Module $module){
         $module->update($request->all());

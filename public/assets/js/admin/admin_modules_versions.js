@@ -8,6 +8,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         {"name":"edit","label":"Modify Module Version"},
         {"label":"Upload Module","name":"upload_module","min":1,"max":1,"type":"default"},
         {"label":"Configure","name":"configure","min":1,"max":1,"type":"default"},
+        {"label":"Manage Assignments","name":"manage_assignments","min":1,"max":1,"type":"default"},
         '',
         {"name":"delete","label":"Delete Module Version"}
     ],
@@ -62,6 +63,8 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
                 form_event.form.trigger('close');
             });
         });
+    }).on("model:manage_assignments",function(grid_event) {
+        window.location = '/admin/modules/'+id+'/versions/'+grid_event.model.attributes.id+'/assignments';
     })
 });
 

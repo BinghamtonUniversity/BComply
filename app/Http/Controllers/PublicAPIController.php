@@ -66,7 +66,7 @@ class PublicAPIController extends Controller
             $remote_users = $request->users;
             $response['users'] = $this->sync_users($remote_users, $local_users);
         }
-        if ($request->has('users')) {
+        if ($request->has('groups')) {
             $remote_groups = $request->groups;
             $local_groups = Group::all();
             $response['groups'] = $this->sync_groups($remote_groups, $local_users, $local_groups);
