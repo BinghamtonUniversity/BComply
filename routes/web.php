@@ -92,7 +92,7 @@ Route::group(['prefix' => 'api'], function () {
 
     /* Report Methods */
     Route::get('/reports','ReportController@get_all_reports');
-    Route::get('/reports/{report}','ReportController@get_report')->middleware('can:run_reports, report');
+    Route::get('/reports/{report}','ReportController@get_report')->middleware('can:view_reports, App\Report');
 
     Route::post('/reports','ReportController@add_report')->middleware('can:manage_reports, App\Report');
     Route::put('/reports/{report}','ReportController@update_report')->middleware('can:update_report,report');
@@ -100,5 +100,5 @@ Route::group(['prefix' => 'api'], function () {
 
     Route::get('/reports/tables', 'ReportController@get_tables')->middleware('can:view_reports, App\Report');
     Route::get('/reports/tables/columns', 'ReportController@get_columns')->middleware('can:view_reports, App\Report');
-    Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:run_reports,report');
+    Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:view_reports, App\Report');
 });
