@@ -11,7 +11,22 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class UserPolicy
 {
     use HandlesAuthorization;
+    public function view_admin_dashboard(User $user)
+    {
+        $is_module_owner = is_null(Module::where('owner_user_id',$user->id)->select('id')->first())?false:true;
+        return (!is_null($user->module_perms()->first())
+            || !is_null($user->user_perms()->first()) ||
+            $is_module_owner
+        );
 
+    }
+    public function view_in_admin(User $user){
+        if(in_array('manage_user_permissions',$user->user_permissions)
+            || $this->manage_users($user)
+        ){
+            return true;
+        }
+    }
     public function manage_users(User $user)
     {
         if (in_array('manage_users',$user->user_permissions)) {
@@ -30,13 +45,7 @@ class UserPolicy
 //            return true;
 //        }
 //    }
-    public function view_modules(User $user)
-    {
-//        $is_module_owner = is_null(Module::where('owner_user_id',$user->id)->select('id')->first())?false:true;
-//        if($is_module_owner || in_array('manage',$user->module_perms()))
-        return ($user->module_perms());
 
-    }
 
     public function assign_module_version(User $user) {
         $module_version_id = request()->module_version_id;

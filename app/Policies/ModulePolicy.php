@@ -17,6 +17,23 @@ class ModulePolicy
      * @param  \App\User  $user
      * @return mixed
      */
+    public function view_in_admin(User $user){
+        $is_module_owner = is_null(Module::where('owner_user_id',$user->id)->select('id')->first())?false:true;
+//        dd($user->module_perms());
+//        $modules = Module::where('owner_user_id',$user->id)->select('id')->first();
+//        dd();
+//        dd();
+        if(in_array('manage_modules',$user->user_permissions)
+        || in_array('assign_modules',$user->user_permissions)
+        || $is_module_owner
+        || !is_null($user->module_perms()->first())
+         ){
+
+            return true;
+        }
+    }
+
+
     public function manage_all_modules(User $user)
     {
         if(in_array('manage_modules',$user->user_permissions) || sizeof((Array)$user->module_permissions)>0){

@@ -71,13 +71,13 @@
     </nav>
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
-            @can('manage_users','App\User')
+            @can('view_in_admin','App\User')
                 <li class="@if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
             @endcan
-            @can('manage_groups','App\Group')
+            @can('view_in_admin','App\Group')
                 <li class="@if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
             @endcan
-            @can('view_modules','App\User')
+            @can('view_in_admin','App\Module')
                 <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
             @endcan
             @can('view_reports','App\Report')

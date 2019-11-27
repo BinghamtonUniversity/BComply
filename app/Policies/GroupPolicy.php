@@ -16,6 +16,10 @@ class GroupPolicy
      * @param  \App\User  $user
      * @return mixed
      */
+    public function view_in_admin(User $user){
+        return $this->manage_groups($user);
+    }
+
     public function manage_groups(User $user)
     {
         if(in_array('manage_groups',$user->user_permissions)){
