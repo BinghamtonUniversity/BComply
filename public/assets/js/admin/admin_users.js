@@ -28,17 +28,21 @@ ajax.get('/api/users',function(data) {
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/users/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+            grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/users',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+            grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/users/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+        ajax.delete('/api/users/'+grid_event.model.attributes.id,{},function(data) {
+            grid_event.model.draw();
+        },function(data) {
             grid_event.model.undo();
         },function(data) {
             grid_event.model.undo();
@@ -82,6 +86,10 @@ ajax.get('/api/users',function(data) {
                             "label": "Assign Modules",
                             "value": "assign_modules"
                         },
+                        {
+                            "label": "Manage Bulk Assignments",
+                            "value": "manage_bulk_assignments"
+                        }
                     ]
                 }    
             ],

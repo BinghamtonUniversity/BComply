@@ -83,6 +83,9 @@
             @can('view_reports','App\Report')
                 <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
             @endcan
+            @can('manage_bulk_assignments','App\BulkAssignment')
+                <li class="@if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Bulk Assignments</a></li>
+            @endcan
         </ul>
     </div>
     <div class="container-fluid" id="main-container">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BulkAssignment;
 use App\User;
 use App\Group;
 use App\Module;
@@ -69,6 +70,16 @@ class AdminController extends Controller
         return view('default.admin',['page'=>'reports_execute','id'=>$report->id,'module'=>$module,'title'=>$report->name,'help'=>$report->description
         ]);
     }
+    public function bulk_assignments(Request $request){
+        return view('default.admin',['page'=>'bulk_assignments','id'=>null,'title'=>'Bulk Assignments','help'=>'Use this page to manage assignments within the BComply Application.  You may create new
+            bulk assignment rules'
+        ]);
+
+    }
+//    public function run_assignment(Request $request,BulkAssignment $bulkAssignment) {
+//        return view('default.admin',['page'=>'BulkAssignments_execute','id'=>$bulkAssignment->id,'module'=>$bulkAssignment,'title'=>$bulkAssignment->name,'help'=>$bulkAssignment->description
+//        ]);
+//    }
 
 
 }

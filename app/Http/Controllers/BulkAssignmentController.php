@@ -2,20 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Group;
-use App\Module;
-use App\Report;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
-
-
+use App\BulkAssignment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
-class ReportController extends Controller
+class BulkAssignmentController extends Controller
 {
-    private $tables = ['users','modules','module_versions','module_assignments','groups'];
+    private $tables = ['users','groups'];
     public function __construct() {}
 
     // Route::get('/reports','ReportController@get_all_reports');
@@ -24,41 +17,27 @@ class ReportController extends Controller
     // Route::put('/reports/{report}','ReportController@update_report');
     // Route::delete('/reports/{report}','ReportController@delete_report');
 
-    public function get_all_reports(Request $request) {
-        if(Auth::user()){
-           if (in_array('manage_reports',Auth::user()->user_permissions)){
-                return Report::all();
-            }
-            elseif(in_array('run_reports',Auth::user()->user_permissions)&& in_array('manage_reports',Auth::user()->user_permissions)){
-                return Report::all();
-            }
-            else {
-                return Report::where('owner_user_id',Auth::user()->id)->get();
-            }
-        }
-        else{
-            return "Failed to authenticate";
-        }
-
+    public function get_all_bulk_assignments(BulkAssignment $bulkAssignment) {
+        return BulkAssignment::all();
     }
 
-    public function get_report(Request $request, Report $report) {
-        return $report;
+    public function get_bulk_assignment(Request $request, BulkAssignment $bulkAssignment) {
+        return $bulkAssignment;
     }
 
-    public function add_report(Request $request) {
-        $report = new Report($request->all());
-        $report->save();
-        return $report;
+    public function add_bulk_assignment(Request $request) {
+        $bulkAssignment = new BulkAssignment($request->all());
+        $bulkAssignment->save();
+        return $bulkAssignment;
     }
 
-    public function update_report(Request $request, Report $report) {
-        $report->update($request->all());
-        return Report::where('id',$report->id)->with('owner')->first();
+    public function update_bulk_assignment(Request $request, BulkAssignment $bulkAssignment) {
+        $bulkAssignment->update($request->all());
+        return $bulkAssignment;
     }
 
-    public function delete_report(Request $request, Report $report) {
-        $report->delete();
+    public function delete_bulk_assignment(Request $request, BulkAssignment $bulkAssignment) {
+        $bulkAssignment->delete();
         return 'Success';
     }
 
@@ -78,6 +57,7 @@ class ReportController extends Controller
     public function get_tables(Request $request) {
         return $this->tables;
     }
+
     private function qblock_and(&$q, $qblock) {
         if ($qblock->conditional === 'contains') {
             $q->where($qblock->column,'like','%'.$qblock->value.'%');
@@ -85,7 +65,7 @@ class ReportController extends Controller
             $q->whereNull($qblock->column);
         } else if ($qblock->conditional === 'not_null') {
             $q->whereNotNull($qblock->column);
-        } else {    
+        } else {
             $q->where($qblock->column,$qblock->conditional,$qblock->value);
         }
     }
@@ -96,13 +76,13 @@ class ReportController extends Controller
             $q->orWhereNull($qblock->column);
         } else if ($qblock->conditional === 'not_null') {
             $q->orWhereNotNull($qblock->column);
-        } else {    
+        } else {
             $q->orWhere($qblock->column,$qblock->conditional,$qblock->value);
         }
     }
-    public function execute(Request $request, Report $report) {
+    public function execute(Request $request, BulkAssignment $bulkAssignment) {
         $default_columns = ['first_name','last_name','email','modules.name as module_name','module_versions.name as version_name','date_assigned'];
-        $columns = array_merge($default_columns, $report->report->columns);
+        $columns = array_merge($default_columns, $bulkAssignment->bulkAssignment->columns);
 
         $subq_user_groups = DB::table('group_memberships')
             ->leftJoin('groups', function($join) {
@@ -126,9 +106,9 @@ class ReportController extends Controller
                 $join->on('users.id', '=', 'user_groups.user_id');
             })
             ->distinct();
-        $q->where(function ($q) use ($report){
-            foreach($report->report->block as $qblock_out) {
-                if ($report->report->and_or === 'or') {
+        $q->where(function ($q) use ($bulkAssignment){
+            foreach($bulkAssignment->bulkAssignment->block as $qblock_out) {
+                if ($bulkAssignment->bulkAssignment->and_or === 'or') {
                     $q->orWhere(function ($q) use ($qblock_out){
                         foreach($qblock_out->check as $qblock_in) {
                             if ($qblock_out->and_or === 'and') {
@@ -138,7 +118,7 @@ class ReportController extends Controller
                             }
                         }
                     });
-                } else if ($report->report->and_or === 'and') {
+                } else if ($bulkAssignment->bulkAssignment->and_or === 'and') {
                     $q->where(function ($q) use ($qblock_out) {
                         foreach($qblock_out->check as $qblock_in) {
                             if ($qblock_out->and_or === 'and') {
@@ -151,7 +131,6 @@ class ReportController extends Controller
                 }
             }
         });
-
         $results = $q->select($columns)->get();
         return $results;
     }

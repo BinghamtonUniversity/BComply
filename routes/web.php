@@ -27,6 +27,9 @@ Route::get('/admin/modules/{module}/versions', ['uses'=>'AdminController@module_
 Route::get('/admin/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);
 Route::get('/admin/reports', ['uses'=>'AdminController@reports']);
 Route::get('/admin/reports/{report}/run', ['uses'=>'AdminController@run_report']);
+Route::get('/admin/bulk_assignments', ['uses'=>'AdminController@bulk_assignments']);
+Route::get('/admin/bulk_assignments/{bulk_assignment}/run', ['uses'=>'AdminController@run_assignment']);
+//Route::get('/admin/bulk_assignments/{bulk_assignment}/run', ['uses'=>'AdminController@run_report']);
 
 /* End Admin Pages */
 
@@ -41,7 +44,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::put('/tincan/statements', 'TinCanController@register_statement');
 
     /* User Methods */
-    Route::get('/users','UserController@get_all_users');
+    Route::get('/users','UserController@get_all_users')->middleware('can:view_in_admin,App\User');
     Route::get('/users/search/{search_string?}','UserController@search');
     Route::get('/users/{user}','UserController@get_user');
     Route::post('/users','UserController@add_user')->middleware('can:manage_users,App\User');
@@ -60,7 +63,7 @@ Route::group(['prefix' => 'api'], function () {
     // Route::delete('/users/{user}/groups/{group}');
 
     /* Modules Methods */
-    Route::get('/modules','ModuleController@get_all_modules');
+    Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');
     Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:view_module,module');
     Route::post('/modules','ModuleController@add_module')->middleware('can:create_modules,App\Module');
     Route::put('/modules/{module}','ModuleController@update_module')->middleware('can:manage_module,module');
@@ -77,7 +80,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::delete('/modules/{module}/permissions/{module_permission}','ModuleController@delete_module_permission')->middleware('can:manage_module,module');
 
     /* Group Methods */
-    Route::get('/groups','GroupController@get_all_groups');
+    Route::get('/groups','GroupController@get_all_groups')->middleware('can:view_in_admin,App\Group');
     Route::get('/groups/{group}','GroupController@get_group')->middleware('can:manage_groups,App\Group');
     Route::post('/groups','GroupController@add_group')->middleware('can:manage_groups,App\Group');
     Route::put('/groups/{group}','GroupController@update_group')->middleware('can:manage_groups,App\Group');
@@ -91,14 +94,31 @@ Route::group(['prefix' => 'api'], function () {
 
 
     /* Report Methods */
-    Route::get('/reports','ReportController@get_all_reports');
+    Route::get('/reports','ReportController@get_all_reports')->middleware('can:view_reports, App\Report');
     Route::get('/reports/{report}','ReportController@get_report')->middleware('can:view_reports, App\Report');
 
     Route::post('/reports','ReportController@add_report')->middleware('can:manage_reports, App\Report');
     Route::put('/reports/{report}','ReportController@update_report')->middleware('can:update_report,report');
-    Route::delete('/reports/{report}','ReportController@delete_report')->middleware('can:manage_reports, report');
+    Route::delete('/reports/{report}','ReportController@delete_report')->middleware('can:update_report,report');
 
     Route::get('/reports/tables', 'ReportController@get_tables')->middleware('can:view_reports, App\Report');
     Route::get('/reports/tables/columns', 'ReportController@get_columns')->middleware('can:view_reports, App\Report');
     Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:view_reports, App\Report');
+
+
+
+    /*Bulk Assignments Methods*/
+    Route::get('/bulk_assignments', 'BulkAssignmentController@get_all_bulk_assignments')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+    Route::get('/bulk_assignments/{bulk_assignment}', 'BulkAssignmentController@get_bulk_assignment')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+    Route::post('/bulk_assignments', 'BulkAssignmentController@add_bulk_assignment')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+    Route::put('/bulk_assignments/{bulk_assignment}', 'BulkAssignmentController@update_bulk_assignment')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+    Route::delete('/bulk_assignments/{bulk_assignment}','BulkAssignmentController@delete_bulk_assignment')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+
+    Route::get('/bulk_assignments/tables', 'BulkAssignmentController@get_tables')->middleware('can:manage_bulk_assignments,  App\BulkAssignment');
+    Route::get('/bulk_assignments/tables/columns', 'BulkAssignmentController@get_columns')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+
+//    Route::get('/bulk_assignments/{bulk_assignment}/execute', 'BulkAssignmentController@execute')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+
+
+
 });
