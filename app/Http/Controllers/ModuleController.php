@@ -7,14 +7,15 @@ use App\User;
 use App\ModulePermission;
 use Illuminate\Http\Request;
 use App\ModuleVersion;
+use App\ModuleAssignment;
 use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
     public function get_all_modules(){
-        if (in_array('manage_modules',Auth::user()->user_permissions)) {
+        if (in_array('manage_modules',Auth::user()->user_permissions) ||
+            in_array('assign_modules',Auth::user()->user_permissions)) {
             // If user can manage modules, return all modules
-
             return Module::with('owner')->get();
         }
         else {
@@ -56,6 +57,9 @@ class ModuleController extends Controller
     public function delete_module_version(Request $request,Module $module, ModuleVersion $module_version){
         $module_version->delete();
         return 'Success';
+    }
+    public function get_module_version_assignments(Request $request,Module $module, ModuleVersion $module_version){
+        return ModuleAssignment::where('module_version_id',$module_version->id)->with('version')->with('user')->get();
     }
     public function update_module(Request $request,Module $module){
         $module->update($request->all());

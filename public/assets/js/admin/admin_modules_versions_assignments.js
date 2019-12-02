@@ -1,4 +1,4 @@
-ajax.get('/api/users/'+id+'/assignments',function(data) {
+ajax.get('/api/modules/'+ids[0]+'/versions/'+id+'/assignments',function(data) {
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
@@ -13,7 +13,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
     count:4,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"select", name:"module_version_id", label:"Module Version",options:"/api/module_versions",format:{label:"{{name}}", value:"{{id}}"}},
+        {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
         {type:"datetime", name:"date_assigned", label:"Date Assigned",format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},
@@ -23,18 +23,14 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         {type:"text", name:"date_started", label:"Date Started", edit:false},
         {type:"text", name:"date_completed", label:"Date Completed", edit:false},
     ], data: data
-    // Can't Update an assignment
-    // }).on("model:edited",function(grid_event) {
-    //     ajax.put('/api/users/'+id+'/assignments/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
-    //         grid_event.model.attributes = data;
-    //     });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/users/'+id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+        ajax.delete('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
-        ajax.post('/api/users/'+id+'/assignments/'+grid_event.model.attributes.module_version_id,grid_event.model.attributes,function(data) {
+        ajax.post('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+id,grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+            grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
