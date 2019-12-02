@@ -2,15 +2,7 @@ ajax.get('/api/users',function(data) {
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
-    actions:[
-        {"name":"create","label":"Add User"},
-        '',
-        {"name":"edit","label":"Edit User"},
-        {"label":"Edit Permissions","name":"edit_perm","min":1,"max":1,"type":"default"},
-        {"label":"Manage Assignments","name":"assignments","min":1,"max":1,"type":"default"},
-        '',
-        {"name":"delete","label":"Delete User"}
-    ],
+    actions:actions,
     count:4,
     schema:[
         {type:"hidden", name:"id"},

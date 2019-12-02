@@ -21,9 +21,20 @@ class AdminController extends Controller
         return view('default.admin',['page'=>null,'ids'=>[],'title'=>'Admin']);
     }
     public function users(Request $request) {
-        return view('default.admin',['page'=>'users','ids'=>[],'title'=>'Manage Users','help'=>
-            'Use this page to manage users within the BComply Application.  You may add/remove existing users, 
-            modify user administrative permissions, and assign training modules to existing users.'
+        $user = Auth::user();
+        return view('default.admin',['page'=>'users','ids'=>[],'title'=>'Manage Users',
+            'actions' => [
+                ["name"=>"create","label"=>"Add User"],
+                '',
+                ["name"=>"edit","label"=>"Edit User"],
+                $user->can('manage_user_permissions','App\User')?["label"=>"Edit Permissions","name"=>"edit_perm","min"=>1,"max"=>1,"type"=>"default"]:'',
+                ["label"=>"Manage Assignments","name"=>"assignments","min"=>1,"max"=>1,"type"=>"default"],
+                '',
+                ["name"=>"delete","label"=>"Delete User"]
+            ],
+            'help'=>
+                'Use this page to manage users within the BComply Application.  You may add/remove existing users, 
+                modify user administrative permissions, and assign training modules to existing users.'
         ]);
     }
     public function user_assignments(Request $request, User $user) {
@@ -44,9 +55,20 @@ class AdminController extends Controller
         ]);
     }
     public function modules(Request $request) {
-        return view('default.admin',['page'=>'modules','ids'=>[],'title'=>'Manage Modules','help'=>
-            'Use this page to manage modules within the BComply Application.  You may create new
-            modules, manage administrative permissions for modudles, and manage module versions.'
+        $user = Auth::user();
+        return view('default.admin',['page'=>'modules','ids'=>[],'title'=>'Manage Modules',
+            'actions' => [
+                $user->can('manage_modules','App\Module')?["name"=>"create","label"=>"Create New Module"]:'',
+                '',
+                ["name"=>"edit","label"=>"Update Existing Module"],
+                ["label"=>"Manage Versions","name"=>"manage_versions","min"=>1,"max"=>1,"type"=>"default"],
+                ["label"=>"Admin Permissions","name"=>"manage_admins","min"=>1,"max"=>1,"type"=>"default"],
+                '',
+                $user->can('manage_modules','App\Module')?["name"=>"delete","label"=>"Delete Module"]:''
+            ],
+            'help'=>
+                'Use this page to manage modules within the BComply Application.  You may create new
+                modules, manage administrative permissions for modudles, and manage module versions.'
         ]);
     }
     public function module_versions(Request $request, Module $module) {
@@ -68,8 +90,19 @@ class AdminController extends Controller
         ]);
     }
     public function reports(Request $request) {
-        return view('default.admin',['page'=>'reports','ids'=>[],'title'=>'Reports','help'=>
-            'Build and Manage Reports'
+        $user = Auth::user();
+        return view('default.admin',['page'=>'reports','ids'=>[],'title'=>'Reports',
+            'actions' => [
+                $user->can('manage_reports','App\Report')?["name"=>"create","label"=>"Create New Report"]:'',
+                '',
+                ["name"=>"edit","label"=>"Edit Description"],
+                ["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"],
+                ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
+                '',
+                ["name"=>"delete","label"=>"Delete Report"]
+            ],
+            'help'=>
+                'Build and Manage Reports'
         ]);
     }
     public function run_report(Request $request, Report $report,Module $module) {

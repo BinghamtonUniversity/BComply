@@ -2,15 +2,7 @@ ajax.get('/api/modules',function(data) {
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
-    actions:[
-        {"name":"create","label":"Create New Module"},
-        '',
-        {"name":"edit","label":"Update Existing Module"},
-        {"label":"Manage Versions","name":"manage_versions","min":1,"max":1,"type":"default"},
-        {"label":"Admin Permissions","name":"manage_admins","min":1,"max":1,"type":"default"},
-        '',
-        {"name":"delete","label":"Delete Module"}
-    ],
+    actions:actions,
     count:4,
     schema:[
         {type:"hidden", name:"id"},

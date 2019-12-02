@@ -2,15 +2,7 @@ ajax.get('/api/reports',function(data) {
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     search: false,columns: false,upload:false,download:false,title:'Reports',
     entries:[],
-    actions:[
-        {"name":"create","label":"Create New Report"},
-        '',
-        {"name":"edit","label":"Edit Description"},
-        {"label":"Configure Query","name":"configure_query","min":1,"max":1,"type":"default"},
-        {"label":"Run Report","name":"run_report","min":1,"max":1,"type":"warning"},
-        '',
-        {"name":"delete","label":"Delete Report"}
-    ],
+    actions:actions,
     count:4,
     schema:[
         {type:"hidden", name:"id"},

@@ -143,10 +143,11 @@
     <script src='/assets/js/vendor/bootstrap-datetimepicker.min.js'></script> 
     <script src="/assets/js/admin/admin.js"></script>
     <script>
-        @if(isset($ids)) window.ids={{json_encode($ids)}}; @endif 
+        @if(isset($ids)) window.ids={!!json_encode($ids)!!}; @endif 
         if (typeof window.ids !== 'undefined' && Array.isArray(window.ids)) {
             window.id = window.ids[window.ids.length-1]
         }
+        @if(isset($actions)) window.actions={!!json_encode($actions)!!}; @endif 
     </script>
     <script src="/assets/js/admin/admin_{{$page}}.js"></script>
   </body>
