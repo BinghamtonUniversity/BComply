@@ -65,21 +65,40 @@ window.ajax.delete = function(url,data,callback_success,callback_error) {
 }
 
 gform.types['user']= _.extend({}, gform.types['smallcombo'], {
+
     toString: function(name,display){
+
       if(!display){
+          // console.log(this.value);
         if(typeof this.combo !== 'undefined'){
-          return '<dt>'+this.label+'</dt> <dd>'+(this.combo.innerText||'(empty)')+'</dd><hr>'
+          return '<dt>'+this.label+'</dt> <dd>'+(this.combo.value||'(empty)')+'</dd><hr>'
         }else{
+            console.log(this.get());
           return '<dt>'+this.label+'</dt> <dd>'+(this.get()||'(empty)')+'</dd><hr>'
         }
       }else{
+          // console.log(this.value);
         if(typeof this.options !== 'undefined' && this.options.length){
+            // console.log(this.value);
           return _.find(this.options,{id:this.value})||this.value;
         }else{
+            // console.log(this.value);
           return this.value;
         }
       }
     },
-    defaults:{strict:true,search:"/api/users/search/{{search}}{{value}}",format:{title:'{{{label}}}{{^label}}User{{/label}} <span class="text-success pull-right">{{value}}</span>',label:"{{first_name}}{{#last_name}} {{last_name}}{{/last_name}}",value:"{{id}}", display:'{{first_name}} {{last_name}}<div style="color:#aaa">{{email}}</div>'}}
+    defaults:
+        {
+            strict:true,
+            search:"/api/users/search/{{search}}{{value}}",
+            format:
+                {
+                    title:'{{{label}}}{{^label}}User{{/label}} <span class="text-success pull-right">{{value}}</span>',
+                    label:"{{first_name}}{{#last_name}} {{last_name}}{{/last_name}}",
+                    value:"{{id}}",
+                    display:'{{first_name}} {{last_name}}<div style="color:#aaa">{{email}}</div>'
+                }
+        }
+
   })
   
