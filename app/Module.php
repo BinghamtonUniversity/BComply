@@ -8,15 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model
 {
-    protected $fillable = ['name','description','owner_user_id','message_configuration','assignment_configuration'];
+    protected $fillable = ['name','description','owner_user_id','message_configuration','assignment_configuration','module_version_id'];
     protected $casts = ['message_configuration' => 'object','assignment_configuration'=>'object'];
     protected $hidden = ['permissions'];
     protected $appends = ['module_permissions'];
     protected $with = ['permissions'];
 
-
-    public function version(){
-        return $this->belongsTo(ModuleVersion::class);
+    public function current_version(){
+        return $this->belongsTo(ModuleVersion::class,'module_version_id');
     }
     public function permissions(){
         return $this->hasMany(ModulePermission::class);

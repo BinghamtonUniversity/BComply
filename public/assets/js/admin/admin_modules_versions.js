@@ -9,6 +9,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         {"label":"Upload Module","name":"upload_module","min":1,"max":1,"type":"default"},
         {"label":"Configure","name":"configure","min":1,"max":1,"type":"default"},
         {"label":"Manage Assignments","name":"manage_assignments","min":1,"max":1,"type":"default"},
+        {"label":"Make Default","name":"make_default","min":1,"max":1,"type":"warning"},
         '',
         {"name":"delete","label":"Delete Module Version"}
     ],
@@ -36,6 +37,11 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
     }).on("model:deleted",function(grid_event) {
         ajax.delete('/api/modules/'+id+'/versions/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
             grid_event.model.undo();
+        });
+        //here
+    }).on("model:make_default",function(grid_event) {
+        ajax.put('/api/modules/'+id,{'module_version_id':grid_event.model.attributes.id},function(data) {
+            window.location.reload();
         });
     }).on("model:upload_module",function(grid_event) {
         toastr.error('This doesn\'t do anything!');

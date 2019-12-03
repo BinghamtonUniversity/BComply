@@ -51,7 +51,7 @@ class AdminController extends Controller
         ]);
     }
     public function group_members(Request $request, Group $group) {
-        return view('default.admin',['page'=>'groups_members','ids'=>[],'title'=>$group->name.' Memberships','help'=>
+        return view('default.admin',['page'=>'groups_members','ids'=>[$group->id],'title'=>$group->name.' Memberships','help'=>
             'Use this page to add / remove users from the current group.'
         ]);
     }

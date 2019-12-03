@@ -16,12 +16,12 @@ class ModuleController extends Controller
         if (in_array('manage_modules',Auth::user()->user_permissions) ||
             in_array('assign_modules',Auth::user()->user_permissions)) {
             // If user can manage modules, return all modules
-            return Module::with('owner')->get();
+            return Module::with('owner')->with('current_version')->get();
         }
         else {
             // Only return modules where the user has admin permissions
             return Module::whereIn('id',array_keys((Array)(Auth::user()->module_permissions)))
-                ->orWhere('owner_user_id','=',Auth::user()->id)->with('owner')->get();
+                ->orWhere('owner_user_id','=',Auth::user()->id)->with('owner')->with('current_version')->get();
         }
     }
     public function get_module(Request $request, Module $module){

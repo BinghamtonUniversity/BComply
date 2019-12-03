@@ -9,7 +9,7 @@ use App\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
-
+use App\Libraries\QueryBuilder;
 
 use Illuminate\Http\Request;
 
@@ -17,12 +17,6 @@ class ReportController extends Controller
 {
     private $tables = ['users','modules','module_versions','module_assignments','groups'];
     public function __construct() {}
-
-    // Route::get('/reports','ReportController@get_all_reports');
-    // Route::get('/reports/{report}','ReportController@get_report');
-    // Route::post('/reports','ReportController@add_report');
-    // Route::put('/reports/{report}','ReportController@update_report');
-    // Route::delete('/reports/{report}','ReportController@delete_report');
 
     public function get_all_reports(Request $request) {
         if(Auth::user()){
@@ -78,28 +72,6 @@ class ReportController extends Controller
     public function get_tables(Request $request) {
         return $this->tables;
     }
-    private function qblock_and(&$q, $qblock) {
-        if ($qblock->conditional === 'contains') {
-            $q->where($qblock->column,'like','%'.$qblock->value.'%');
-        } else if ($qblock->conditional === 'is_null') {
-            $q->whereNull($qblock->column);
-        } else if ($qblock->conditional === 'not_null') {
-            $q->whereNotNull($qblock->column);
-        } else {    
-            $q->where($qblock->column,$qblock->conditional,$qblock->value);
-        }
-    }
-    private function qblock_or(&$q, $qblock) {
-        if ($qblock->conditional === 'contains') {
-            $q->orWhere($qblock->column,'like','%'.$qblock->value.'%');
-        } else if ($qblock->conditional === 'is_null') {
-            $q->orWhereNull($qblock->column);
-        } else if ($qblock->conditional === 'not_null') {
-            $q->orWhereNotNull($qblock->column);
-        } else {    
-            $q->orWhere($qblock->column,$qblock->conditional,$qblock->value);
-        }
-    }
     public function execute(Request $request, Report $report) {
         $default_columns = ['first_name','last_name','email','modules.name as module_name','module_versions.name as version_name','date_assigned'];
         $columns = array_merge($default_columns, $report->report->columns);
@@ -126,31 +98,7 @@ class ReportController extends Controller
                 $join->on('users.id', '=', 'user_groups.user_id');
             })
             ->distinct();
-        $q->where(function ($q) use ($report){
-            foreach($report->report->block as $qblock_out) {
-                if ($report->report->and_or === 'or') {
-                    $q->orWhere(function ($q) use ($qblock_out){
-                        foreach($qblock_out->check as $qblock_in) {
-                            if ($qblock_out->and_or === 'and') {
-                                $this->qblock_and($q,$qblock_in);
-                            } else if ($qblock_out->and_or === 'or') {
-                                $this->qblock_or($q,$qblock_in);
-                            }
-                        }
-                    });
-                } else if ($report->report->and_or === 'and') {
-                    $q->where(function ($q) use ($qblock_out) {
-                        foreach($qblock_out->check as $qblock_in) {
-                            if ($qblock_out->and_or === 'and') {
-                                $this->qblock_and($q,$qblock_in);
-                            } else if ($qblock_out->and_or === 'or') {
-                                $this->qblock_or($q,$qblock_in);
-                            }
-                        }
-                    });
-                }
-            }
-        });
+        QueryBuilder::build_where($q, $report->report);
 
         $results = $q->select($columns)->get();
         return $results;

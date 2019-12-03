@@ -9,6 +9,7 @@ ajax.get('/api/modules',function(data) {
         {type:"text", name:"name", label:"Name"},
         {type:"textarea", name:"description", label:"Description Name"},
         {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
+        {type:"text", show:false, parse:false, name:"current", label:"Current Version", template:"{{attributes.current_version.name}}"},
     ], data: data
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/modules/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {

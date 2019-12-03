@@ -6,8 +6,9 @@ ajax.get('/api/bulk_assignments',function(data) {
             {"name":"create","label":"Create New Bulk Assignment"},
             '',
             {"name":"edit","label":"Edit Description"},
-            {"label":"Configure Query","name":"configure_query","min":1,"max":1,"type":"default"},
-            {"label":"Run Rule","name":"run_rule","min":1,"max":1,"type":"warning"},
+            {"label":"Configure","name":"configure_query","min":1,"max":1,"type":"default"},
+            {"label":"Run (Test Only)","name":"run_test","min":1,"max":1,"type":"warning"},
+            {"label":"Run","name":"run","min":1,"max":1,"type":"danger"},
             '',
             {"name":"delete","label":"Delete Bulk Assignment"}
         ],
@@ -36,32 +37,46 @@ ajax.get('/api/bulk_assignments',function(data) {
         ajax.delete('/api/bulk_assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
             grid_event.model.undo();
         });
-    }).on("model:run_rule",function(grid_event) {
-        // window.location = '/admin/bulk_assignments/'+grid_event.model.attributes.id+'/run';
-            toastr.error("THIS DOES NOTHING");
+    }).on("model:run_test",function(grid_event) {
+        ajax.get('/api/bulk_assignments/'+grid_event.model.attributes.id+'/execute/test',function(data) {
+            template = `
+            <h5>The Following will be assigned to the "{{module.name}}" Module:</h5>
+            {{#assign_users}}
+                {{first_name}} {{last_name}}<br>
+            {{/assign_users}}
+            <h5>The Following have already been assigned to the "{{module.name}}" Module and will be skipped:</h5>
+            {{#skip_users}}
+                {{first_name}} {{last_name}}<br>
+            {{/skip_users}}
+            `;
+            $('#adminModal .modal-title').html('Test Run')
+            $('#adminModal .modal-body').html(gform.m(template,data));
+            $('#adminModal').modal('show')    
+        });
+    }).on("model:run",function(grid_event) {
+        ajax.get('/api/bulk_assignments/'+grid_event.model.attributes.id+'/execute',function(data) {
+            debugger;
+        });
     }).on("model:configure_query",function(grid_event) {
         assignment_id = grid_event.model.attributes.id;
-        bulk_assignment = grid_event.model.attributes.bulk_assignment || {};
+        assignment = grid_event.model.attributes.assignment || {};
         new gform(
             {
                 "legend" : "Query Builder",
                 "fields": [
                     {
-                        "type": "radio",
-                        "label": "Additional Columns",
-                        "name": "columns",
-                        "multiple": true,
-                        "options": [
-                            {"label": "user_id", "value": "users.unique_id as user_id"},
-                            {"label": "group_memberships", "value": "user_groups.groups as group_memberships"},
-                            {"label": "date_started", "value": "date_started"},
-                            {"label": "date_due", "value": "date_due"},
-                            {"label": "date_completed", "value": "date_completed"},
-                            {"label": "status", "value": "module_assignments.status as status"},
-                            {"label": "score", "value": "score"},
-                            {"label": "duration", "value": "duration"},
-                        ]
+                        "type":"smallcombo",
+                        "options":"/api/modules",
+                        "name":"module_id",
+                        "label":"Module To Assign",
+                        "format": {
+                            "label": "{{name}}",
+                            "value": "{{id}}"
+                        }
                     },
+                    {type:"datetime", name:"date_due", label:"Date Due",format: {
+                        input: "YYYY-MM-DD HH:mm:ss"
+                    }},            
                     {
                         "type": "select",
                         "label": "Global AND / OR",
@@ -163,10 +178,11 @@ ajax.get('/api/bulk_assignments',function(data) {
                         "type": "fieldset"
                     }
                 ],
-                "data": bulk_assignment
+                "data": assignment
             }
         ).modal().on('save',function(form_event) {
-            ajax.put('/api/bulk_assignments/'+assignment_id,{'bulk_assignment':form_event.form.get()},function(data) {
+            ajax.put('/api/bulk_assignments/'+assignment_id,{'assignment':form_event.form.get()},function(data) {
+                grid_event.model.attributes.assignment = data
                 form_event.form.trigger('close');
             });
         }).on('cancel',function(form_event) {

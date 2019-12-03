@@ -21,9 +21,6 @@ class CreateModuleVersionsTable extends Migration
                 $table->enum('type',['tincan','scorm1.1','scorm1.2','youtube']);
                 $table->json('reference')->nullable()->default(null);
                 $table->timestamps();
-                //           FOREIGN KEYS
-                $table->foreign('module_id')->references('id')->on('modules');
-
             });
     }
 

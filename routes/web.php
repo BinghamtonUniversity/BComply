@@ -119,8 +119,6 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/bulk_assignments/tables', 'BulkAssignmentController@get_tables')->middleware('can:manage_bulk_assignments,  App\BulkAssignment');
     Route::get('/bulk_assignments/tables/columns', 'BulkAssignmentController@get_columns')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
 
-//    Route::get('/bulk_assignments/{bulk_assignment}/execute', 'BulkAssignmentController@execute')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
-
-
+   Route::get('/bulk_assignments/{bulk_assignment}/execute/{test?}', 'BulkAssignmentController@execute')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
 
 });

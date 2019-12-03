@@ -20,11 +20,9 @@ class CreateModulesTable extends Migration
             $table->unsignedBigInteger('owner_user_id')->nullable()->default(null);
             $table->json('message_configuration')->nullable()->default(null);
             $table->json('assignment_configuration')->nullable()->default(null);
+            $table->unsignedBigInteger('module_version_id')->nullable()->default(null)->index();
             $table->timestamps();
-            //           FOREIGN KEYS
-            $table->foreign('owner_user_id')
-                ->references('id')
-                ->on('users');
+            $table->foreign('owner_user_id')->references('id')->on('users');
         });
     }
 
