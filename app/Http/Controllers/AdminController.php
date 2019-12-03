@@ -59,13 +59,13 @@ class AdminController extends Controller
         $user = Auth::user();
         return view('default.admin',['page'=>'modules','ids'=>[],'title'=>'Manage Modules',
             'actions' => [
-                $user->can('manage_modules','App\Module')?["name"=>"create","label"=>"Create New Module"]:'',
+                $user->can('create_modules','App\Module')?["name"=>"create","label"=>"Create New Module"]:'',
                 '',
                 ["name"=>"edit","label"=>"Update Existing Module"],
                 ["label"=>"Manage Versions","name"=>"manage_versions","min"=>1,"max"=>1,"type"=>"default"],
                 ["label"=>"Admin Permissions","name"=>"manage_admins","min"=>1,"max"=>1,"type"=>"default"],
                 '',
-                $user->can('manage_modules','App\Module')?["name"=>"delete","label"=>"Delete Module"]:''
+                $user->can('delete_modules','App\Module')?["name"=>"delete","label"=>"Delete Module"]:''
             ],
             'help'=>
                 'Use this page to manage modules within the BComply Application.  You may create new
@@ -111,7 +111,7 @@ class AdminController extends Controller
         ]);
     }
     public function bulk_assignments(Request $request){
-        return view('default.admin',['page'=>'bulk_assignments','id'=>null,'title'=>'Bulk Assignments','help'=>'Use this page to manage assignments within the BComply Application.  You may create new
+        return view('default.admin',['page'=>'bulk_assignments','id'=>[],'title'=>'Bulk Assignments','help'=>'Use this page to manage assignments within the BComply Application.  You may create new
             bulk assignment rules'
         ]);
 
