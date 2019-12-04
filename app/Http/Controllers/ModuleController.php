@@ -58,8 +58,8 @@ class ModuleController extends Controller
         $module_version->delete();
         return 'Success';
     }
-    public function get_module_version_assignments(Request $request,Module $module, ModuleVersion $module_version){
-        return ModuleAssignment::where('module_version_id',$module_version->id)->with('version')->with('user')->get();
+    public function get_module_assignments(Request $request,Module $module){
+        return ModuleAssignment::where('module_id',$module->id)->with('version')->with('user')->get();
     }
     public function update_module(Request $request,Module $module){
         $module->update($request->all());

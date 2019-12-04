@@ -25,7 +25,7 @@ Route::get('/admin/groups/{group}/members', ['uses'=>'AdminController@group_memb
 Route::get('/admin/modules', ['uses'=>'AdminController@modules']);
 Route::get('/admin/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
 Route::get('/admin/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);
-Route::get('/admin/modules/{module}/versions/{module_version}/assignments', ['uses'=>'AdminController@module_assignments']);
+Route::get('/admin/modules/{module}/assignments', ['uses'=>'AdminController@module_assignments']);
 Route::get('/admin/reports', ['uses'=>'AdminController@reports']);
 Route::get('/admin/reports/{report}/run', ['uses'=>'AdminController@run_report']);
 Route::get('/admin/bulk_assignments', ['uses'=>'AdminController@bulk_assignments']);
@@ -55,7 +55,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/users/{user}/permissions','UserController@get_permissions')->middleware('can:manage_user_permissions,App\User');
     
     Route::get('/users/{user}/assignments','UserController@get_assignments')->middleware('can:manage_users,App\User');
-    Route::post('/users/{user}/assignments/{module_version}','UserController@set_assignment')->middleware('can:assign_module_version,App\User,module_version');
+    Route::post('/users/{user}/assignments/{module}','UserController@set_assignment')->middleware('can:assign_module,App\User,module');
     Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:delete_assignment,App\User,module_assignment');
     // Can you update an assignment?  I'm thinking no...
     // Route::put('/users/{user}/assignments/{module_assignment}','UserController@update_assignment');
@@ -76,6 +76,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version')->middleware('can:manage_module,module');
     Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_module,module');
     Route::get('/modules/{module}/versions/{module_version}/assignments','ModuleController@get_module_version_assignments');
+    Route::get('/modules/{module}/assignments','ModuleController@get_module_assignments');
 
     Route::get('/modules/{module}/permissions','ModuleController@get_module_permissions');
     Route::put('/modules/{module}/permissions','ModuleController@set_module_permission')->middleware('can:manage_module,module');

@@ -58,42 +58,33 @@ class BulkAssignmentController extends Controller
     }
 
     public function execute(Request $request, BulkAssignment $bulkAssignment, $test=null) {
-        $module = Module::where('id',$bulkAssignment->assignment->module_id)->first();
-        $module_assignments = ModuleAssignment::where('module_id',$bulkAssignment->assignment->module_id)
-            ->whereNull('date_completed')->get();
+        $testonly = is_null($test)?false:true;
+        $module = Module::where('id',$bulkAssignment->assignment->module_id)->with('current_version')->first();
+        if (is_null($module->module_version_id)) {
+            return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');
+        }
         $q = BulkAssignment::base_query();
         QueryBuilder::build_where($q, $bulkAssignment->assignment);
-
         $users = $q->select('users.id','unique_id','first_name','last_name')->get();
-        $assign_users = [];
-        $skip_users = [];
-        foreach($users as $user) {
-            if (is_null($module_assignments->firstWhere('user_id',$user->id))) {
-                $assign_users[] = $user;
-            } else {
+        $assign_users = []; $skip_users = [];
+
+        foreach ($users as $user) {
+            $assignment = $module->assign_to([
+                'user_id' => $user->id,
+                'date_assigned' => $bulkAssignment->date_assigned,
+                'date_due' => $bulkAssignment->date_due,
+            ],$testonly);
+            if (is_null($assignment)) {
                 $skip_users[] = $user;
-            }
+            } else {
+                $assign_users[] = $user;
+            }    
         }
-        if (!is_null($test)) {
-            $results = [
-                'assign_users' => $assign_users,
-                'skip_users' => $skip_users,
-                'module' => $module,
-            ];
-            return $results;
-        }
-        else {
-            foreach ($assign_users as $user) {
-                $module_assignment = new ModuleAssignment([
-                    'user_id'=>$user->id,
-                    'module_version_id'=>$module->module_version_id,
-                    'module_id'=>$module->id,
-                    'date_assigned' => Carbon::now(),
-                    'date_due' => $bulkAssignment->assignment->date_due
-                ]);
-                $module_assignment->save();
-            }
-            return "Running for Realizies";
-        }
+        $results = [
+            'assign_users' => $assign_users,
+            'skip_users' => $skip_users,
+            'module' => $module,
+        ];
+        return $results;
     }
 }

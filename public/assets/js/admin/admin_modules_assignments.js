@@ -1,4 +1,4 @@
-ajax.get('/api/modules/'+ids[0]+'/versions/'+id+'/assignments',function(data) {
+ajax.get('/api/modules/'+id+'/assignments',function(data) {
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
@@ -13,6 +13,7 @@ ajax.get('/api/modules/'+ids[0]+'/versions/'+id+'/assignments',function(data) {
     count:4,
     schema:[
         {type:"hidden", name:"id"},
+        {type:"text",name:"version", label:"Module Version", parse:false,show:false,template:"{{attributes.version.name}}"},
         {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
         {type:"datetime", name:"date_assigned", label:"Date Assigned",format: {
             input: "YYYY-MM-DD HH:mm:ss"
@@ -20,8 +21,8 @@ ajax.get('/api/modules/'+ids[0]+'/versions/'+id+'/assignments',function(data) {
         {type:"datetime", name:"date_due", label:"Date Due",format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},
-        {type:"text", name:"date_started", label:"Date Started", edit:false},
-        {type:"text", name:"date_completed", label:"Date Completed", edit:false},
+        {type:"text", parse:false,show:false, name:"date_started", label:"Date Started", edit:false},
+        {type:"text", parse:false,show:false, name:"date_completed", label:"Date Completed", edit:false},
     ], data: data
     }).on("model:deleted",function(grid_event) {
         ajax.delete('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {

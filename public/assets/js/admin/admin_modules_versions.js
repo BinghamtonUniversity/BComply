@@ -8,8 +8,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         {"name":"edit","label":"Modify Module Version"},
         {"label":"Upload Module","name":"upload_module","min":1,"max":1,"type":"default"},
         {"label":"Configure","name":"configure","min":1,"max":1,"type":"default"},
-        {"label":"Manage Assignments","name":"manage_assignments","min":1,"max":1,"type":"default"},
-        {"label":"Make Default","name":"make_default","min":1,"max":1,"type":"warning"},
+        {"label":"Make Current","name":"make_current","min":1,"max":1,"type":"warning"},
         '',
         {"name":"delete","label":"Delete Module Version"}
     ],
@@ -39,9 +38,9 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
             grid_event.model.undo();
         });
         //here
-    }).on("model:make_default",function(grid_event) {
+    }).on("model:make_current",function(grid_event) {
         ajax.put('/api/modules/'+id,{'module_version_id':grid_event.model.attributes.id},function(data) {
-            window.location.reload();
+            toastr.success('"'+grid_event.model.attributes.name+'" is now the current version for this module')
         });
     }).on("model:upload_module",function(grid_event) {
         toastr.error('This doesn\'t do anything!');
@@ -69,8 +68,6 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
                 form_event.form.trigger('close');
             });
         });
-    }).on("model:manage_assignments",function(grid_event) {
-        window.location = '/admin/modules/'+id+'/versions/'+grid_event.model.attributes.id+'/assignments';
     })
 });
 

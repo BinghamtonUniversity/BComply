@@ -47,8 +47,7 @@ class UserPolicy
 //    }
 
 
-    public function assign_module_version(User $user, ModuleVersion $module_version) {
-        $module = Module::where('id',$module_version->module_id)->first();
+    public function assign_module(User $user, Module $module) {
         if(in_array('assign_modules',$user->user_permissions)){
             return true;
         }

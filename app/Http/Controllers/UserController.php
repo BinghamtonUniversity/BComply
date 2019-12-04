@@ -9,6 +9,7 @@ use App\User;
 use App\ModuleAssignment;
 use App\UserPermission;
 use App\ModuleVersion;
+use App\Module;
 
 class UserController extends Controller
 {
@@ -76,17 +77,19 @@ class UserController extends Controller
     public function get_assignments(Request $request, User $user) {
         return ModuleAssignment::where('user_id',$user->id)->with('version')->with('user')->get();
     }
-    public function set_assignment(Request $request, User $user, ModuleVersion $module_version) {
-        $module_version = ModuleVersion::where('id',$module_version->id)->first();
-        $module_assignment = new ModuleAssignment([
-            'module_version_id' =>$module_version->id,
-            'module_id' => $module_version->module_id,
+    public function set_assignment(Request $request, User $user, Module $module) {
+        $assignment = $module->assign_to([
             'user_id' => $user->id,
             'date_assigned' => $request->date_assigned,
             'date_due' => $request->date_due,
         ]);
-        $module_assignment->save();
-        return ModuleAssignment::where('id',$module_assignment->id)->with('version')->with('user')->first();
+        if ($assignment === false) {
+            return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');
+        } else if (is_null($assignment)) {
+            return response(['error'=>'The user is already assigned to this module'], 409)->header('Content-Type', 'application/json');
+        } else {
+            return ModuleAssignment::where('id',$assignment->id)->with('version')->with('user')->first();
+        }
     }
     public function delete_assignment(Request $request, User $user, ModuleAssignment $module_assignment) {
         $module_assignment->delete();

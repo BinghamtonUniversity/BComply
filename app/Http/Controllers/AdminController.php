@@ -64,6 +64,7 @@ class AdminController extends Controller
                 ["name"=>"edit","label"=>"Update Existing Module"],
                 ["label"=>"Manage Versions","name"=>"manage_versions","min"=>1,"max"=>1,"type"=>"default"],
                 ["label"=>"Admin Permissions","name"=>"manage_admins","min"=>1,"max"=>1,"type"=>"default"],
+                ["label"=>"Manage Assignments","name"=>"manage_assignments","min"=>1,"max"=>1,"type"=>"default"],
                 '',
                 $user->can('delete_modules','App\Module')?["name"=>"delete","label"=>"Delete Module"]:''
             ],
@@ -84,8 +85,8 @@ class AdminController extends Controller
             add new permissions for a specified user, or remove existing permissions for that use.'
         ]);
     }
-    public function module_assignments(Request $request, Module $module, ModuleVersion $module_version) {
-        return view('default.admin',['page'=>'modules_versions_assignments','ids'=>[$module->id, $module_version->id],'title'=>$module_version->name.' Assignments','help'=>
+    public function module_assignments(Request $request, Module $module) {
+        return view('default.admin',['page'=>'modules_assignments','ids'=>[$module->id],'title'=>$module->name.' Assignments','help'=>
             'Use this page to manage training module assignments for the current module version.  You may add new
             users, view a status report for currently assigned users, and remove assigned users.'
         ]);

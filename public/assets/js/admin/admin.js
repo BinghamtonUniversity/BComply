@@ -11,6 +11,9 @@ window.ajax.get = function(url,callback_success,callback_error) {
             if (typeof callback_success !== 'undefined') {callback_success(data);}
         },
         error:function(data) {
+            if (typeof data.responseJSON !== 'undefined' && typeof data.responseJSON.error !== 'undefined') {
+                toastr.error(data.responseJSON.error)
+            }
             if (typeof callback_error !== 'undefined') {callback_error(data);}
         }
     });
@@ -27,6 +30,9 @@ window.ajax.post = function(url,data,callback_success,callback_error) {
         },
         error:function(data) {
             toastr.error("An Error Occurred During Creation")
+            if (typeof data.responseJSON !== 'undefined' && typeof data.responseJSON.error !== 'undefined') {
+                toastr.error(data.responseJSON.error)
+            }
             if (typeof callback_error !== 'undefined') {callback_error(data);}
         }
     });
@@ -43,6 +49,9 @@ window.ajax.put = function(url,data,callback_success,callback_error) {
         },
         error:function(data) {
             toastr.error("An Error Occurred During Update")
+            if (typeof data.responseJSON !== 'undefined' && typeof data.responseJSON.error !== 'undefined') {
+                toastr.error(data.responseJSON.error)
+            }
             if (typeof callback_error !== 'undefined') {callback_error(data);}
         }
     });
@@ -59,6 +68,9 @@ window.ajax.delete = function(url,data,callback_success,callback_error) {
         },
         error:function(data) {
             toastr.error("An Error Occurred During Deletion")
+            if (typeof data.responseJSON !== 'undefined' && typeof data.responseJSON.error !== 'undefined') {
+                toastr.error(data.responseJSON.error)
+            }
             if (typeof callback_error !== 'undefined') {callback_error(data);}
         }
     });
