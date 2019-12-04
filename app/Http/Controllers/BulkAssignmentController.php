@@ -71,8 +71,8 @@ class BulkAssignmentController extends Controller
         foreach ($users as $user) {
             $assignment = $module->assign_to([
                 'user_id' => $user->id,
-                'date_assigned' => $bulkAssignment->date_assigned,
                 'date_due' => $bulkAssignment->date_due,
+                'assigned_by_user_id' => 0,
             ],$testonly);
             if (is_null($assignment)) {
                 $skip_users[] = $user;

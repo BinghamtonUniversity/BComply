@@ -43,6 +43,7 @@ class Module extends Model
         $new_assignment->module_version_id = $this->module_version_id;
         $new_assignment->module_id = $this->id;
         $new_assignment->date_assigned = Carbon::now();
+        $new_assignment->status = 'assigned';
         if (!$testonly) {
             $new_assignment->save();
         }

@@ -82,8 +82,8 @@ class UserController extends Controller
     public function set_assignment(Request $request, User $user, Module $module) {
         $assignment = $module->assign_to([
             'user_id' => $user->id,
-            'date_assigned' => $request->date_assigned,
             'date_due' => $request->date_due,
+            'assigned_by_user_id' => Auth::user()->id,
         ]);
         if ($assignment === false) {
             return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');

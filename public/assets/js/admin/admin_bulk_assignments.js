@@ -100,7 +100,8 @@ ajax.get('/api/bulk_assignments',function(data) {
                     },
                     {type:"datetime", name:"date_due", label:"Date Due",format: {
                         input: "YYYY-MM-DD HH:mm:ss"
-                    }},            
+                    }},     
+                    {type:"checkbox", name:"auto", label:"Auto Assign?",help:"Use this option if you want auto-run this rule whenever group memberships or user attributes change"},                   
                     {
                         "type": "select",
                         "label": "Global AND / OR",

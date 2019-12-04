@@ -29,13 +29,9 @@ class CreateModuleAssignmentsTable extends Migration
             $table->unsignedInteger('duration')->default(0);
             $table->json('current_state')->nullable()->default(null);
             $table->timestamps();
-            $table->softDeletes();
-            // Remove Constraint -- Incompatible with Soft Deletes 
-            //$table->unique(['user_id','module_version_id']);
+            $table->unique(['user_id','module_version_id']);
             $table->foreign('module_id')->references('id')->on('modules');
             $table->foreign('module_version_id')->references('id')->on('module_versions');
-            $table->foreign('updated_by_user_id')->references('id')->on('users');
-            $table->foreign('assigned_by_user_id')->references('id')->on('users');
         });
     }
 
