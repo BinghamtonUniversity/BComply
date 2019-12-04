@@ -20,6 +20,7 @@ class CreateModuleVersionsTable extends Migration
                 $table->unsignedBigInteger('module_id')->nullable()->default(null);
                 $table->enum('type',['tincan','scorm1.1','scorm1.2','youtube']);
                 $table->json('reference')->nullable()->default(null);
+                $table->softDeletes();
                 $table->timestamps();
             });
     }

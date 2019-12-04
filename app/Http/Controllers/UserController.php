@@ -11,8 +11,10 @@ use App\UserPermission;
 use App\ModuleVersion;
 use App\Module;
 
+
 class UserController extends Controller
 {
+
     public function get_all_users() {
         return User::all();
     }

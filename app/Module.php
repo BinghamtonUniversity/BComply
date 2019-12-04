@@ -2,11 +2,14 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 class Module extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['name','description','owner_user_id','message_configuration','assignment_configuration','module_version_id'];
     protected $casts = ['message_configuration' => 'object','assignment_configuration'=>'object'];
     protected $hidden = ['permissions'];

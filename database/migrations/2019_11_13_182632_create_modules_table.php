@@ -22,6 +22,7 @@ class CreateModulesTable extends Migration
             $table->json('assignment_configuration')->nullable()->default(null);
             $table->unsignedBigInteger('module_version_id')->nullable()->default(null)->index();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('owner_user_id')->references('id')->on('users');
         });
     }

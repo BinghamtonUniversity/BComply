@@ -22,6 +22,7 @@ class ModuleController extends Controller
             // Only return modules where the user has admin permissions
             return Module::whereIn('id',array_keys((Array)(Auth::user()->module_permissions)))
                 ->orWhere('owner_user_id','=',Auth::user()->id)->with('owner')->with('current_version')->get();
+
         }
     }
     public function get_module(Request $request, Module $module){
