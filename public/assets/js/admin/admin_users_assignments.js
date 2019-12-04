@@ -13,15 +13,16 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
     count:4,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"select", name:"module_version_id", label:"Module Version",options:"/api/module_versions",format:{label:"{{name}}", value:"{{id}}"}},
-        {type:"datetime", name:"date_assigned", label:"Date Assigned",format: {
+        {type:"select", name:"module_id", label:"Module",options:"/api/modules",format:{label:"{{name}}", value:"{{id}}"}},
+        {type:"text",name:"version", label:"Module Version", parse:false,show:false,template:"{{attributes.version.name}}"},
+        {type:"datetime", name:"date_assigned", show:false, parse: false, label:"Date Assigned",format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},
         {type:"datetime", name:"date_due", label:"Date Due",format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},
-        {type:"text", name:"date_started", label:"Date Started", edit:false},
-        {type:"text", name:"date_completed", label:"Date Completed", edit:false},
+        {type:"text", name:"date_started", label:"Date Started", show:false, parse:false},
+        {type:"text", name:"date_completed", label:"Date Completed", show:false, parse:false},
     ], data: data
     // Can't Update an assignment
     // }).on("model:edited",function(grid_event) {
@@ -33,8 +34,9 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
-        ajax.post('/api/users/'+id+'/assignments/'+grid_event.model.attributes.module_version_id,grid_event.model.attributes,function(data) {
+        ajax.post('/api/users/'+id+'/assignments/'+grid_event.model.attributes.module_id,grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+            grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
