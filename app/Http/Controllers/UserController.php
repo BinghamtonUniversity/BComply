@@ -10,8 +10,10 @@ use App\ModuleAssignment;
 use App\UserPermission;
 use App\ModuleVersion;
 
+
 class UserController extends Controller
 {
+
     public function get_all_users() {
         return User::all();
     }

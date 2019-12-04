@@ -55,7 +55,9 @@ ajax.get('/api/bulk_assignments',function(data) {
         });
     }).on("model:run",function(grid_event) {
         ajax.get('/api/bulk_assignments/'+grid_event.model.attributes.id+'/execute',function(data) {
-            debugger;
+             toastr.success("Successful Assignment");
+        },function(err){
+            toastr.error(err);
         });
     }).on("model:configure_query",function(grid_event) {
         assignment_id = grid_event.model.attributes.id;

@@ -1,4 +1,5 @@
 ajax.get('/api/reports',function(data) {
+    // debugger
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     search: false,columns: false,upload:false,download:false,title:'Reports',
     entries:[],
@@ -8,21 +9,22 @@ ajax.get('/api/reports',function(data) {
         {type:"hidden", name:"id"},
         {type:"text", name:"name", label:"Report Name"},
         {type:"textarea", name:"description", label:"Description"},
-        {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}" ,
-            value: "{{attributes.owner_user_id}}"},
+        {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
+
     ], data: data
     }).on("model:created",function(grid_event) {
         ajax.post('/api/reports',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
+
             grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/reports/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            debugger;
-            // grid_event.model.update(data);
+            // grid_event.model.attributes = data;
+            // debugger;
+            grid_event.model.update(data);
             grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
@@ -55,7 +57,7 @@ ajax.get('/api/reports',function(data) {
                             {"label": "score", "value": "score"},
                             {"label": "duration", "value": "duration"},
                         ]
-                    },    
+                    },
                     {
                             "type": "select",
                             "label": "Global AND / OR",
@@ -152,7 +154,7 @@ ajax.get('/api/reports',function(data) {
                         ],
                         "type": "fieldset"
                     }
-            
+
                         ],
                         "type": "fieldset"
                     }

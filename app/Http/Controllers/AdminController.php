@@ -65,7 +65,7 @@ class AdminController extends Controller
                 ["label"=>"Manage Versions","name"=>"manage_versions","min"=>1,"max"=>1,"type"=>"default"],
                 ["label"=>"Admin Permissions","name"=>"manage_admins","min"=>1,"max"=>1,"type"=>"default"],
                 '',
-                $user->can('delete_modules','App\Module')?["name"=>"delete","label"=>"Delete Module"]:''
+                $user->can('delete_module','App\Module')?["name"=>"delete","label"=>"Delete Module"]:''
             ],
             'help'=>
                 'Use this page to manage modules within the BComply Application.  You may create new

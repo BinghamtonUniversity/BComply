@@ -7,15 +7,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
+
 class User extends Authenticatable
 {
     use Notifiable;
+
     protected $fillable = ['unique_id','first_name', 'last_name','email','code','supervisor','department','division','title','active'];
     protected $hidden = ['password', 'remember_token','created_at','updated_at','user_perms','module_perms'];
     protected $casts = ['active'=>'boolean'];
     protected $appends = ['user_permissions','module_permissions'];
     protected $with = ['user_perms','module_perms'];
-
+//    protected $dispatchesEvents=[
+//        'saved' =>UserSaved::class,
+//        'deleted'=->UserDeleted::class,
+//    ]
     public function group_memberships(){
         return $this->hasMany(GroupMembership::class,'group_id');
     }
