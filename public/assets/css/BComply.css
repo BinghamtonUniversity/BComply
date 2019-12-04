@@ -672,3 +672,68 @@ a.list-group-action {
   padding: 15px 15px 10px;
   border-bottom: solid 1px #eee;
 }
+
+/* Combobox Start */
+
+@media (min-width: 768px) {
+    .form-search .combobox-container,
+    .form-inline .combobox-container {
+      display: inline-block;
+      margin-bottom: 0;
+      vertical-align: top;
+    }
+    .form-search .combobox-container .input-group-addon,
+    .form-inline .combobox-container .input-group-addon {
+      width: auto;
+    }
+  }
+  .combobox-selected .caret {
+    display: none;
+  }
+  /* :not doesn't work in IE8 */
+  .combobox-container:not(.combobox-selected) .fa-times {
+    display: none;
+  }
+  .typeahead-long {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+  }
+  .control-group.error .combobox-container .add-on {
+    color: #B94A48;
+    border-color: #B94A48;
+  }
+  .control-group.error .combobox-container .caret {
+    border-top-color: #B94A48;
+  }
+  .control-group.warning .combobox-container .add-on {
+    color: #C09853;
+    border-color: #C09853;
+  }
+  .control-group.warning .combobox-container .caret {
+    border-top-color: #C09853;
+  }
+  .control-group.success .combobox-container .add-on {
+    color: #468847;
+    border-color: #468847;
+  }
+  .control-group.success .combobox-container .caret {
+    border-top-color: #468847;
+  }
+  /* Combobox End */
+
+/* Begin Extra Graphene Forms Stuff */
+.gform_isArray > fieldset:before {
+    content: "";
+    border: dashed 1px #102e7946;
+    border-right:0px;
+    width:10px;
+    position: absolute;
+    bottom: 5px;
+    left: 7px;
+    top: 0px;
+  }
+  fieldset .gform_isArray > fieldset:before {
+    left: 16px;
+  }
+/* End Extra Graphene Forms Stuff */

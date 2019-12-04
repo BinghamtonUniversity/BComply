@@ -6,6 +6,7 @@ use App\BulkAssignment;
 use App\GroupMembership;
 use App\Libraries\QueryBuilder;
 use App\Module;
+use Carbon\Carbon;
 
 class GroupMembershipObserver
 {
@@ -31,9 +32,14 @@ class GroupMembershipObserver
                 $user_result = $q->select('users.id')->first();
 
                 if (!is_null($user_result)) {
+                    if ($bulk_assignment->assignment->date_due_format === 'relative') {
+                        $date_due = Carbon::now()->addDays($bulk_assignment->assignment->days_from_now);
+                    } else {
+                        $date_due = $bulk_assignment->assignment->date_due;
+                    }
                     $module->assign_to([
                         'user_id' => $groupMembership->user_id,
-                        'date_due' => $bulk_assignment->date_due,
+                        'date_due' => $date_due,
                         'assigned_by_user_id'=>0
                     ]);
                 }

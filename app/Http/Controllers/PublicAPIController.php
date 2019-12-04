@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\SimpleUser;
+use App\GroupMembership;
 use App\Group;
 
 class PublicAPIController extends Controller
@@ -52,8 +53,21 @@ class PublicAPIController extends Controller
                 $local_group->save();
                 $local_groups->push($local_group);
             }
+            // $memberships = GroupMembership::where('group_id',$local_group->id)->select('user_id')->get();
             foreach($group_members as $unique_id) {
-
+                $current_user = $local_users->firstWhere('unique_id',$unique_id);
+                if (!is_null($current_user)) {
+                    $group_affil = $current_user->group_memberships->firstWhere('group_id',$local_group->id);
+                    if (is_null($group_affil)) {
+                        $memberships= new GroupMembership([
+                            'user_id' => $current_user->id,
+                            'group_id' => $local_group->id,
+                        ]);
+                        $memberships->save();
+                    }
+                }
+                
+                return $group_affil;
             }
         }
         return $status;

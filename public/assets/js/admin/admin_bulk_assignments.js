@@ -98,9 +98,17 @@ ajax.get('/api/bulk_assignments',function(data) {
                             "value": "{{id}}"
                         }
                     },
-                    {type:"datetime", name:"date_due", label:"Date Due",format: {
+                    {
+                        type:"select",name:"date_due_format",label:"Due Date Format",options:[
+                            {label:"Fixed Date",value:"fixed"},
+                            {label:"Days From Today",value:"relative"}
+                        ]
+                    },
+                    {type:"datetime", name:"date_due", label:"Due Date",format: {
                         input: "YYYY-MM-DD HH:mm:ss"
-                    }},     
+                        },show: [{type: "matches",name: "date_due_format",value: ["fixed"]}]
+                    },
+                    {type:"number",name:"days_from_now",label:"Due Date",show: [{type: "matches",name: "date_due_format",value: ["relative"]}]},     
                     {type:"checkbox", name:"auto", label:"Auto Assign?",help:"Use this option if you want auto-run this rule whenever group memberships or user attributes change"},                   
                     {
                         "type": "select",

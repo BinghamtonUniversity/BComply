@@ -11,7 +11,6 @@ class BComplyUserSync {
             'first_name'=>'John2',
             'last_name'=>'Doe2',
             'email'=>'jdoe1@example.com',
-            'groups' => ['a','b','c'],
             'supervisor' => 'Tim Cortesi',
             'pizza' => 'whatever',
             'active'=>0,
@@ -21,21 +20,18 @@ class BComplyUserSync {
             'first_name'=>'whatever',
             'last_name'=>'Doe',
             'email'=>'jdoe2@example.com',
-            'groups' => ['b','c'],
         ],
         [
             'unique_id'=>3,
             'first_name'=>'Tony',
             'last_name'=>'Stark',
             'email'=>'tony.stark@avengers.com',
-            'groups' => ['c'],
         ],
         [
             'unique_id'=>4,
             'first_name'=>'I Am',
             'last_name'=>'Groot',
             'email'=>'groot@groot.com',
-            'groups' => ['a','d'],
         ],
     ];
 

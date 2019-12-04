@@ -23,19 +23,23 @@ class UserObserver
     public function saved(User $user)
     {
         $bulk_assignments = BulkAssignment::all();
-
         foreach($bulk_assignments as $bulk_assignment) {
             if($bulk_assignment->assignment->auto){
-            $module = Module::where('id',$bulk_assignment->assignment->module_id)->first();
-            $q = BulkAssignment::base_query();
-            $q->where('users.id',$user->id);
-            QueryBuilder::build_where($q, $bulk_assignment->assignment);
-            $user_result = $q->select('users.id')->first();
+                $module = Module::where('id',$bulk_assignment->assignment->module_id)->first();
+                $q = BulkAssignment::base_query();
+                $q->where('users.id',$user->id);
+                QueryBuilder::build_where($q, $bulk_assignment->assignment);
+                $user_result = $q->select('users.id')->first();
 
-            if (!is_null($user_result)) {
+                if (!is_null($user_result)) {
+                    if ($bulk_assignment->assignment->date_due_format === 'relative') {
+                        $date_due = Carbon::now()->addDays($bulk_assignment->assignment->days_from_now);
+                    } else {
+                        $date_due = $bulk_assignment->assignment->date_due;
+                    }
                     $module->assign_to([
                         'user_id' => $user->id,
-                        'date_due' => $bulk_assignment->date_due,
+                        'date_due' => $date_due,
                         'assigned_by_user_id'=>0
                     ]);
                 }

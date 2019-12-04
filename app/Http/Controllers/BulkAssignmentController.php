@@ -69,9 +69,14 @@ class BulkAssignmentController extends Controller
         $assign_users = []; $skip_users = [];
 
         foreach ($users as $user) {
+            if ($bulkAssignment->assignment->date_due_format === 'relative') {
+                $date_due = Carbon::now()->addDays($bulkAssignment->assignment->days_from_now);
+            } else {
+                $date_due = $bulkAssignment->assignment->date_due;
+            }
             $assignment = $module->assign_to([
                 'user_id' => $user->id,
-                'date_due' => $bulkAssignment->date_due,
+                'date_due' => $date_due,
                 'assigned_by_user_id' => 0,
             ],$testonly);
             if (is_null($assignment)) {
