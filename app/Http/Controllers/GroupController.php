@@ -43,9 +43,8 @@ class GroupController extends Controller
         return GroupMembership::where('id',$group_membership->id)->with('user')->first();
     }
 
-    public function delete_member(GroupMembership $groupMembership,Group $group,User $user)
+    public function delete_member(Group $group,User $user)
     {
-        GroupMembership::where('group_id',$group->id)->where('user_id',$user->id)->delete();
-        return 'success';
+        return GroupMembership::where('group_id','=',$group->id)->where('user_id','=',$user->id)->delete();
     }
 }

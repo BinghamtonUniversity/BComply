@@ -25,6 +25,7 @@ class UserObserver
         $bulk_assignments = BulkAssignment::all();
 
         foreach($bulk_assignments as $bulk_assignment) {
+            if($bulk_assignment->assignment->auto){
             $module = Module::where('id',$bulk_assignment->assignment->module_id)->first();
             $q = BulkAssignment::base_query();
             $q->where('users.id',$user->id);
@@ -32,73 +33,13 @@ class UserObserver
             $user_result = $q->select('users.id')->first();
 
             if (!is_null($user_result)) {
-                $module_assignments = ModuleAssignment::where('module_id',$bulk_assignment->assignment->module_id)
-                    ->where('user_id',$user->id)
-                    ->whereNull('date_completed')->get();
-                try{
-                    if (is_null($module_assignments->firstWhere('user_id',$user->id))) {
-                        // Assign user $user to module $module (version $module->module_version_id)
-                        $module_assignment = new ModuleAssignment([
-                            'user_id'=>$user->id,
-                            'module_version_id'=>$module->module_version_id,
-                            'module_id'=>$module->id,
-                            'date_assigned' => Carbon::now(),
-                            'date_due' => $bulk_assignment->assignment->date_due
-                        ]);
-                        $module_assignment->save();
-                    }
+                    $module->assign_to([
+                        'user_id' => $user->id,
+                        'date_due' => $bulk_assignment->date_due,
+                        'assigned_by_user_id'=>0
+                    ]);
                 }
-                catch (Exception $e){
-                    dd(e);
-                    continue;
-                }
-
             }
         }
     }
-//    /**
-//     * Handle the user "updated" event.
-//     *
-//     * @param  \App\User  $user
-//     * @return void
-//     */
-//    public function updated(User $user)
-//    {
-//        dd("User updated");
-//
-//    }
-//
-//    /**
-//     * Handle the user "deleted" event.
-//     *
-//     * @param  \App\User  $user
-//     * @return void
-//     */
-    public function deleted(User $user)
-    {
-        dd("User deleted");
-    }
-//
-//    /**
-//     * Handle the user "restored" event.
-//     *
-//     * @param  \App\User  $user
-//     * @return void
-//     */
-//    public function restored(User $user)
-//    {
-//        dd("User restored");
-//
-//    }
-//
-//    /**
-//     * Handle the user "force deleted" event.
-//     *
-//     * @param  \App\User  $user
-//     * @return void
-//     */
-//    public function forceDeleted(User $user)
-//    {
-//        //
-//    }
 }
