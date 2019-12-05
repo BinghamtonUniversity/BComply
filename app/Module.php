@@ -35,7 +35,9 @@ class Module extends Model
             if ($assignment->module_version_id === $this->module_version_id) {
                 return null;
             }
-            if ($assignment->date_due > Carbon::now() && is_null($assignment->date_completed)) {
+            if (!is_null($assignment->date_due) 
+                    && $assignment->date_due > Carbon::now()
+                    && is_null($assignment->date_completed)) {
                 return null;
             }
         }
