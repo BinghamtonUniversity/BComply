@@ -6,7 +6,9 @@ namespace App\Providers;
 use App\GroupMembership;
 use App\Observers\GroupMembershipObserver;
 use App\Observers\UserObserver;
+use App\Observers\SimpleUserObserver;
 use App\User;
+use App\SimpleUser;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         User::observe(UserObserver::class);
+        SimpleUser::observe(SimpleUserObserver::class);
         GroupMembership::observe(GroupMembershipObserver::class);
     }
 }
