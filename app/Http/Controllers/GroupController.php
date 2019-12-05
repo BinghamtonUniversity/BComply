@@ -37,7 +37,8 @@ class GroupController extends Controller
     public function add_member(Request $request, Group $group){
         $group_membership = new GroupMembership([
            'group_id'=>$group->id,
-           'user_id'=>$request->user_id
+           'user_id'=>$request->user_id,
+           'type'=>'internal',
         ]);
         $group_membership->save();
         return GroupMembership::where('id',$group_membership->id)->with('user')->first();

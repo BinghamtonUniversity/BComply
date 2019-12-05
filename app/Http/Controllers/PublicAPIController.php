@@ -45,29 +45,46 @@ class PublicAPIController extends Controller
 
     private function sync_groups(&$remote_groups, &$local_users, &$local_groups) {
         $status = [];
+        // Add Groups / Memberships that Don't Exist
         foreach($remote_groups as $remote_group => $group_members) {
             $local_group = $local_groups->firstWhere('name', $remote_group);
             if (is_null($local_group)) {
                 // Group Does Not Exist... Creating
                 $local_group = new Group(['name'=>$remote_group]);
                 $local_group->save();
-                $local_groups->push($local_group);
             }
-            // $memberships = GroupMembership::where('group_id',$local_group->id)->select('user_id')->get();
             foreach($group_members as $unique_id) {
                 $current_user = $local_users->firstWhere('unique_id',$unique_id);
                 if (!is_null($current_user)) {
                     $group_affil = $current_user->group_memberships->firstWhere('group_id',$local_group->id);
                     if (is_null($group_affil)) {
+                        $status['added'][$remote_group][] = $current_user->id;
                         $memberships= new GroupMembership([
                             'user_id' => $current_user->id,
                             'group_id' => $local_group->id,
+                            'type' => 'external',
                         ]);
                         $memberships->save();
                     }
                 }
-                
-                return $group_affil;
+            }
+        }
+        // Remove Memberships that Do Exist
+        foreach($local_users as $local_user) {
+            foreach($local_groups as $local_group) {
+                if (!array_key_exists($local_group->name,$remote_groups)) {
+                    // Group Shouldn't Exist... Deleting
+                    // GroupMembership::where('group_id',$local_group->id)->delete();
+                    // $local_group->delete();
+                } else {
+                    // This isn't great.  It will delete the membership even if it doesn't exist.
+                    if (!in_array($local_user->unique_id,$remote_groups[$local_group->name])) {
+                        GroupMembership::where('group_id',$local_group->id)
+                            ->where('user_id',$local_user->id)
+                            ->where('type','external')
+                            ->delete();
+                    }
+                }
             }
         }
         return $status;
@@ -75,14 +92,14 @@ class PublicAPIController extends Controller
 
     public function sync(Request $request) {
         $response = [];
-        $local_users = SimpleUser::with('group_memberships')->get();    
+        $local_users = SimpleUser::with('group_memberships')->get();  
         if ($request->has('users')) {
-            $remote_users = $request->users;
+            $remote_users = collect($request->users);
             $response['users'] = $this->sync_users($remote_users, $local_users);
         }
         if ($request->has('groups')) {
             $remote_groups = $request->groups;
-            $local_groups = Group::all();
+            $local_groups = Group::with('group_memberships')->get();
             $response['groups'] = $this->sync_groups($remote_groups, $local_users, $local_groups);
         }
         return $response;

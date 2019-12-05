@@ -8,7 +8,7 @@ class Group extends Model
 {
     protected $fillable = ['name'];
 
-    public function groupMemberships(){
-        return $this->hasMany(GroupMembership::class);
+    public function group_memberships(){
+        return $this->hasMany(GroupMembership::class,'group_id');
     }
 }

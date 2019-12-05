@@ -22,7 +22,7 @@ class User extends Authenticatable
 //        'deleted'=->UserDeleted::class,
 //    ]
     public function group_memberships(){
-        return $this->hasMany(GroupMembership::class,'group_id');
+        return $this->hasMany(GroupMembership::class,'user_id');
     }
     public function assignments(){
         return $this->hasMany(ModuleAssignment::class);
