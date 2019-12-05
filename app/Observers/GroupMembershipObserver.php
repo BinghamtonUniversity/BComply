@@ -16,10 +16,6 @@ class GroupMembershipObserver
      * @param  \App\GroupMembership  $groupMembership
      * @return void
      */
-//    public function created(GroupMembership $groupMembership)
-//    {
-//        //
-//    }
     public function saved(GroupMembership $groupMembership){
         $bulk_assignments = BulkAssignment::all();
 

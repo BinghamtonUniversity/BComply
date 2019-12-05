@@ -4,7 +4,9 @@ namespace App\Providers;
 
 
 use App\GroupMembership;
+use App\ModuleAssignment;
 use App\Observers\GroupMembershipObserver;
+use App\Observers\ModuleAssignmentObserver;
 use App\Observers\UserObserver;
 use App\Observers\SimpleUserObserver;
 use App\User;
@@ -33,5 +35,6 @@ class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         SimpleUser::observe(SimpleUserObserver::class);
         GroupMembership::observe(GroupMembershipObserver::class);
+        ModuleAssignment::observe(ModuleAssignmentObserver::class);
     }
 }
