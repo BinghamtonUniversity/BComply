@@ -46,14 +46,14 @@ ajax.get('/api/bulk_assignments',function(data) {
                 <div class="alert alert-warning">No Users Will Be Assigned</div>
             {{/assign_users.length}}
             {{#assign_users}}
-                {{first_name}} {{last_name}}<br>
+                {{first_name}} {{last_name}}, 
             {{/assign_users}}
             <h5>The Following have already been assigned to the "{{module.name}}" module and will be skipped:</h5>
             {{^skip_users.length}}
                 <div class="alert alert-warning">No Users Will Be Skipped</div>
             {{/skip_users.length}}
             {{#skip_users}}
-                {{first_name}} {{last_name}}<br>
+                {{first_name}} {{last_name}}, 
             {{/skip_users}}
             `;
             $('#adminModal .modal-title').html('Bulk Assignments (Test Run)')
@@ -69,14 +69,14 @@ ajax.get('/api/bulk_assignments',function(data) {
                 <div class="alert alert-warning">No Users Were Assigned</div>
             {{/assign_users.length}}
             {{#assign_users}}
-                {{first_name}} {{last_name}}<br>
+                {{first_name}} {{last_name}}, 
             {{/assign_users}}
             <h5>The Following were already assigned to the "{{module.name}}" module and were skipped:</h5>
             {{^skip_users.length}}
                 <div class="alert alert-warning">No Users Were Skipped</div>
             {{/skip_users.length}}
             {{#skip_users}}
-                {{first_name}} {{last_name}}<br>
+                {{first_name}} {{last_name}}, 
             {{/skip_users}}
             `;
             $('#adminModal .modal-title').html('Bulk Assignments')
