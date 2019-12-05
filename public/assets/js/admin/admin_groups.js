@@ -10,7 +10,7 @@ ajax.get('/api/groups',function(data) {
         '',
         {"name":"delete","label":"Delete Group"}
     ],
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"text", name:"name", label:"Name"},

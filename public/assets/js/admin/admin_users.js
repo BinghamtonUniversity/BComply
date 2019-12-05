@@ -3,7 +3,7 @@ ajax.get('/api/users',function(data) {
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
     actions:actions,
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"checkbox", name:"active", label:"Active", "template":"{{#attributes.active}}Yes{{/attributes.active}}{{^attributes.active}}No{{/attributes.active}}"},

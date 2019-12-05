@@ -10,7 +10,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         '',
         {"name":"delete","label":"Remove Module Assignment"}
     ],
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"select", name:"module_id", label:"Module",options:"/api/modules",format:{label:"{{name}}", value:"{{id}}"}},

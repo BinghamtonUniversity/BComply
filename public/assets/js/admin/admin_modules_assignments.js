@@ -10,12 +10,12 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         '',
         {"name":"delete","label":"Remove Module Assignment"}
     ],
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"text",name:"version", label:"Module Version", parse:false,show:false,template:"{{attributes.version.name}}"},
         {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
-        {type:"datetime", ename:"date_assigned", label:"Date Assigned",parse:false,show:false,format: {
+        {type:"datetime", name:"date_assigned", label:"Date Assigned",parse:false,show:false,format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},
         {type:"datetime", name:"date_due", label:"Date Due",format: {

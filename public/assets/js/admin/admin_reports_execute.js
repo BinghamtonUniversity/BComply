@@ -6,7 +6,7 @@ ajax.get('/api/reports/'+id+'/execute',function(data) {
         search: false,columns: false,upload:false,download:false,title:'Report',
         entries:[],
         actions:[],
-        count:4,
+        count:100,
         schema:mySchema, 
         data: data
     })

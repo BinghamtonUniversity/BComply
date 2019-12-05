@@ -4,7 +4,7 @@ ajax.get('/api/reports',function(data) {
     search: false,columns: false,upload:false,download:false,title:'Reports',
     entries:[],
     actions:actions,
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"text", name:"name", label:"Report Name"},

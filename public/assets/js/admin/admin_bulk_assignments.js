@@ -12,7 +12,7 @@ ajax.get('/api/bulk_assignments',function(data) {
             '',
             {"name":"delete","label":"Delete Bulk Assignment"}
         ],
-        count:4,
+        count:20,
         schema:[
             {type:"hidden", name:"id"},
             {type:"text", name:"name", label:"Assignment Name"},
@@ -38,6 +38,7 @@ ajax.get('/api/bulk_assignments',function(data) {
             grid_event.model.undo();
         });
     }).on("model:run_test",function(grid_event) {
+        toastr.info('Processing... Please Wait')
         ajax.get('/api/bulk_assignments/'+grid_event.model.attributes.id+'/execute/test',function(data) {
             template = `
             <h5>The Following will be assigned to the "{{module.current_version.name}}" version of the "{{module.name}}" module:</h5>
@@ -55,11 +56,12 @@ ajax.get('/api/bulk_assignments',function(data) {
                 {{first_name}} {{last_name}}<br>
             {{/skip_users}}
             `;
-            $('#adminModal .modal-title').html('Test Run')
+            $('#adminModal .modal-title').html('Bulk Assignments (Test Run)')
             $('#adminModal .modal-body').html(gform.m(template,data));
             $('#adminModal').modal('show')    
         });
     }).on("model:run",function(grid_event) {
+        toastr.info('Processing... Please Wait')
         ajax.get('/api/bulk_assignments/'+grid_event.model.attributes.id+'/execute',function(data) {
             template = `
             <h5>The Following were assigned to the "{{module.current_version.name}}" version of the "{{module.name}}" module:</h5>
@@ -77,7 +79,7 @@ ajax.get('/api/bulk_assignments',function(data) {
                 {{first_name}} {{last_name}}<br>
             {{/skip_users}}
             `;
-            $('#adminModal .modal-title').html('Test Run')
+            $('#adminModal .modal-title').html('Bulk Assignments')
             $('#adminModal .modal-body').html(gform.m(template,data));
             $('#adminModal').modal('show')    
         });

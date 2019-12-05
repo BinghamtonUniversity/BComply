@@ -44,15 +44,29 @@ class BComplyUserSync {
     static private $bcomply_user = 'defaultuser';
     static private $bcomply_pass = 'defaultpass';
     
+    static private function load_users() {
+        $names = json_decode(file_get_contents('names.json'));
+        foreach($names as $name) {
+            self::$users[] = [
+                'unique_id' => 'B00'.$name,
+                'first_name' => $name,
+                'last_name' => "O'".$name,
+                'email' => $name.'@gmail.com'
+            ];
+        }
+    }
+    
     static public function sync() {
+        self::load_users();
         $httphelper = new HTTPHelper();
-        $response = $httphelper->http_fetch(
-            self::$bcomply_url.'/api/public/sync',
-            'POST',
-            ['users'=>self::$users,'groups'=>self::$groups],
-            self::$bcomply_user,
-            self::$bcomply_pass
-        );
+        $response = $httphelper->http_fetch([
+            'url'=>self::$bcomply_url.'/api/public/sync',
+            'verb'=>'POST',
+            'data'=>['users'=>self::$users,'groups'=>self::$groups],
+            'mime_type'=>'application/json',
+            'username'=>self::$bcomply_user,
+            'password'=>self::$bcomply_pass
+        ]);
         var_dump($response['content']);
     }
 }

@@ -6,17 +6,20 @@ use Illuminate\Support\Facades\Log;
 
 class HTTPHelper {
 
-    public function http_fetch($url, $verb='GET',$request_data=[],$username=null,$password=null) {
+    public function http_fetch($args) {
+        // Parse Args
+        $url = $args['url'];
+        $verb=isset($args['verb'])?$args['verb']:'GET';
+        $request_data=$args['data'];
+        $username = isset($args['username'])?$args['username']:null;
+        $password = isset($args['password'])?$args['password']:null;
+        $mime_type = isset($args['mime_type'])?strtolower($args['mime_type']):'application/x-www-form-urlencoded';
+
         // Build HTTP Request
         $request_config = [];
         $request_config['ignore_errors'] = true;
         $request_config['method'] = $verb;
-        if (is_string($request_data)) {
-            $content_type = 'raw';
-        } else {
-            $content_type = 'application/x-www-form-urlencoded';
-        }
-        $request_config['header'] = "Content-type: application/x-www-form-urlencoded\r\n"."User-Agent: rest\r\n";
+        $request_config['header'] = "Content-type: ".$mime_type."\r\n"."User-Agent: rest\r\n";
         if (!is_null($username)) {
             $request_config['header'] .= "Authorization: Basic ".base64_encode($username.':'.$password)."\r\n";
         }
@@ -39,10 +42,12 @@ class HTTPHelper {
                 abort(400);             
             }
         } else {
-            if (is_string($request_data)) {
-                $request_config['content'] = $request_data;
-            } else {
+            if ($mime_type === 'application/x-www-form-urlencoded' && (is_array($request_data) || is_object($request_data))) {
                 $request_config['content'] = http_build_query($request_data);
+            } else if ($mime_type === 'application/json' && (is_array($request_data) || is_object($request_data))) {
+                $request_config['content'] = json_encode($request_data);
+            } else {
+                $request_config['content'] = $request_data;
             }
         }
         $context = stream_context_create(['http' =>$request_config]);

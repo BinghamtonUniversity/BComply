@@ -12,7 +12,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         '',
         {"name":"delete","label":"Delete Module Version"}
     ],
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"hidden", name:"module_id", value:id},

@@ -3,7 +3,7 @@ ajax.get('/api/modules',function(data) {
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
     actions:actions,
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"text", name:"name", label:"Name"},

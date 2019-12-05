@@ -7,7 +7,7 @@ ajax.get('/api/modules/'+id+'/permissions',function(data) {
         '','',
         {"name":"delete","label":"Remove User/Module Permission"}
     ],
-    count:4,
+    count:20,
     schema:[
         {type:"hidden", name:"module_id"},
         {type:"hidden", name:"id"},
