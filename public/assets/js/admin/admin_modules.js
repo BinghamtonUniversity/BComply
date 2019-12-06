@@ -21,6 +21,7 @@ ajax.get('/api/modules',function(data) {
         ajax.post('/api/modules',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
         },function(data) {
+
             grid_event.model.undo();
         });
     }).on("model:deleted",function(grid_event) {

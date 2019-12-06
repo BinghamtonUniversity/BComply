@@ -22,7 +22,6 @@ ajax.get('/api/users',function(data) {
             grid_event.model.attributes = data;
             grid_event.model.draw();
         },function(err) {
-            // toastr.error(err);
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
@@ -30,7 +29,6 @@ ajax.get('/api/users',function(data) {
             grid_event.model.attributes = data;
             grid_event.model.draw();
         },function(err) {
-            // toastr.error(err);
             grid_event.model.undo();
 
         });

@@ -21,14 +21,13 @@ class ModuleAssignmentObserver
     public function created(ModuleAssignment $moduleAssignment)
     {
         $module = Module::where('id','=',$moduleAssignment->module_id)->first();
-
         $user = User::where('id',$moduleAssignment['user_id'])->first();
-
-        $user_messages =[
-            'module_name'=> $module['name'],
-            'link' => $moduleAssignment['id'],
-        ];
-
-        Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+        if($user->active){
+            $user_messages =[
+                'module_name'=> $module['name'],
+                'link' => $moduleAssignment['id'],
+            ];
+            Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+        }
     }
 }

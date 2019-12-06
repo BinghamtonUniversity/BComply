@@ -20,7 +20,7 @@ class SimpleUserObserver
             if($bulk_assignment->assignment->auto){
                 $module = Module::where('id',$bulk_assignment->assignment->module_id)->first();
                 $q = BulkAssignment::base_query();
-                $q->where('users.id',$user->id);
+                $q->where('users.id',$user->id)->where('users.active',true);
                 QueryBuilder::build_where($q, $bulk_assignment->assignment);
                 $user_result = $q->select('users.id')->first();
 
