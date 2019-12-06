@@ -11,6 +11,7 @@ ajax.get('/api/groups/'+id+'/members',function(data) {
     schema:[
         {type:"hidden", name:"id"},
         {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
+        {type:"text",name:"type","label":"Type", show:false, parse:false},
     ], data: data
     }).on("model:created",function(grid_event) {
         ajax.post('/api/groups/'+id+'/members/',grid_event.model.attributes,function(data) {

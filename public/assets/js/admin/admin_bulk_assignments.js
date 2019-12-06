@@ -193,7 +193,7 @@ ajax.get('/api/bulk_assignments',function(data) {
                                             {
                                                 "label": "",
                                                 "type": "optgroup",
-                                                "options": ['=','!=','>','>=','<','<=','is_null','not_null','contains']
+                                                "options": ['=','!=','>','>=','<','<=','is_null','not_null','is_true','is_false','contains']
                                             }
                                         ],
                                         "widgetType": "collection",
@@ -204,6 +204,7 @@ ajax.get('/api/bulk_assignments',function(data) {
                                         "label": "Value",
                                         "name": "value",
                                         "columns": "4",
+                                        show: [{type: "matches",name: "conditional",value: ['=','!=','>','>=','<','<=','contains']}]
                                     }
                                 ],
                                 "type": "fieldset"
