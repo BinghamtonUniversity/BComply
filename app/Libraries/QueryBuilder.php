@@ -11,6 +11,10 @@ class QueryBuilder {
             $q->whereNull($qblock->column);
         } else if ($qblock->conditional === 'not_null') {
             $q->whereNotNull($qblock->column);
+        } else if ($qblock->conditional === 'is_true') {
+            $q->where($qblock->column,true);
+        } else if ($qblock->conditional === 'is_false') {
+            $q->where($qblock->column,false);
         } else {
             $q->where($qblock->column,$qblock->conditional,$qblock->value);
         }
@@ -22,6 +26,10 @@ class QueryBuilder {
             $q->orWhereNull($qblock->column);
         } else if ($qblock->conditional === 'not_null') {
             $q->orWhereNotNull($qblock->column);
+        } else if ($qblock->conditional === 'is_true') {
+            $q->where($qblock->column,true);
+        } else if ($qblock->conditional === 'is_false') {
+            $q->where($qblock->column,false);
         } else {
             $q->orWhere($qblock->column,$qblock->conditional,$qblock->value);
         }
