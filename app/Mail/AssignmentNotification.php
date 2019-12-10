@@ -36,9 +36,9 @@ class AssignmentNotification extends Mailable
                 'first_name' => $this->user->first_name,
                 'last_name' => $this->user->last_name,
                 'user_message'=>$this->user_message['module_name'],
-                'due_date'=>$this->moduleAssignment->date_due,
+                'due_date'=>$this->moduleAssignment->date_due->format('m/d/y'),
                 'link'=>$this->user_message['link']
             ]
-        )->subject('New Course Assignment: '.$this->user_message['module_name'].' Due Date:'.$this->moduleAssignment->date_due->toDateString());
+        )->subject('New Course Assignment: '.$this->user_message['module_name'].' Due Date:'.$this->moduleAssignment->date_due->format('m/d/y'));
     }
 }

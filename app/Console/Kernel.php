@@ -2,8 +2,16 @@
 
 namespace App\Console;
 
+use App\BulkAssignment;
+use App\Libraries\QueryBuilder;
+use App\Mail\AssignmentReminder;
+use App\Module;
+use App\ModuleAssignment;
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Mail;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +32,75 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->call(function(){
+            $modules = Module::all();
+            $module_assignments = ModuleAssignment::with('user')->get();
 
+            //Checks all of the assignment due dates to send emails to users
+            foreach($module_assignments as $assignment){
+                $module = $modules->where('id',$assignment->module_id)->first();
+                $user = $assignment->user()->where('id',$assignment->user_id)->first();
+
+                if($assignment->date_due > Carbon::now() && $assignment->date_completed === null){
+
+                    //If the user found is active
+                    if($user->active){
+                        $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
+
+                        if($differenceInDays>0){
+                            if(in_array($differenceInDays,$module->reminders)){
+                                $user_messages =[
+                                    'module_name'=> $module['name'],
+                                    'link' => $assignment['id'],
+                                    'hours'=> 0
+                                ];
+                                Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
+                            }
+                        }
+                        else{
+                            $user_messages =[
+                                'module_name'=> $module['name'],
+                                'link' => $assignment['id'],
+                                'hours'=> $assignment->date_due->diffInHours(Carbon::now())
+                            ];
+                            Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
+                        }
+                    }
+                }
+            }
+        })->daily();
+
+        $schedule->call(function(){
+            $bulkAssignments = BulkAssignment::whereJsonContains('assignment',['later_date'=>true])->get();
+
+            if(!is_null($bulkAssignments)){
+                foreach($bulkAssignments as $bulkAssignment){
+                    if(Carbon::parse($bulkAssignment->assignment->later_assignment_date)->isToday()){
+                        $module = Module::where('id',$bulkAssignment->assignment->module_id)->with('current_version')->first();
+                        if (is_null($module->module_version_id)) {
+                            return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');
+                        }
+                        $q = BulkAssignment::base_query();
+                        QueryBuilder::build_where($q, $bulkAssignment->assignment);
+                        $users = $q->select('users.id','unique_id','first_name','last_name')->get();
+
+                        foreach ($users as $user) {
+                            if ($bulkAssignment->assignment->date_due_format === 'relative') {
+                                $date_due = Carbon::now()->addDays($bulkAssignment->assignment->days_from_now);
+                            } else {
+                                $date_due = $bulkAssignment->assignment->date_due;
+                            }
+                            $module->assign_to([
+                                'user_id' => $user->id,
+                                'date_due' => $date_due,
+                                'assigned_by_user_id' => 0,
+                            ]);
+                        }
+                    }
+
+                }
+            }
+        })->daily();
     }
 
     /**

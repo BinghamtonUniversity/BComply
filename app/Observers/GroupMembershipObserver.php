@@ -17,7 +17,7 @@ class GroupMembershipObserver
      * @return void
      */
     public function saved(GroupMembership $groupMembership){
-        $bulk_assignments = BulkAssignment::all();
+        $bulk_assignments = BulkAssignment::whereJsonContains('assignment',['auto'=>true])->get();
 
         foreach($bulk_assignments as $bulk_assignment) {
             if($bulk_assignment->assignment->auto){

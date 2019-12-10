@@ -111,7 +111,12 @@ ajax.get('/api/bulk_assignments',function(data) {
                         },show: [{type: "matches",name: "date_due_format",value: ["fixed"]}]
                     },
                     {type:"number",name:"days_from_now",label:"Due Date",show: [{type: "matches",name: "date_due_format",value: ["relative"]}]},     
-                    {type:"checkbox", name:"auto", label:"Auto Assign?",help:"Use this option if you want auto-run this rule whenever group memberships or user attributes change"},                   
+                    {type:"checkbox", name:"auto", label:"Auto Assign?",help:"Use this option if you want auto-run this rule whenever group memberships or user attributes change"},
+                    {type:"checkbox", name:"later_date", label:"Assign Later?",help:"Use this option if you want assign later with this bulk assignment rule"},
+                    {type:"datetime", name:"later_assignment_date", label:"Auto Assign Date",format: {
+                            input: "YYYY-MM-DD"
+                        },show: [{type: "matches",name: "later_date",value: true}]
+                    },
                     {
                         "type": "select",
                         "label": "Global AND / OR",
