@@ -43,7 +43,35 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
             toastr.success('"'+grid_event.model.attributes.name+'" is now the current version for this module')
         });
     }).on("model:upload_module",function(grid_event) {
-        toastr.error('This doesn\'t do anything!');
+        body = `
+        <form id="module_form_upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="zipfile" />
+        <input type="submit" value="Upload File" name="submit" />
+        </form>
+        `;
+        $('#adminModal .modal-title').html('Dumb Uploader')
+        $('#adminModal .modal-body').html(body);
+        $('#adminModal').modal('show')
+            // A bunch of upload stuff
+            const url = '/api/modules/'+id+'/versions/'+grid_event.model.attributes.id+'/upload'
+            const form = document.querySelector('#module_form_upload')
+            form.addEventListener('submit', e => {
+                debugger;
+            e.preventDefault()
+            const files = document.querySelector('[type=file]').files
+            const formData = new FormData()
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i]
+                formData.append('files[]', file)
+            }
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+            }).then(response => {
+                console.log(response)
+            })
+            })
+            // end upload stuff
     }).on("model:configure",function(grid_event) {
         module_version_id = grid_event.model.attributes.id;
         module_version_type = grid_event.model.attributes.type;
