@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+.DS_Store
 /storage/*.key
 /vendor
 .env

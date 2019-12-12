@@ -74,13 +74,20 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/module_versions','ModuleController@get_module_versions');
     Route::post('/modules/{module}/versions','ModuleController@add_module_version')->middleware('can:manage_module,module');
     Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version')->middleware('can:manage_module,module');
+
+
+
     Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_module,module');
     Route::get('/modules/{module}/versions/{module_version}/assignments','ModuleController@get_module_version_assignments');
+    Route::post('/modules/{module}/versions/{module_version}/upload', 'FileUploadController@upload');//->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+
     Route::get('/modules/{module}/assignments','ModuleController@get_module_assignments');
 
     Route::get('/modules/{module}/permissions','ModuleController@get_module_permissions');
     Route::put('/modules/{module}/permissions','ModuleController@set_module_permission')->middleware('can:manage_module,module');
     Route::delete('/modules/{module}/permissions/{module_permission}','ModuleController@delete_module_permission')->middleware('can:manage_module,module');
+
+
 
     /* Group Methods */
     Route::get('/groups','GroupController@get_all_groups')->middleware('can:view_in_admin,App\Group');
@@ -121,5 +128,8 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/bulk_assignments/tables/columns', 'BulkAssignmentController@get_columns')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
 
    Route::get('/bulk_assignments/{bulk_assignment}/execute/{test?}', 'BulkAssignmentController@execute')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+
+
+
 
 });

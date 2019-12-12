@@ -43,10 +43,11 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
             toastr.success('"'+grid_event.model.attributes.name+'" is now the current version for this module')
         });
     }).on("model:upload_module",function(grid_event) {
+        // debugger;
         body = `
         <form id="module_form_upload" method="post" enctype="multipart/form-data">
         <input type="file" name="zipfile" />
-        <input type="submit" value="Upload File" name="submit" />
+        <input type="submit" value="save" name="submit" />
         </form>
         `;
         $('#adminModal .modal-title').html('Dumb Uploader')
@@ -55,20 +56,28 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
             // A bunch of upload stuff
             const url = '/api/modules/'+id+'/versions/'+grid_event.model.attributes.id+'/upload'
             const form = document.querySelector('#module_form_upload')
+            // form.setAttribute('action',url)
+
+
             form.addEventListener('submit', e => {
-                debugger;
             e.preventDefault()
-            const files = document.querySelector('[type=file]').files
+            const files = document.querySelector('[name=zipfile]').files
             const formData = new FormData()
             for (let i = 0; i < files.length; i++) {
                 let file = files[i]
-                formData.append('files[]', file)
+                formData.append('zipfile', file)
             }
             fetch(url, {
                 method: 'POST',
                 body: formData,
-            }).then(response => {
-                console.log(response)
+            }).
+            then(response => {
+                if(response.status==200){
+                    toastr.success("Success");
+                }
+                else{
+                    toastr.error(response.statusText)
+                }
             })
             })
             // end upload stuff
