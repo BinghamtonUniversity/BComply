@@ -93,6 +93,23 @@ class UserController extends Controller
             return ModuleAssignment::where('id',$assignment->id)->with('version')->with('user')->first();
         }
     }
+
+    public function self_assignment(Request $request, Module $module){
+                $assignment = $module->assign_to([
+            'user_id'=>Auth::user()->id,
+            'date_due'=>null,
+            'assigned_by_user_id'=>Auth::user()->id
+        ]);
+        if ($assignment === false) {
+            return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');
+        } else if (is_null($assignment)) {
+            return response(['error'=>'The user is already assigned to this module'], 409)->header('Content-Type', 'application/json');
+        } else {
+            return ModuleAssignment::where('id',$assignment->id)->with('version')->with('user')->first();
+        }
+    }
+
+
     public function delete_assignment(Request $request, User $user, ModuleAssignment $module_assignment) {
         $module_assignment->delete();
         return "Success";

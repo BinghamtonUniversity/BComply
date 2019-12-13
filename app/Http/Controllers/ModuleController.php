@@ -25,6 +25,9 @@ class ModuleController extends Controller
 
         }
     }
+    public function get_public_module_versions(){
+        return Module::where('public',true)->where('module_version_id','<>',null)->with('current_version')->get();
+    }
     public function get_module(Request $request, Module $module){
         return $module;
     }

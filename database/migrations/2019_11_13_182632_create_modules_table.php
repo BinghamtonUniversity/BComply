@@ -21,6 +21,7 @@ class CreateModulesTable extends Migration
             $table->json('message_configuration')->nullable()->default(null);
             $table->json('assignment_configuration')->nullable()->default(null);
             $table->json('reminders')->nullable()->default(null);
+            $table->boolean('public')->nullable(false)->default(false);
             $table->unsignedBigInteger('module_version_id')->nullable()->default(null)->index();
             $table->timestamps();
             $table->softDeletes();

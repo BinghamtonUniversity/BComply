@@ -11,10 +11,14 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-Route::get('/', ['uses'=>'UserDashboardController@home']);
+/* User Pages */
+Route::get('/',['uses' => 'UserDashboardController@home']);
+Route::get('/assignments', ['uses'=>'UserDashboardController@my_assignments']);
+Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
+
+
+
+
 
 /* Admin Pages */
 Route::get('/admin/', ['uses'=>'AdminController@admin']);
@@ -30,6 +34,7 @@ Route::get('/admin/reports', ['uses'=>'AdminController@reports']);
 Route::get('/admin/reports/{report}/run', ['uses'=>'AdminController@run_report']);
 Route::get('/admin/bulk_assignments', ['uses'=>'AdminController@bulk_assignments']);
 Route::get('/admin/bulk_assignments/{bulk_assignment}/run', ['uses'=>'AdminController@run_assignment']);
+
 //Route::get('/admin/bulk_assignments/{bulk_assignment}/run', ['uses'=>'AdminController@run_report']);
 
 /* End Admin Pages */
@@ -53,10 +58,15 @@ Route::group(['prefix' => 'api'], function () {
     Route::delete('/users/{user}','UserController@delete_user')->middleware('can:manage_users,App\User');
     Route::put('/users/{user}/permissions','UserController@set_permissions')->middleware('can:manage_user_permissions,App\User');
     Route::get('/users/{user}/permissions','UserController@get_permissions')->middleware('can:manage_user_permissions,App\User');
-    
+
+    Route::post('/users/assignments/{module}','UserController@self_assignment');
     Route::get('/users/{user}/assignments','UserController@get_assignments')->middleware('can:manage_users,App\User');
     Route::post('/users/{user}/assignments/{module}','UserController@set_assignment')->middleware('can:assign_module,App\User,module');
+
+
     Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:delete_assignment,App\User,module_assignment');
+
+
     // Can you update an assignment?  I'm thinking no...
     // Route::put('/users/{user}/assignments/{module_assignment}','UserController@update_assignment');
 
@@ -72,6 +82,7 @@ Route::group(['prefix' => 'api'], function () {
 
     Route::get('/modules/{module}/versions','ModuleController@get_module_versions');
     Route::get('/module_versions','ModuleController@get_module_versions');
+    Route::get('/module_versions/public','ModuleController@get_public_module_versions');
     Route::post('/modules/{module}/versions','ModuleController@add_module_version')->middleware('can:manage_module,module');
     Route::put('/modules/{module}/versions/{module_version}','ModuleController@update_module_version')->middleware('can:manage_module,module');
 
@@ -79,6 +90,7 @@ Route::group(['prefix' => 'api'], function () {
 
     Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_module,module');
     Route::get('/modules/{module}/versions/{module_version}/assignments','ModuleController@get_module_version_assignments');
+
     Route::post('/modules/{module}/versions/{module_version}/upload', 'FileUploadController@upload');//->middleware('can:manage_bulk_assignments, App\BulkAssignment');
 
     Route::get('/modules/{module}/assignments','ModuleController@get_module_assignments');

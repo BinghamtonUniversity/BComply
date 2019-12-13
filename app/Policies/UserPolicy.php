@@ -7,6 +7,7 @@ use App\User;
 use App\Module;
 use App\ModuleVersion;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class UserPolicy
 {
@@ -57,6 +58,9 @@ class UserPolicy
             return true;
         }
         if ($module->owner_user_id === $user->id){
+            return true;
+        }
+        if(Auth::user()== $user){
             return true;
         }
     }

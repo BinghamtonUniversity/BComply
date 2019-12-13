@@ -22,7 +22,7 @@ class DemoController extends Controller
                 Auth::login($user,true);
                 return redirect('/');
             } else {
-                return view('demo_login',['error'=>'The '.$request->accountId.' guest user account is not authorized']);
+                return view('demo_login',['page'=>'demo','error'=>'The '.$request->accountId.' guest user account is not authorized']);
             }
         } else {
             return view('demo_login');
