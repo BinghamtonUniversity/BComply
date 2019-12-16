@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Group;
 use App\GroupMembership;
 use App\User;
+use App\SimpleUser;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -30,8 +31,16 @@ class GroupController extends Controller
         return 'Success';
     }
 
-    public function get_members(Group $group){
-        return GroupMembership::where('group_id',$group->id)->with('user')->get();
+    public function get_members(Request $request, Group $group){
+        if ($request->has('simple') && $request->simple === "true") {
+            $users = GroupMembership::where('group_id',$group->id)
+                ->with('simple_user')
+                ->select('type','user_id')
+                ->get();
+            return $users;
+        } else {
+            return GroupMembership::where('group_id',$group->id)->with('user')->get();
+        }
     }
 
     public function add_member(Request $request, Group $group){

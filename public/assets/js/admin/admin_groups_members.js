@@ -1,4 +1,4 @@
-ajax.get('/api/groups/'+id+'/members',function(data) {
+ajax.get('/api/groups/'+id+'/members?simple=true',function(data) {
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
@@ -10,7 +10,7 @@ ajax.get('/api/groups/'+id+'/members',function(data) {
     count:20,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
+        {type:"user", name:"user_id", label:"User", template:"{{#attributes.user}}{{attributes.user.first_name}} {{attributes.user.last_name}}{{/attributes.user}}{{#attributes.simple_user}}{{attributes.simple_user.first_name}} {{attributes.simple_user.last_name}}{{/attributes.simple_user}}"},
         {type:"text",name:"type","label":"Type", show:false, parse:false},
     ], data: data
     }).on("model:created",function(grid_event) {

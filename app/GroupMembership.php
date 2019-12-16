@@ -14,4 +14,8 @@ class GroupMembership extends Model
     public function user(){
         return $this->belongsTo('App\User');
     }
+    public function simple_user(){
+        return $this->belongsTo('App\SimpleUser','user_id')
+            ->select('id','unique_id','first_name','last_name','email');
+    }
 }
