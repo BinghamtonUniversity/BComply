@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -10,17 +9,19 @@ use App\Group;
 
 class PublicAPIController extends Controller
 {
-
     private function sync_users(&$remote_users, &$local_users) {
         $status=['warnings'=>[],'updated'=>[],'added'=>[],'ignored'=>[]];
-        // return $remote_users;
         foreach($remote_users as $remote_user) {
             if (isset($remote_user['unique_id'])) {
                 $local_user = $local_users->firstWhere('unique_id', $remote_user['unique_id']);
                 if (is_null($local_user)) {
                     // User Does Not Exist... Creating
                     $local_user = new SimpleUser($remote_user);
-                    $local_user->save();
+                    try {
+                        $local_user->save();
+                    } catch (\Exception $e) {
+                        $status['warninings'][] = 'Error Creating User... Ignoring';
+                    }
                     $local_users->push($local_user);
                     $status['added'][] = $local_user->unique_id;
                 } else {
@@ -29,7 +30,11 @@ class PublicAPIController extends Controller
                     $diff = array_diff_assoc(array_intersect_key($remote_user,$local_user->getAttributes()),$local_user->getAttributes());
                     if (count($diff) > 0) {
                         // User Changed ... Update User
-                        $local_user->update($remote_user);
+                        try {
+                            $local_user->update($remote_user);
+                        } catch (\Exception $e) {
+                            $status['warninings'][] = 'Error Updating User... Ignoring';
+                        }    
                         $status['updated'][] = $local_user->unique_id;
                     } else {
                         // User Unchanged... Ignoring
@@ -44,14 +49,18 @@ class PublicAPIController extends Controller
     }
 
     private function sync_groups(&$remote_groups, &$local_users, &$local_groups) {
-        $status = [];
+        $status=['warnings'=>[],'updated'=>[]];
         // Add Groups / Memberships that Don't Exist
         foreach($remote_groups as $remote_group => $group_members) {
             $local_group = $local_groups->firstWhere('name', $remote_group);
             if (is_null($local_group)) {
                 // Group Does Not Exist... Creating
                 $local_group = new Group(['name'=>$remote_group]);
-                $local_group->save();
+                try {
+                    $local_group->save();
+                } catch (\Exception $e) {
+                    $status['warninings'][] = 'Error Creating Group... Ignoring';
+                }
             }
             foreach($group_members as $unique_id) {
                 $current_user = $local_users->firstWhere('unique_id',$unique_id);
@@ -64,7 +73,11 @@ class PublicAPIController extends Controller
                             'group_id' => $local_group->id,
                             'type' => 'external',
                         ]);
-                        $memberships->save();
+                        try {
+                            $memberships->save();
+                        } catch (\Exception $e) {
+                            $status['warninings'][] = 'Error During Group Membership Insert Detected... Ignoring';
+                        }
                     }
                 }
             }
@@ -91,17 +104,22 @@ class PublicAPIController extends Controller
     }
 
     public function sync(Request $request) {
-        $response = [];
-        $local_users = SimpleUser::with('group_memberships')->get();  
-        if ($request->has('users')) {
-            $remote_users = collect($request->users);
-            $response['users'] = $this->sync_users($remote_users, $local_users);
+        ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
+        try {
+            $response = [];
+            $local_users = SimpleUser::with('group_memberships')->get();  
+            if ($request->has('users')) {
+                $remote_users = collect($request->users);
+                $response['users'] = $this->sync_users($remote_users, $local_users);
+            }
+            if ($request->has('groups')) {
+                $remote_groups = $request->groups;
+                $local_groups = Group::with('group_memberships')->get();
+                $response['groups'] = $this->sync_groups($remote_groups, $local_users, $local_groups);
+            }
+            return $response;
+        } catch (\Exception $e) {
+            return ['exception'=>$e->getMessage(),'line'=>$e->getLine()];
         }
-        if ($request->has('groups')) {
-            $remote_groups = $request->groups;
-            $local_groups = Group::with('group_memberships')->get();
-            $response['groups'] = $this->sync_groups($remote_groups, $local_users, $local_groups);
-        }
-        return $response;
     }
 }

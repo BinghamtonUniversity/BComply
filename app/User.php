@@ -24,6 +24,12 @@ class User extends Authenticatable
     public function group_memberships(){
         return $this->hasMany(GroupMembership::class,'user_id');
     }
+    public function pivot_groups() {
+        return $this->belongsToMany('App\Group','group_memberships')->withPivot('type');
+    }
+    public function pivot_module_permissions() {
+        return $this->belongsToMany('App\Module','module_permissions')->withPivot('permission');
+    }
     public function assignments(){
         return $this->hasMany(ModuleAssignment::class);
     }

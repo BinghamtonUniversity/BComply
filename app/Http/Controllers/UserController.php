@@ -20,7 +20,7 @@ class UserController extends Controller
     }
 
     public function get_user(Request $request, User $user) {
-        return $user;
+        return User::where('id',$user->id)->with('pivot_groups')->with('pivot_module_permissions')->first();
     }
 
     public function add_user(Request $request) {
@@ -41,7 +41,7 @@ class UserController extends Controller
 
     public function assign_module(Request $request, User $user, ModuleVersion $module_version) {
         if ($request->has('due_date')) {
-            $due_date = $request->due_date;
+            $due_date =$request->due_date;
 //            dd()
         } else {
             $due_date = null;

@@ -14,12 +14,15 @@ class HTTPHelper {
         $username = isset($args['username'])?$args['username']:null;
         $password = isset($args['password'])?$args['password']:null;
         $mime_type = isset($args['mime_type'])?strtolower($args['mime_type']):'application/x-www-form-urlencoded';
+        $timeout = isset($args['timeout'])?$args['timeout']:300; // Default to 5 minute timeout;
 
         // Build HTTP Request
         $request_config = [];
         $request_config['ignore_errors'] = true;
         $request_config['method'] = $verb;
         $request_config['header'] = "Content-type: ".$mime_type."\r\n"."User-Agent: rest\r\n";
+        $request_config['timeout'] = $timeout;
+
         if (!is_null($username)) {
             $request_config['header'] .= "Authorization: Basic ".base64_encode($username.':'.$password)."\r\n";
         }

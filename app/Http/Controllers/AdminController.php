@@ -19,7 +19,7 @@ class AdminController extends Controller
     public function __construct() {
     }
     public function admin(Request $request) {
-        return view('default.admin',['page'=>null,'ids'=>[],'title'=>'Admin']);
+        return view('default.admin',['page'=>'dashboard','ids'=>[Auth::user()->id],'title'=>'Admin']);
     }
     public function users(Request $request) {
         $user = Auth::user();

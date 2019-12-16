@@ -5,13 +5,15 @@ ajax.get('/api/groups/'+id+'/members?simple=true',function(data) {
     actions:[
         {"name":"create","label":"Add User to Group"},
         '','',
-        {"name":"delete","label":"Remove User from Group"}
+        {"name":"delete","label":"Remove User from Group"},
     ],
     count:20,
     schema:[
         {type:"hidden", name:"id"},
         {type:"user", name:"user_id", label:"User", template:"{{#attributes.user}}{{attributes.user.first_name}} {{attributes.user.last_name}}{{/attributes.user}}{{#attributes.simple_user}}{{attributes.simple_user.first_name}} {{attributes.simple_user.last_name}}{{/attributes.simple_user}}"},
-        {type:"text",name:"type","label":"Type", show:false, parse:false},
+        {name:"type","label":"Type", show:false,type:"select",options:[
+            "internal","external"
+        ]},
     ], data: data
     }).on("model:created",function(grid_event) {
         ajax.post('/api/groups/'+id+'/members/',grid_event.model.attributes,function(data) {

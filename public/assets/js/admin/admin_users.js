@@ -15,12 +15,16 @@ user_form_attributes = [
 
 $('#adminDataGrid').html(`
 <div class="row">
-    <div class="col-sm-12 actions">
-        <div class="btn btn-success user-new">Create New User</div>
-    </div>
-</div><hr>
-<div class="row">
-    <div class="col-sm-4 user-search">
+    <div class="col-sm-4 actions">
+        <div class="row">
+            <div class="col-sm-12 user-search"></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="btn btn-success user-new">Create New User</div>
+            </div>
+        </div>
     </div>
     <div class="col-sm-8 user-view" style="display:none;">
         <div class="panel panel-default">
@@ -59,14 +63,19 @@ new gform(
     {"fields":[
         {
             "type": "user",
-            "label": "User Search",
+            "label": "Search Existing Users",
             "name": "user",
         }    
     ],
     "el":".user-search",
     "actions":[{"type":"save","label":"Submit","modifiers":"btn btn-primary"}]
 }
-).on('save',function(form_event) {
+).on('change',function(form_event) {
+    form_data = form_event.form.get();
+    if (form_data.user == null || form_data.user == '') {
+        $('.user-view').hide();
+    }
+}).on('save',function(form_event) {
     form_data = form_event.form.get();
     if (form_data.user != null && form_data.user != '') {
         user_id = form_data.user;
@@ -156,5 +165,7 @@ new gform(
             // end
 
         });
+    } else {
+        $('.user-view').hide();
     }
 });

@@ -1,5 +1,6 @@
 <?php
 chdir(dirname(__file__));
+ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
 include_once('../app/Libraries/HTTPHelper.php');
 use App\Libraries\HTTPHelper;
@@ -53,6 +54,7 @@ class BComplyUserSync {
                 'last_name' => "O'".$name,
                 'email' => $name.'@gmail.com'
             ];
+            self::$groups['STUDENTS'][] = 'B00'.$name;
         }
     }
     
