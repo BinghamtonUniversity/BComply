@@ -20,7 +20,12 @@ class UserController extends Controller
     }
 
     public function get_user(Request $request, User $user) {
-        return User::where('id',$user->id)->with('pivot_groups')->with('pivot_module_permissions')->first();
+        return User::where('id',$user->id)
+            ->with('pivot_groups')
+            ->with('pivot_module_permissions')
+            ->with('owned_modules')
+            ->with('pivot_module_assignments')
+            ->first();
     }
 
     public function add_user(Request $request) {

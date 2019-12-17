@@ -15,7 +15,7 @@ user_form_attributes = [
 
 $('#adminDataGrid').html(`
 <div class="row">
-    <div class="col-sm-4 actions">
+    <div class="col-sm-3 actions">
         <div class="row">
             <div class="col-sm-12 user-search"></div>
         </div>
@@ -26,23 +26,68 @@ $('#adminDataGrid').html(`
             </div>
         </div>
     </div>
-    <div class="col-sm-8 user-view" style="display:none;">
+    <div class="col-sm-9 user-view" style="display:none;">
+    <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading"><h3 class="panel-title">User</h3></div>
-            <div class="panel-body">
-                <div class="btn btn-default user-assignments">Manage Assignments</div>
-                <div class="btn btn-default user-groups">Manage Groups</div>
-                <div class="btn btn-danger user-delete">Delete User</div>
-            </div>
             <div class="panel-body user-edit"></div>
         </div>
+    </div>
+    <div class="col-sm-6">
         <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Permissions</h3></div>
-            <div class="panel-body user-permissions"></div>
+            <div class="panel-heading"><h3 class="panel-title">Site Permissions</h3></div>
+            <div class="panel-body user-site-permissions"></div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Module Permissions</h3></div>
+            <div class="panel-body user-module-permissions"></div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Groups</h3></div>
+            <div class="panel-body user-groups"></div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Module Assignments</h3></div>
+            <div class="panel-body user-module-assignments"></div>
+        </div>
+    </div>
     </div>
 </div>
 `);
+
+user_groups_template = `
+<ul>
+    {{#pivot_groups}}
+        <li><a href="/admin/groups/{{id}}/members">{{name}}</a> ({{pivot.type}})</li>
+    {{/pivot_groups}}
+</ul>
+{{^pivot_groups}}
+    <div class="alert alert-warning">No Group Memberships</div>
+{{/pivot_groups}}
+`;
+
+user_module_permissions_template = `
+<ul>
+    {{#owned_modules}}
+        <li><a href="/admin/modules">{{name}}</a> (owner)</li>
+    {{/owned_modules}}
+    {{#pivot_module_permissions}}
+        <li><a href="/admin/modules/{{id}}/permissions">{{name}}</a> ({{pivot.permission}})</li>
+    {{/pivot_module_permissions}}
+</ul>
+`;
+
+user_module_assignments_template = `
+<ul>
+    {{#pivot_module_assignments}}
+        <li><a href="/admin/modules/{{module_id}}/assignments">{{name}}</a> ({{pivot.status}})</li>
+    {{/pivot_module_assignments}}
+</ul>
+{{^pivot_module_assignments}}
+    <div class="alert alert-warning">No Module Assignments</div>
+{{/pivot_module_assignments}}
+<a href="/admin/users/{{id}}/assignments" class="btn btn-default">Manage Assignments</a>
+`;
 
 // Create New User
 $('.user-new').on('click',function() {
@@ -68,7 +113,9 @@ new gform(
         }    
     ],
     "el":".user-search",
-    "actions":[{"type":"save","label":"Submit","modifiers":"btn btn-primary"}]
+    "actions":[
+        {"type":"save","label":"Submit","modifiers":"btn btn-primary"}
+    ]
 }
 ).on('change',function(form_event) {
     form_data = form_event.form.get();
@@ -81,31 +128,29 @@ new gform(
         user_id = form_data.user;
         ajax.get('/api/users/'+form_data.user,function(data) {
             $('.user-view').show();
-            // Manage Assignments
-            $('.user-assignments').on('click',function() {
-                window.location = '/admin/users/'+user_id+'/assignments';
-            });
-            // Manage Groups
-            $('.user-groups').on('click',function() {
-                window.location = '/admin/users/'+user_id+'/groups';
-            });
-            // Delete User
-            $('.user-delete').on('click',function() {
-                if (confirm('Are you super sure you want to do this?  This action cannot be undone!')){
-                    ajax.delete('/api/users/'+user_id,{},function(data) {
-                        $('.user-view').hide();
-                    });
-                }
-            });
+            // Show Groups
+            $('.user-groups').html(gform.m(user_groups_template,data));
+            // Show Module Permissions
+            $('.user-module-permissions').html(gform.m(user_module_permissions_template,data));
+            // Show Module Assignments
+            $('.user-module-assignments').html(gform.m(user_module_assignments_template,data));
             // Edit User
             new gform(
                 {"fields":user_form_attributes,
                 "el":".user-edit",
                 "data":data,
                 "actions":[
-                    {"type":"save","label":"Update User","modifiers":"btn btn-primary"}
+                    {"type":"save","label":"Update User","modifiers":"btn btn-primary"},
+                    {"type":"button","label":"Delete User","action":"delete","modifiers":"btn btn-danger"}
                 ]}
-            ).on('save',function(form_event) {
+            ).on('delete',function(form_event) {
+                form_data = form_event.form.get();
+                if (confirm('Are you super sure you want to do this?  This action cannot be undone!')){
+                    ajax.delete('/api/users/'+form_data.id,{},function(data) {
+                        $('.user-view').hide();
+                    });
+                }
+            }).on('save',function(form_event) {
                 form_data = form_event.form.get();
                 ajax.put('/api/users/'+form_data.id,form_data,function(data) {});
             });
@@ -154,7 +199,7 @@ new gform(
                         ]
                     }    
                 ],
-                "el":".user-permissions",
+                "el":".user-site-permissions",
                 "data":{"permissions":data.user_permissions},
                 "actions":[
                     {"type":"save","label":"Update Permissions","modifiers":"btn btn-primary"}

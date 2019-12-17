@@ -30,6 +30,12 @@ class User extends Authenticatable
     public function pivot_module_permissions() {
         return $this->belongsToMany('App\Module','module_permissions')->withPivot('permission');
     }
+    public function pivot_module_assignments() {
+        return $this->belongsToMany('App\ModuleVersion','module_assignments')->withPivot('status');
+    }
+    public function owned_modules() {
+        return $this->hasMany('App\Module','owner_user_id');
+    }
     public function assignments(){
         return $this->hasMany(ModuleAssignment::class);
     }
