@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Module;
-use App\ModuleVersion;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\ModuleAssignment;
@@ -16,22 +14,25 @@ class UserDashboardController extends Controller
             return redirect('/demo');
         }
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
-            ->where('date_assigned','<=',now())
-            ->with('version')->get();
+            ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
+            ->with('version')->get()->unique('module_id');
+
         return view('home',['page'=>'home','assignments'=>$assignments,'user'=>Auth::user()]);
     }
+
     public function my_assignments(Request $request){
-        $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
-            ->with('version')->get();
-        return view('user_history',['page'=>'assignment','assignments'=>$assignments,'user'=>Auth::user()]);
+        $assignments = ModuleAssignment::where('user_id',Auth::user()->id)->with('version')->get();
+        $current_assignments=(Array)($this->home($request)['assignments']);
+        $user_assignments = [];
+        foreach ($assignments as $assignment){
+            if(!in_array($assignment, $current_assignments)){
+                $user_assignments[] = $assignment;
+            }
+        }
+
+        return view('user_history',['page'=>'assignment','assignments'=>$user_assignments,'user'=>Auth::user()]);
     }
     public function shop_courses(Request $request, Module $module){
-//        $assignments = ModuleVersion::where('user_id',Auth::user()->id)
-//            ->where('date_assigned','<=',now())
-//            ->with('version')->get();
-
-        $courses = Module::where('id');
-//        // return $assignments;
         return view('shop',['page'=>'shop','ids'=>[$module->id],'title'=>'Shop Courses','user'=>Auth::user()]);
     }
 

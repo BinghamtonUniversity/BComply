@@ -39,14 +39,14 @@ class DatabaseSeeder extends Seeder
         $moduleVersion = new App\ModuleVersion([
             'name' => 'Test Module',
             'module_id' => $module->id,
-            'type' => 'tincan',
+            'type' => 'articulate_tincan',
             'reference' => (Object)['filename'=>'story.html'],
         ]);
         $moduleVersion->save();
         $moduleVersion2 = new App\ModuleVersion([
             'name' => 'Test Module 2 11/18/19',
             'module_id' => $module->id,
-            'type' => 'tincan',
+            'type' => 'articulate_tincan',
             'reference' => (Object)['filename'=>'story.html'],
         ]);
         $moduleVersion2->save();

@@ -13,7 +13,7 @@ class FileUploadController extends Controller
     //
     public function upload(Request $request,Module $module,ModuleVersion $moduleVersion)
     {
-        if ($moduleVersion->type === 'tincan') {
+        if ($moduleVersion->type === 'articulate_tincan') {
             if($request->file('zipfile')->getClientOriginalExtension()==='zip'){
                 $zip = new ZipArchive();
                 $res = $zip->open($request->file('zipfile'));

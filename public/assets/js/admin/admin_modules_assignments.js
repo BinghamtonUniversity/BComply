@@ -5,7 +5,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     actions:[
         {"name":"create","label":"Add Module Assignment"},
         '',
-        // {"name":"edit"},
+        {"label":"Check as completed","name":"complete","min":1,"type":"danger"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
         '',
         {"name":"delete","label":"Remove Module Assignment"}
@@ -54,6 +54,13 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         $('#adminModal .modal-title').html('Module Report')
         $('#adminModal .modal-body').html(gform.m(template,grid_event.model.attributes));
         $('#adminModal').modal('show')
+    }).on('model:complete',function(grid_event){
+        ajax.put('/api/assignment/'+grid_event.model.attributes.id+'/complete',grid_event.model.attributes,function(data){
+            grid_event.model.attributes = data;
+            grid_event.model.draw();
+        },function (err) {
+            grid_event.model.undo();
+        })
     })
 });
 

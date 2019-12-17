@@ -7,7 +7,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         '',
         {"name":"edit","label":"Modify Module Version"},
         {"label":"Upload Module","name":"upload_module","min":1,"max":1,"type":"default"},
-        {"label":"Configure","name":"configure","min":1,"max":1,"type":"default"},
+        // {"label":"Configure","name":"configure","min":1,"max":1,"type":"default"},
         {"label":"Make Current","name":"make_current","min":1,"max":1,"type":"warning"},
         '',
         {"name":"delete","label":"Delete Module Version"}
@@ -18,7 +18,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         {type:"hidden", name:"module_id", value:id},
         {type:"text", name:"name", label:"Name"},
         {type:"select", name:"type", label:"Type",options:[
-            "tincan","youtube"
+            "articulate_tincan","youtube"
         ]},
     ], data: data
     }).on("model:edited",function(grid_event) {
@@ -85,7 +85,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         module_version_id = grid_event.model.attributes.id;
         module_version_type = grid_event.model.attributes.type;
         var form_fields = {};
-        if (module_version_type === 'tincan') {
+        if (module_version_type === 'articulate_tincan') {
             form_fields = [
                 {"type":"text","name":"filename","label":"File Name","value":"story.html","help":"This is the name of the html file"}
             ]

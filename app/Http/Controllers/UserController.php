@@ -93,8 +93,12 @@ class UserController extends Controller
         if ($assignment === false) {
             return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');
         } else if (is_null($assignment)) {
-            return response(['error'=>'The user is already assigned to this module'], 409)->header('Content-Type', 'application/json');
-        } else {
+            return response(['error'=>'The user is already assigned to this module or has not completed the assignment yet'], 409)->header('Content-Type', 'application/json');
+        }
+//        else if($assignment !== $module->current_version()){
+//            return response(['error']=>'This is not the current version')
+//        }
+        else {
             return ModuleAssignment::where('id',$assignment->id)->with('version')->with('user')->first();
         }
     }

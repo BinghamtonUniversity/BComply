@@ -1,7 +1,5 @@
 @extends('default.default')
-
 @section('title', 'Assignment History')
-
 @section('content')
     <div class="row">
         <div class="col-sm-12" style="text-align:center;">
@@ -9,21 +7,29 @@
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
                     @if(count($assignments) > 0)
-{{--                        <center><h3 style="text-align:center;">Please Select a Module</h1></center>--}}
                         <div class="list-group">
                             @foreach ($assignments as $assignment)
-                                @if(!is_null($assignment->date_completed))
-                                    @if ($assignment->version->type === 'tincan')
+                                    @if ($assignment->version->type === 'articulate_tincan')
                                         <ul class="list-group">
-                                            @if(!is_null($assignment->date_completed))
-                                                <li class="list-group-item">    <div class="badge pull-right">{{$assignment->status}} ({{$assignment->score * 100}}%)</div>
-                                            @elseif(!is_null($assignment->date_started))
-                                                <div class="badge pull-right">{{$assignment->status}}</div>
-                                            @endif
-                                                    {{$assignment->version->name}}</li>
-                                        </ul>
+                                                <li class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col-lg-10 col-sm-10">
+                                                            @if(!is_null($assignment->date_completed))
+                                                                <div class="monaco-count-badge pull-left">Completed: {{$assignment->date_completed}}</div>
+                                                                <div class="badge pull-right">Score: {{$assignment->score * 100}}%</div>
+                                                            @else
+                                                                <div class="monaco-count-badge pull-left">Expired</div>
+                                                            @endif
                                     @endif
-                                @endif
+                                                                <b>{{$assignment->version->name}}</b>
+                                                        </div>
+                                                        @if(!is_null($assignment->date_completed))
+                                                            <div class="col-lg-2 col-sm-2"><a href="">Certificate</a></div>
+                                                        @endif
+                                                    </div>
+                                                </li>
+                                        </ul>
+
                             @endforeach
                         </div>
                     @else

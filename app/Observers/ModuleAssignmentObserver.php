@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Mail\AssignmentNotification;
+use App\Mail\CompletionNotification;
 use App\Module;
 use App\ModuleAssignment;
 use App\User;
@@ -31,6 +32,18 @@ class ModuleAssignmentObserver
                 Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
             }
         }
-
+    }
+    public function saved(ModuleAssignment $moduleAssignment){
+       if($moduleAssignment->isDirty('date_completed')){
+        $module = Module::where('id','=',$moduleAssignment->module_id)->first();
+        $user = User::where('id',$moduleAssignment['user_id'])->first();
+        if($user->active){
+            $user_messages =[
+                'module_name'=> $module['name']
+//                    'certificate' => $moduleAssignment['certificate'],
+            ];
+            Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
+        }
+        }
     }
 }

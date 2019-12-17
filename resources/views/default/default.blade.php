@@ -67,9 +67,9 @@
     @if(!is_null(Auth::user()))
       <div class="sidebar col-sm-3 col-md-2 ">
         <ul class="nav nav-sidebar">
-          <li class="@if($page  =="home") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; Home</a></li>
-          <li class="@if($page  =="assignment") active @endif"><a href="/assignments"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
-          <li class="@if($page  =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Courses</a></li>
+          <li class="@if($page =="home") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; Home</a></li>
+          <li class="@if($page =="assignment") active @endif"><a href="/assignments"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
+          <li class="@if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Courses</a></li>
         </ul>
       </div>
     @endif
@@ -119,6 +119,8 @@
       }
       @if(isset($actions)) window.actions={!!json_encode($actions)!!}; @endif
     </script>
-    <script src="/assets/js/user/user_dashboard_{{$page}}.js"></script>
+    @if($page ?? ''=='shop')
+        <script src="/assets/js/user/user_dashboard_shop.js"></script>
+    @endif
 </body>
 </html>

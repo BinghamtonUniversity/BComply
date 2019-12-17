@@ -50,6 +50,7 @@ class ModuleController extends Controller
     public function add_module_version(Request $request,Module $module){
         $module_version = new ModuleVersion($request->all());
         $module_version->module_id = $module->id;
+        $module_version->reference = ['filename'=>'story.html'];
         $module_version->save();
         return $module_version;
     }

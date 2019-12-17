@@ -41,7 +41,12 @@ Route::get('/admin/bulk_assignments/{bulk_assignment}/run', ['uses'=>'AdminContr
 
 Route::get('/logout','UserDashboardController@logout');
 Route::any('/demo', ['uses' => 'DemoController@list']);
-Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');
+
+
+/* Module Assignment Running An Assignment*/
+Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run')->middleware('can:view,module_assignment');
+
+
 
 Route::group(['prefix' => 'api'], function () {
 
@@ -139,9 +144,8 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/bulk_assignments/tables', 'BulkAssignmentController@get_tables')->middleware('can:manage_bulk_assignments,  App\BulkAssignment');
     Route::get('/bulk_assignments/tables/columns', 'BulkAssignmentController@get_columns')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
 
-   Route::get('/bulk_assignments/{bulk_assignment}/execute/{test?}', 'BulkAssignmentController@execute')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+    Route::get('/bulk_assignments/{bulk_assignment}/execute/{test?}', 'BulkAssignmentController@execute')->middleware('can:manage_bulk_assignments, App\BulkAssignment');
 
-
-
-
+    /* Module Assignment Bulk Completion */
+    Route::put('/assignment/{module_assignment}/complete','ModuleAssignmentController@check_complete')->middleware('can:complete_policy, App\ModuleAssignment,module_assignment');
 });

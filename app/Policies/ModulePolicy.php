@@ -28,7 +28,6 @@ class ModulePolicy
         || $is_module_owner
         || !is_null($user->module_perms()->first())
          ){
-
             return true;
         }
     }

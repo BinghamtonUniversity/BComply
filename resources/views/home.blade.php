@@ -13,7 +13,7 @@
                 <div class="list-group">
                 @foreach ($assignments as $assignment)
                         @if(is_null($assignment->date_completed))
-                            @if ($assignment->version->type === 'tincan')
+                            @if ($assignment->version->type === 'articulate_tincan')
                                 <a class="list-group-item" href="/assignment/{{$assignment->id}}">
                                     @if(!is_null($assignment->date_completed))
                                         <div class="badge pull-right">{{$assignment->status}} ({{$assignment->score * 100}}%)</div>
