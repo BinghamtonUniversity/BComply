@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'BComply'),
+    'certificate_img_url' => env('CERT_IMG_URL', '#'),
 
     /*
     |--------------------------------------------------------------------------

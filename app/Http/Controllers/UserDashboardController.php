@@ -9,7 +9,7 @@ use App\ModuleAssignment;
 
 class UserDashboardController extends Controller
 {
-    public function home(Request $request) {
+    public function my_assignments(Request $request) {
         if (!Auth::check()) {
             return redirect('/demo');
         }
@@ -22,11 +22,11 @@ class UserDashboardController extends Controller
                 $elected_assignments[]=$assignment;
             }
         }
-        return view('home',['page'=>'home','assignments'=>$elected_assignments,'user'=>Auth::user()]);
+        return view('my_assignments',['page'=>'my_assignments','assignments'=>$elected_assignments,'user'=>Auth::user()]);
     }
 
 
-    public function my_assignments(Request $request){
+    public function assignment_history(Request $request){
         $current_assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
             ->with('version')->get()->unique('module_id');
@@ -39,7 +39,7 @@ class UserDashboardController extends Controller
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->with('version')->whereNotIn('id',$elected_assignments)->orderBy('date_assigned','desc')->get();
 
-        return view('user_history',['page'=>'assignment','assignments'=>$assignments,'user'=>Auth::user()]);
+        return view('history',['page'=>'history','assignments'=>$assignments,'user'=>Auth::user()]);
     }
 
     public function shop_courses(Request $request, Module $module){
@@ -53,7 +53,7 @@ class UserDashboardController extends Controller
     }
 
     public function admin(){
-        return redirect('home');
+        return redirect('my_assignments');
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Middleware\PublicAPIAuth;
 use App\Module;
 use App\ModuleAssignment;
 use App\User;
@@ -44,6 +45,12 @@ class ModuleAssignmentPolicy
             return true;
         }
         if ($module->owner_user_id === $user->id){
+            return true;
+        }
+        return false;
+    }
+    public function certificate_policy(User $user,ModuleAssignment $moduleAssignment){
+        if(($moduleAssignment->status==='completed')||($moduleAssignment->status==='passed')){
             return true;
         }
         return false;

@@ -23,8 +23,8 @@
 {{--                                    @endif--}}
                                                                 <b>{{$assignment->version->name}}</b>
                                                         </div>
-                                                        @if(!is_null($assignment->date_completed))
-                                                            <div class="col-lg-2 col-sm-2"><a href="">Certificate</a></div>
+                                                        @if(($assignment->status==='completed')||($assignment->status==='passed'))
+                                                            <div class="col-lg-2 col-sm-2" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate">Certificate</a></div>
                                                         @endif
                                                     </div>
                                                 </li>

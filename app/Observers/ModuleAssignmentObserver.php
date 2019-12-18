@@ -39,7 +39,7 @@ class ModuleAssignmentObserver
         $user = User::where('id',$moduleAssignment['user_id'])->first();
         if($user->active){
             $user_messages =[
-                'module_name'=> $module['name']
+                'module_name'=> $moduleAssignment->version()->first()->modules()->first()->name
 //                    'certificate' => $moduleAssignment['certificate'],
             ];
             Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));

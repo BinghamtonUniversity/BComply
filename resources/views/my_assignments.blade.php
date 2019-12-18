@@ -1,6 +1,6 @@
 @extends('default.default')
 
-@section('title', 'Home')
+@section('title', 'My Assignments')
 
 @section('content')
 <div class="row">

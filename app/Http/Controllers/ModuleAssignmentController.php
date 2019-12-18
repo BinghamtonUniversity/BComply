@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Module;
 use App\ModuleAssignment;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class ModuleAssignmentController extends Controller
 {
@@ -18,22 +21,61 @@ class ModuleAssignmentController extends Controller
             'page'=>"other"
         ]);
     }
-    public function check_complete(Request $request, ModuleAssignment $moduleAssignment){
+    public function check_complete(Request $request, ModuleAssignment $module_assignment){
 //        $activity_id_arr = explode('/',$request->object['id']);
 //        $activity_id = $activity_id_arr[0];
 //        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where('id',$activity_id)->first();
 //
 ////        $assignment->
-        if(is_null($moduleAssignment->date_completed)){
-            $moduleAssignment->date_started = now();
-            $moduleAssignment->date_completed = now();
-            $moduleAssignment->score = 0;
-            $moduleAssignment->status = 'passed';
-            $moduleAssignment->updated_by_user_id = Auth::user()->id;
-            $moduleAssignment->save();
+        if(is_null($module_assignment->date_completed)){
+            $module_assignment->date_started = now();
+            $module_assignment->date_completed = now();
+            $module_assignment->score = 0;
+            $module_assignment->status = 'completed';
+            $module_assignment->updated_by_user_id = Auth::user()->id;
+            $module_assignment->save();
         }
         else{
             return response(['error'=>'The user has already completed this module'], 409)->header('Content-Type', 'application/json');
         }
+    }
+    public function certificate(Request $request, ModuleAssignment $module_assignment){
+        if(!is_null(Auth::user())){
+            if(($module_assignment->status==='completed')||($module_assignment->status==='passed')){
+                $pdf = \App::make('dompdf.wrapper');
+                $pdf->loadHTML($this->convert_to_html($module_assignment));
+                return $pdf->stream();
+            }
+            else{
+                return response(['error'=>'The user has not completed this module'], 409)->header('Content-Type', 'application/json');
+            }
+        }
+        else{
+            return view('demo_login',['page'=>'demo','error'=>'The '.$request->accountId.' guest user account is not authorized']);
+        }
+    }
+
+    public function convert_to_html(ModuleAssignment $module_assignment){
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        $module_version = $module_assignment->version()->first();
+        $module = Module::where('id',$module_version->module_id)->first();
+
+            $output = '
+            <div style="border: solid; border-color:#005a43; text-align: center;"class="container-fluid">
+                <div class="container">
+                    <div class="row">
+                        <h3>Certificate of Completion</h3>
+                        <p>This certifies that</p>
+                        <h4>'.Auth::user()->first_name.' '.Auth::user()->last_name.'</h4>
+                        <p>completed the</p>
+                        <h3>'.$module_version->name.' '.$module->name .'</h3>
+                        <p>on '.$module_assignment->date_completed->format('m/d/y') .'</p>
+                        <p>Certifed by:</p>
+                        <img style="max-width: 150px" src="'.config('app.certificate_img_url').'">
+                        <h3>SUNY Binghamton</h3>
+                    </div>
+                </div>
+            </div>';
+        return $output;
     }
 }

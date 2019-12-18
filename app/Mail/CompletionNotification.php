@@ -23,6 +23,7 @@ class CompletionNotification extends Mailable
         $this->moduleAssignment = $moduleAssignment;
         $this->user = $user;
         $this->user_message = $user_message;
+        $this->module_name = $moduleAssignment->version()->first()->modules()->first()->name;
     }
 
     /**
@@ -32,12 +33,18 @@ class CompletionNotification extends Mailable
      */
     public function build()
     {
+        if(($this->moduleAssignment->status==='completed') || ($this->moduleAssignment->status==='passed')){
+            $subject_message = 'You have successfully completed the course'.$this->module_name;
+        }
+        else if($this->moduleAssignment->status==='failed'){
+            $subject_message = 'You have completed the course'.$this->module_name;
+        }
         return $this->view('emails.completion_notification')->with([
+                'assignment'=>$this->moduleAssignment,
                 'first_name' => $this->user->first_name,
                 'last_name' => $this->user->last_name,
-                'user_message'=>$this->user_message['module_name']
-//                'link'=>$this->user_message['link']
+                'user_message'=>$this->module_name
             ]
-        )->subject('You have successfully completed the course'.$this->user_message['module_name']);
+        )->subject($subject_message);
     }
 }
