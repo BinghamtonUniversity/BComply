@@ -9,7 +9,7 @@
                     @if(count($assignments) > 0)
                         <div class="list-group">
                             @foreach ($assignments as $assignment)
-                                    @if ($assignment->version->type === 'articulate_tincan')
+{{--                                    @if ($assignment->version->type === 'articulate_tincan')--}}
                                         <ul class="list-group">
                                                 <li class="list-group-item">
                                                     <div class="row">
@@ -20,7 +20,7 @@
                                                             @else
                                                                 <div class="monaco-count-badge pull-left">Expired</div>
                                                             @endif
-                                    @endif
+{{--                                    @endif--}}
                                                                 <b>{{$assignment->version->name}}</b>
                                                         </div>
                                                         @if(!is_null($assignment->date_completed))
@@ -29,7 +29,6 @@
                                                     </div>
                                                 </li>
                                         </ul>
-
                             @endforeach
                         </div>
                     @else

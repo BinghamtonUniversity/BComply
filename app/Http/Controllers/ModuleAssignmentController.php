@@ -19,16 +19,17 @@ class ModuleAssignmentController extends Controller
         ]);
     }
     public function check_complete(Request $request, ModuleAssignment $moduleAssignment){
+//        $activity_id_arr = explode('/',$request->object['id']);
+//        $activity_id = $activity_id_arr[0];
+//        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where('id',$activity_id)->first();
+//
+////        $assignment->
         if(is_null($moduleAssignment->date_completed)){
-            $moduleAssignment->update(
-                [
-                    'date_started'=>Carbon::now(),
-                    'date_completed'=>Carbon::now(),
-                    'score'=>1,
-                    'status'=>'passed',
-                    'updated_by_user_id'=>Auth::user()->id,
-                    'duration'=>0]
-            );
+            $moduleAssignment->date_started = now();
+            $moduleAssignment->date_completed = now();
+            $moduleAssignment->score = 0;
+            $moduleAssignment->status = 'passed';
+            $moduleAssignment->updated_by_user_id = Auth::user()->id;
             $moduleAssignment->save();
         }
         else{

@@ -60,6 +60,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
             grid_event.model.draw();
         },function (err) {
             grid_event.model.undo();
+            console.log(data.response)
         })
     })
 });

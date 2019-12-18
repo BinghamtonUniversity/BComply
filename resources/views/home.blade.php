@@ -34,7 +34,7 @@
                             @endif
                         @endif
                         @endforeach
-                        </div>
+                    </div>
                     @else
                         <div class="alert alert-warning">
                             <h4 style="margin-top:0px;">You do not have any assigned modules!</h4>

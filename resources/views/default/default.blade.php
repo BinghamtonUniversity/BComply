@@ -119,7 +119,7 @@
       }
       @if(isset($actions)) window.actions={!!json_encode($actions)!!}; @endif
     </script>
-    @if($page ?? ''=='shop')
+    @if($page =='shop')
         <script src="/assets/js/user/user_dashboard_shop.js"></script>
     @endif
 </body>

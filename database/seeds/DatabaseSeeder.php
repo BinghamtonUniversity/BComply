@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
             'unique_id' => '_demo_tim',
             'first_name' => 'Tim',
             'last_name' => 'Cortesi',
-            'email' => 'tcortesi@binghamton.edu'
+            'email' => 'alikemaltanriverdi@binghamton.edu'
         ]);
         $user1->save();
 
