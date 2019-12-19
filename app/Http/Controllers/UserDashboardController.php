@@ -15,8 +15,10 @@ class UserDashboardController extends Controller
         }
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
+//            ->whereNull('date_completed')
             ->with('version')->get()->unique('module_id');
         $elected_assignments=[];
+
         foreach ($assignments as $assignment){
             if(is_null($assignment->date_completed)){
                 $elected_assignments[]=$assignment;

@@ -44,7 +44,7 @@ ajax.get('/api/modules',function(data) {
         edit:{fields:fields},
         schema:[
             {type:"hidden", name:"id"},
-            {type:"checkbox", name:"public", label:"Public?"},
+            {type:"checkbox", name:"public", label:"Public?", template:"{{#attributes.public}}Public{{/attributes.public}}{{^attributes.public}}Private{{/attributes.public}}"},
             {type:"text", name:"name", label:"Name"},
             {type:"textarea", name:"description", label:"Description Name"},
             {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
