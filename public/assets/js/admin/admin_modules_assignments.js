@@ -5,7 +5,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     actions:[
         {"name":"create","label":"Add Module Assignment"},
         '',
-        {"label":"Check as completed","name":"complete","min":1,"type":"danger"},
+        {"label":"Mark As Completed","name":"complete","min":1,"type":"danger"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
         '',
         {"name":"delete","label":"Remove Module Assignment"}

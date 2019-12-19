@@ -8,7 +8,7 @@
                 <h4>You have completed the course: {{$user_message}}</h4>
                 <p>Status: {{$assignment->status}}</p>
             </div>
-            You can access the certificate using   <a href="http://localhost:8000/assignment/{{$assignment->id}}/certificate"> {{$user_message}}</a><br>
+            You can access the certificate using   <a href="{{url('/assignment/'.$assignment->id.'/certificate')}}"> {{$user_message}}</a><br>
         @else
         <div>
             <h4>You have completed the course: {{$user_message}}</h4>

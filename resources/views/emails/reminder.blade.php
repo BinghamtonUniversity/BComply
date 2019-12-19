@@ -19,5 +19,5 @@
 
     </div>
 
-    You can access the course using <a href="http://localhost:8000/assignment/{{$link}}"> {{$user_message}}</a><br>
+    You can access the course using <a href="{{url('/assignment/'.$link)}}"> {{$user_message}}</a><br>
 </div>

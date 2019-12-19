@@ -78,7 +78,8 @@ class Kernel extends ConsoleKernel
                     if(Carbon::parse($bulkAssignment->assignment->later_assignment_date)->isToday()){
                         $module = Module::where('id',$bulkAssignment->assignment->module_id)->with('current_version')->first();
                         if (is_null($module->module_version_id)) {
-                            return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');
+                            // Do Nothing
+                            continue;
                         }
                         $q = BulkAssignment::base_query();
                         QueryBuilder::build_where($q, $bulkAssignment->assignment);
