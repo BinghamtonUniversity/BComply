@@ -15,6 +15,13 @@ class HTTPHelper {
         $password = isset($args['password'])?$args['password']:null;
         $mime_type = isset($args['mime_type'])?strtolower($args['mime_type']):'application/x-www-form-urlencoded';
         $timeout = isset($args['timeout'])?$args['timeout']:300; // Default to 5 minute timeout;
+        $headers = null;
+        if (isset($args['headers'])) {
+            $headers = '';
+            foreach($args['headers'] as $key => $value) {
+                $headers.=$key.": ".$value."\r\n";
+            }
+        }
 
         // Build HTTP Request
         $request_config = [];
@@ -22,9 +29,16 @@ class HTTPHelper {
         $request_config['method'] = $verb;
         $request_config['header'] = "Content-type: ".$mime_type."\r\n"."User-Agent: rest\r\n";
         $request_config['timeout'] = $timeout;
-
         if (!is_null($username)) {
             $request_config['header'] .= "Authorization: Basic ".base64_encode($username.':'.$password)."\r\n";
+        }
+        if (isset($args['accept_mime_type'])) {
+            $request_config['header'] .= "Accept: ".$args['accept_mime_type']."\r\n";
+        } else if (isset($args['accept_mime_types']) && is_array($args['accept_mime_types'])) {
+            $request_config['header'] .= "Accept: ".implode(', ',$args['accept_mime_types'])."\r\n";
+        }
+        if (!is_null($headers)) {
+            $request_config['header'] .= $headers;
         }
         if ($verb == 'GET') {
             $url_parts = parse_url($url);
