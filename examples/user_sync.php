@@ -59,15 +59,16 @@ class BComplyUserSync {
     }
     
     static public function sync() {
-        self::load_users();
+        // self::load_users();
         $httphelper = new HTTPHelper();
         $response = $httphelper->http_fetch([
             'url'=>self::$bcomply_url.'/api/public/sync',
             'verb'=>'POST',
             'data'=>['users'=>self::$users,'groups'=>self::$groups],
             'mime_type'=>'application/json',
+            'accept_mime_type'=>'application/json',
             'username'=>self::$bcomply_user,
-            'password'=>self::$bcomply_pass
+            'password'=>self::$bcomply_pass,
         ]);
         var_dump($response['content']);
     }
