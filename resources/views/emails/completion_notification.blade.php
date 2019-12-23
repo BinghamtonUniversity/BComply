@@ -3,7 +3,7 @@
         <h3>Hello {{$first_name}} {{$last_name}}</h3>
     </div>
 
-        @if(($assignment->status==='completed')||($assignment->status==='passed'))
+        @if(($assignment->status==='completed')||($assignment->status==='passed') ||($assignment->status==='attended'))
             <div>
                 <h4>You have completed the course: {{$user_message}}</h4>
                 <p>Status: {{$assignment->status}}</p>
@@ -12,6 +12,7 @@
         @else
         <div>
             <h4>You have completed the course: {{$user_message}}</h4>
+
         </div>
         @endif
 </div>

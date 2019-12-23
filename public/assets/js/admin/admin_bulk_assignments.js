@@ -222,6 +222,7 @@ ajax.get('/api/bulk_assignments',function(data) {
                 "data": assignment
             }
         ).modal().on('save',function(form_event) {
+
             ajax.put('/api/bulk_assignments/'+assignment_id,{'assignment':form_event.form.get()},function(data) {
                 grid_event.model.attributes.assignment = data
                 form_event.form.trigger('close');

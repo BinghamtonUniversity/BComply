@@ -16,14 +16,14 @@
                                                         <div class="col-lg-10 col-sm-10">
                                                             @if(!is_null($assignment->date_completed))
                                                                 <div class="monaco-count-badge pull-left">Completed: {{$assignment->date_completed}}</div>
-                                                                <div class="badge pull-right">Score: {{$assignment->score * 100}}%</div>
+                                                                <div class="badge pull-right">Score: {{$assignment->score}}%</div>
                                                             @else
                                                                 <div class="monaco-count-badge pull-left">Expired</div>
                                                             @endif
 {{--                                    @endif--}}
                                                                 <b>{{$assignment->version->name}}</b>
                                                         </div>
-                                                        @if(($assignment->status==='completed')||($assignment->status==='passed'))
+                                                        @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))
                                                             <div class="col-lg-2 col-sm-2" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate">Certificate</a></div>
                                                         @endif
                                                     </div>
