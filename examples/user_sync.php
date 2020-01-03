@@ -41,7 +41,7 @@ class BComplyUserSync {
         'STAFF'=>[2,3,4],
       ];    
 
-    static private $bcomply_url = 'http://localhost:8000';
+    static private $bcomply_url = 'http://bcomplydev.us-east-1.elasticbeanstalk.com';
     static private $bcomply_user = 'defaultuser';
     static private $bcomply_pass = 'defaultpass';
     
@@ -70,7 +70,7 @@ class BComplyUserSync {
             'username'=>self::$bcomply_user,
             'password'=>self::$bcomply_pass,
         ]);
-        var_dump($response['content']);
+        var_dump($response);
     }
 }
 
