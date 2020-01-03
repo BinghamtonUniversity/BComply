@@ -1,6 +1,6 @@
 @extends('default.default')
 
-@section('title', 'Home')
+@section('title', 'My Assignments')
 
 @section('content')
 <div class="row">
@@ -12,7 +12,7 @@
                 <center><h3 style="text-align:center;">Please Select a Course To Begin</h1></center>
                 <div class="list-group">
                 @foreach ($assignments as $assignment)
-                        @if(is_null($assignment->date_completed))
+{{--                        @if(is_null($assignment->date_completed))--}}
                             @if ($assignment->version->type === 'articulate_tincan')
                                 <a class="list-group-item" href="/assignment/{{$assignment->id}}">
                                     @if(!is_null($assignment->date_completed))
@@ -32,9 +32,9 @@
                                     {{$assignment->version->name}}
                                 </a>
                             @endif
-                        @endif
+{{--                        @endif--}}
                         @endforeach
-                        </div>
+                    </div>
                     @else
                         <div class="alert alert-warning">
                             <h4 style="margin-top:0px;">You do not have any assigned modules!</h4>

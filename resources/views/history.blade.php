@@ -9,27 +9,26 @@
                     @if(count($assignments) > 0)
                         <div class="list-group">
                             @foreach ($assignments as $assignment)
-                                    @if ($assignment->version->type === 'articulate_tincan')
+{{--                                    @if ($assignment->version->type === 'articulate_tincan')--}}
                                         <ul class="list-group">
                                                 <li class="list-group-item">
                                                     <div class="row">
                                                         <div class="col-lg-10 col-sm-10">
                                                             @if(!is_null($assignment->date_completed))
                                                                 <div class="monaco-count-badge pull-left">Completed: {{$assignment->date_completed}}</div>
-                                                                <div class="badge pull-right">Score: {{$assignment->score * 100}}%</div>
+                                                                <div class="badge pull-right">Score: {{$assignment->score}}%</div>
                                                             @else
                                                                 <div class="monaco-count-badge pull-left">Expired</div>
                                                             @endif
-                                    @endif
+{{--                                    @endif--}}
                                                                 <b>{{$assignment->version->name}}</b>
                                                         </div>
-                                                        @if(!is_null($assignment->date_completed))
-                                                            <div class="col-lg-2 col-sm-2"><a href="">Certificate</a></div>
+                                                        @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))
+                                                            <div class="col-lg-2 col-sm-2" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate">Certificate</a></div>
                                                         @endif
                                                     </div>
                                                 </li>
                                         </ul>
-
                             @endforeach
                         </div>
                     @else

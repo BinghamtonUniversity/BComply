@@ -13,12 +13,14 @@ class FileUploadController extends Controller
     //
     public function upload(Request $request,Module $module,ModuleVersion $moduleVersion)
     {
+
         if ($moduleVersion->type === 'articulate_tincan') {
+//            dd(storage_path('app'));
             if($request->file('zipfile')->getClientOriginalExtension()==='zip'){
                 $zip = new ZipArchive();
                 $res = $zip->open($request->file('zipfile'));
                 if ($res === TRUE) {
-                    $zip->extractTo('storage/modules/' . $module->id . '/versions/' . $moduleVersion->id);
+                    $zip->extractTo(storage_path('app/public/modules/') . $module->id . '/versions/' . $moduleVersion->id);
                     $zip->close();
                     echo 'ok';
                }

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Middleware\PublicAPIAuth;
 use App\Module;
 use App\ModuleAssignment;
 use App\User;
@@ -20,11 +21,16 @@ class ModuleAssignmentPolicy
      */
     public function view(User $user, ModuleAssignment $moduleAssignment)
     {
-        $assignments = ModuleAssignment::where('user_id', Auth::user()->id)
-            ->where('date_assigned', '<=', now())->orderBy('date_assigned', 'desc')
+        $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
+            ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
             ->with('version')->get()->unique('module_id');
-
-        if(!is_null($assignments->where('id', $moduleAssignment->id)->first())){
+        $elected_assignments=[];
+        foreach ($assignments as $assignment){
+            if(is_null($assignment->date_completed)){
+                $elected_assignments[]=$assignment->id;
+            }
+        }
+        if(in_array($moduleAssignment->id, $elected_assignments)){
             return true;
         }
     }
@@ -39,6 +45,12 @@ class ModuleAssignmentPolicy
             return true;
         }
         if ($module->owner_user_id === $user->id){
+            return true;
+        }
+        return false;
+    }
+    public function certificate_policy(User $user,ModuleAssignment $moduleAssignment){
+        if(($moduleAssignment->status==='completed')||($moduleAssignment->status==='passed')){
             return true;
         }
         return false;

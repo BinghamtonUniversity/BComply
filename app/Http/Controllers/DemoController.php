@@ -25,7 +25,7 @@ class DemoController extends Controller
                 return view('demo_login',['page'=>'demo','error'=>'The '.$request->accountId.' guest user account is not authorized']);
             }
         } else {
-            return view('demo_login');
+            return view('demo_login',['page'=>'demo','error'=>'The '.$request->accountId.' guest user account is not authorized']);
         }
     }
 }

@@ -12,8 +12,8 @@
 */
 
 /* User Pages */
-Route::get('/',['uses' => 'UserDashboardController@home']);
-Route::get('/assignments', ['uses'=>'UserDashboardController@my_assignments']);
+Route::get('/',['uses' => 'UserDashboardController@my_assignments']);
+Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
 Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
 
 
@@ -45,7 +45,7 @@ Route::any('/demo', ['uses' => 'DemoController@list']);
 
 /* Module Assignment Running An Assignment*/
 Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run')->middleware('can:view,module_assignment');
-
+Route::get('/assignment/{module_assignment}/certificate', 'ModuleAssignmentController@certificate')->middleware('can:certificate_policy,module_assignment');
 
 
 Route::group(['prefix' => 'api'], function () {
@@ -148,4 +148,7 @@ Route::group(['prefix' => 'api'], function () {
 
     /* Module Assignment Bulk Completion */
     Route::put('/assignment/{module_assignment}/complete','ModuleAssignmentController@check_complete')->middleware('can:complete_policy, App\ModuleAssignment,module_assignment');
+
+
+//    Route::get('/assignment/{module_assignment}/pdf','')
 });

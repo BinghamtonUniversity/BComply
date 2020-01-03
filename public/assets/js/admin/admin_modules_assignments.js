@@ -5,7 +5,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     actions:[
         {"name":"create","label":"Add Module Assignment"},
         '',
-        {"label":"Check as completed","name":"complete","min":1,"type":"danger"},
+        {"label":"Mark As Completed","name":"complete","min":1,"type":"danger"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
         '',
         {"name":"delete","label":"Remove Module Assignment"}
@@ -23,6 +23,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         }},
         {type:"text", parse:false,show:false, name:"date_started", label:"Date Started"},
         {type:"text", parse:false,show:false, name:"date_completed", label:"Date Completed"},
+
     ], data: data
     }).on("model:deleted",function(grid_event) {
         ajax.delete('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
@@ -54,12 +55,51 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         $('#adminModal .modal-title').html('Module Report')
         $('#adminModal .modal-body').html(gform.m(template,grid_event.model.attributes));
         $('#adminModal').modal('show')
-    }).on('model:complete',function(grid_event){
-        ajax.put('/api/assignment/'+grid_event.model.attributes.id+'/complete',grid_event.model.attributes,function(data){
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
-        },function (err) {
-            grid_event.model.undo();
+    }).on('model:complete',function(grid_event) {
+        data = grid_event.model.attributes.assignment || {};
+        new gform(
+            {
+                "fields": [
+                    {
+                        "type": "radio",
+                        "label": "Status",
+                        "name": "status",
+                        "options": [
+                            {
+                                "label": "Attended",
+                                "value": "attended"
+                            },
+                            {
+                                "label": "Completed",
+                                "value": "completed"
+                            },
+                            {
+                                "label": "Passed",
+                                "value": "passed"
+                            }
+                        ]
+                    },
+                    {
+                        "type":"text",
+                        "label":"Score",
+                        "name":"score",
+                        "value":100,
+                    }
+                ],
+                "data": data
+            })
+            .modal().on('save', function (form_event) {
+            console.log(form_event.form.get());
+            ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
+                grid_event.model.attributes.assignment = data;
+                grid_event.model.draw();
+                form_event.form.trigger('close');
+            }, function (err) {
+                grid_event.model.undo();
+                // console.log(data.response)
+            })
+        }).on('cancel', function (form_event) {
+            form_event.form.trigger('close');
         })
     })
 });

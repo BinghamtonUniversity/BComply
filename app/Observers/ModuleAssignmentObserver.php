@@ -35,11 +35,11 @@ class ModuleAssignmentObserver
     }
     public function saved(ModuleAssignment $moduleAssignment){
        if($moduleAssignment->isDirty('date_completed')){
-        $module = Module::where('id','=',$moduleAssignment->module_id)->first();
+        $module_name = Module::where('id','=',$moduleAssignment->module_id)->first();
         $user = User::where('id',$moduleAssignment['user_id'])->first();
         if($user->active){
             $user_messages =[
-                'module_name'=> $module['name']
+                'module_name'=> $module_name->name
 //                    'certificate' => $moduleAssignment['certificate'],
             ];
             Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
