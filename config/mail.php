@@ -2,6 +2,9 @@
 
 return [
 
+    'limit_send' => env('MAIL_LIMIT_SEND',false),
+    'limit_allow' => explode(',',env('MAIL_LIMIT_ALLOW','')),
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver

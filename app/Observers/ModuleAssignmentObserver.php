@@ -29,7 +29,12 @@ class ModuleAssignmentObserver
                     'module_name'=> $module['name'],
                     'link' => $moduleAssignment['id'],
                 ];
-                Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+                // Check This?? Only send emails if emails are enabled for that user in the config / .env file.
+                if ((config('mail.limit_send') === true && in_array($user->email,config('mail.limit_allow'))) || 
+                     config('mail.limit_send') === false ) {
+                    // Send Email
+                    Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+                }
             }
         }
     }
