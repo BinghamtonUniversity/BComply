@@ -20,7 +20,7 @@ class FileUploadController extends Controller
                 $zip = new ZipArchive();
                 $res = $zip->open($request->file('zipfile'));
                 if ($res === TRUE) {
-                    $zip->extractTo(storage_path('app/public/modules/') . $module->id . '/versions/' . $moduleVersion->id);
+                    $zip->extractTo(config('disks.local.root').'/public/modules/'.$module->id.'/versions/'.$moduleVersion->id);
                     $zip->close();
                     echo 'ok';
                }
