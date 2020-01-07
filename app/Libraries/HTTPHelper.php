@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\Libraries;
-
-use Illuminate\Support\Facades\Log;
+//namespace App\Libraries;
+//
+//use Illuminate\Support\Facades\Log;
 
 class HTTPHelper {
 
