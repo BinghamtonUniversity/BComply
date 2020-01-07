@@ -119,8 +119,8 @@
       }
       @if(isset($actions)) window.actions={!!json_encode($actions)!!}; @endif
     </script>
-{{--    @if($page ==='shop')--}}
+    @if($page ==='shop' || $page==='modules_assignments')
         <script src="/assets/js/user/user_dashboard_{{$page}}.js"></script>
-{{--    @endif--}}
+    @endif
 </body>
 </html>
