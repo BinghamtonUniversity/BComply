@@ -28,7 +28,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
-        ajax.post('/api/modules/'+id+'/versions/',grid_event.model.attributes,function(data) {
+        ajax.post('/api/modules/'+id+'/versions',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
         },function(data) {
             grid_event.model.undo();

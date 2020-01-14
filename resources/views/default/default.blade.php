@@ -59,6 +59,10 @@
                 </ul>
               @endif
             </li>
+            <li class="visible-xs-block">&nbsp;</li>
+            <li class="visible-xs-block @if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; Home</a></li>
+            <li class="visible-xs-block @if($page  =="history") active @endif"><a href="/history"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
+            <li class="visible-xs-block @if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Courses</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -79,20 +83,6 @@
       <div class="row">
         <div class="col-sm-12 admin-main">
           <div id="content">
-            <nav aria-label="breadcrumb">
-              <?php $crumbs = explode('_',$assignment ?? '' ?? ''); ?>
-              <ol class="breadcrumb">
-                @if (isset($ids))
-                  @foreach($crumbs as $index => $crumb)
-                    <li class="breadcrumb-item"><a href="/admin<?php
-                      for($i=0;$i<=$index;$i++) {
-                        echo (isset($ids[$i-1])?('/'.$ids[$i-1]):'').'/'.$crumbs[$i];
-                      }
-                      ?>">{{ucwords($crumb)}}</a></li>
-                  @endforeach
-                @endif
-              </ol>
-            </nav>
             @if(isset($help))
               <div class="alert alert-info">{{$help}}</div>
             @endif
