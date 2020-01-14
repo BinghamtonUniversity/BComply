@@ -100,7 +100,7 @@ $('.user-new').on('click',function() {
             {"type":"save"}
         ]}
     ).modal().on('save',function(form_event) {
-        ajax.post('/api/users/',form_event.form.get(),function(data) {
+        ajax.post('/api/users',form_event.form.get(),function(data) {
             form_event.form.trigger('close');
         });
     });
