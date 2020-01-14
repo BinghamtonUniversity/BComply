@@ -15,7 +15,14 @@ class DatabaseSeeder extends Seeder
             'unique_id' => '_demo_tim',
             'first_name' => 'Tim',
             'last_name' => 'Cortesi',
-            'email' => 'alikemaltanriverdi@binghamton.edu'
+            'email' => 'alikemaltanriverdi@gmail.com',
+            'title'=>'Assistant Director',
+            'payroll_code'=>12342123,
+            'supervisor'=>'Michael Allington',
+            'department_id'=>'123',
+            'department_name'=>'ITS',
+            'division_id'=>'2',
+            'division'=>'ITS'
         ]);
         $user1->save();
 
@@ -23,7 +30,14 @@ class DatabaseSeeder extends Seeder
             'unique_id' => '_demo_ali',
             'first_name' => 'Ali',
             'last_name' => 'Tanriverdi',
-            'email' => 'atanrive@binghamton.edu'
+            'email' => 'atanrive@binghamton.edu',
+            'title'=>'Software Developer',
+            'payroll_code'=>12342123,
+            'supervisor'=>'Tim Cortesi',
+            'department_id'=>'123',
+            'department_name'=>'ITS',
+            'division_id'=>'2',
+            'division'=>'ITS'
         ]);
         $user2->save();
 

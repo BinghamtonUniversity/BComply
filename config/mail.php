@@ -2,7 +2,7 @@
 
 return [
 
-    'limit_send' => env('MAIL_LIMIT_SEND',false),
+    'limit_send' => env('MAIL_LIMIT_SEND',true),
     'limit_allow' => explode(',',env('MAIL_LIMIT_ALLOW','')),
 
     /*

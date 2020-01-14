@@ -2,14 +2,16 @@ gform.options = {autoFocus:false};
 user_form_attributes = [
     {type:"hidden", name:"id"},
     {type:"checkbox", name:"active", label:"Active", value:true},
+    {type:"text", name:"unique_id", label:"Unique ID"},
     {type:"text", name:"first_name", label:"First Name"},
     {type:"text", name:"last_name", label:"Last Name"},
-    {type:"text", name:"unique_id", label:"Unique ID"},
     {type:"email", name:"email", label:"Email"},
-    {type:"text", name:"code", label:"Code"},
+    {type:"text", name:"payroll_code", label:"Payroll Code"},
     {type:"text", name:"supervisor", label:"Supervisor"},
-    {type:"text", name:"department", label:"Department"},
-    {type:"text", name:"division", label:"Division"},
+    {type:"text", name:"department_id", label:"Department ID"},
+    {type:"text", name:"department_name", label:"Department Name"},
+    {type:"text", name:"division_id", label:"Division ID"},
+    {type:"text", name:"division", label:"Division Name"},
     {type:"text", name:"title", label:"Title"},
 ];
 

@@ -19,9 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('first_name')->nullable()->default(null);
             $table->string('last_name')->nullable()->default(null);
             $table->string('email')->unique()->nullable()->default(null);
-            $table->string('code')->nullable();
+            $table->string('payroll_code')->nullable();
             $table->string('supervisor')->nullable();
-            $table->string('department')->nullable();
+            $table->string('department_id')->nullable();
+            $table->string('department_name')->nullable();
+            $table->string('division_id')->nullable();
             $table->string('division')->nullable();
             $table->string('title')->nullable();
             $table->boolean('active')->nullable(false)->default(true);
