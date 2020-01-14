@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
             'unique_id' => '_demo_tim',
             'first_name' => 'Tim',
             'last_name' => 'Cortesi',
-            'email' => 'alikemaltanriverdi@gmail.com',
+            'email' => 'tcortesi@binghamton.edu',
             'title'=>'Assistant Director',
             'payroll_code'=>12342123,
             'supervisor'=>'Michael Allington',

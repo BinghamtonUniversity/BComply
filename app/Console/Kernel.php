@@ -34,68 +34,53 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
-//        //Assignment Reminder Scheduler
+        // Assignment Reminder Scheduler
         $schedule->call(function(){
             $modules = Module::all();
             $module_assignments = ModuleAssignment::whereNull('date_completed')->with('user')->get();
-
             //Checks all of the assignment due dates to send emails to users
             foreach($module_assignments as $assignment){
                 $module = $modules->where('id',$assignment->module_id)->first();
                 $user = $assignment->user()->where('id',$assignment->user_id)->first();
-
-                    if($user->active){
-
-                        $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
-
-                        if($differenceInDays>0){
-
-                            if($module->past_due){
-                                if(in_array($differenceInDays,$module->reminders) || in_array($differenceInDays,$module->past_due_reminders) ){
-//                                    dd('Past: '.$differenceInDays);
-                                    $user_messages =[
-                                        'module_name'=> $module['name'],
-                                        'link' => $assignment['id'],
-                                        'hours'=> 0
-                                    ];
-                                    Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
-                                }
-                            }else{
-                                if(($assignment->date_due>Carbon::now()) && in_array($differenceInDays,$module->reminders)){
-//                                    dd('Before: '.$differenceInDays);
-                                    $user_messages =[
-                                        'module_name'=> $module['name'],
-                                        'link' => $assignment['id'],
-                                        'hours'=> 0
-                                    ];
-                                    Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
-                                }
-                            }
-
-                        }
-                        else{
-                            if($assignment->date_due > Carbon::now()){
+                if($user->active && $user->send_email_check()){
+                    $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
+                    if($differenceInDays>0){
+                        if($module->past_due){
+                            if(in_array($differenceInDays,$module->reminders) || in_array($differenceInDays,$module->past_due_reminders) ){
                                 $user_messages =[
                                     'module_name'=> $module['name'],
                                     'link' => $assignment['id'],
-                                    'hours'=> 'Today'
+                                    'hours'=> 0
+                                ];
+                                Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
+                            }
+                        }else{
+                            if(($assignment->date_due>Carbon::now()) && in_array($differenceInDays,$module->reminders)){
+                                $user_messages =[
+                                    'module_name'=> $module['name'],
+                                    'link' => $assignment['id'],
+                                    'hours'=> 0
                                 ];
                                 Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
                             }
                         }
                     }
+                    else{
+                        if($assignment->date_due > Carbon::now()){
+                            $user_messages =[
+                                'module_name'=> $module['name'],
+                                'link' => $assignment['id'],
+                                'hours'=> 'Today'
+                            ];
+                            Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
+                        }
+                    }
                 }
-//            }
+            }
         })->everyMinute();
-        //dailyAt('8:00')->timezone('America/New_York');
-
-//        $schedule->call(func())
-
         //Bulk Assignment Scheduler
         $schedule->call(function(){
             $bulkAssignments = BulkAssignment::whereJsonContains('assignment',['later_date'=>true])->get();
-
             if(!is_null($bulkAssignments)){
                 foreach($bulkAssignments as $bulkAssignment){
                     if(Carbon::parse($bulkAssignment->assignment->later_assignment_date)->isToday()){
