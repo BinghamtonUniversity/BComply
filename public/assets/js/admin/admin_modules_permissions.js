@@ -17,8 +17,7 @@ ajax.get('/api/modules/'+id+'/permissions',function(data) {
         ]},
     ], data: data
     }).on("model:created",function(grid_event) {
-        console.log(id);
-        ajax.put('/api/modules/'+id+'/permissions/',grid_event.model.attributes,function(data) {
+        ajax.put('/api/modules/'+id+'/permissions',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
             grid_event.model.draw();
         },function(data) {
