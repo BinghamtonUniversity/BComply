@@ -20,7 +20,11 @@ class DemoController extends Controller
 
             if (!is_null($user)) {
                 Auth::login($user,true);
-                return redirect('/');
+                if ($request->has('redirect')) {
+                    return redirect($request->redirect);
+                } else {
+                    return redirect('/');
+                }
             } else {
                 return view('demo_login',['page'=>'demo','error'=>'The '.$request->accountId.' guest user account is not authorized']);
             }

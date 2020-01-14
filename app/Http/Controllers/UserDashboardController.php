@@ -11,9 +11,6 @@ use App\ModuleAssignment;
 class UserDashboardController extends Controller
 {
     public function my_assignments(Request $request) {
-        if (!Auth::check()) {
-            return redirect('/demo');
-        }
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
 //            ->whereNull('date_completed')
