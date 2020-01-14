@@ -47,7 +47,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         body = `
         <form id="module_form_upload" method="post" enctype="multipart/form-data">
         <input type="file" name="zipfile" />
-        <input type="submit" value="save" name="submit" />
+        <input type="submit" class="btn btn-primary" value="Upload" name="submit" />
         </form>
         `;
         $('#adminModal .modal-title').html('Dumb Uploader')
@@ -74,6 +74,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
             then(response => {
                 if(response.status==200){
                     toastr.success("Success");
+                    $('#adminModal').modal('hide')
                 }
                 else{
                     toastr.error(response.statusText)
