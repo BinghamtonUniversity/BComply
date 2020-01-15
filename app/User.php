@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $fillable = ['unique_id','first_name', 'last_name','email','code','supervisor','department','division','title','active'];
+    protected $fillable = ['unique_id','first_name', 'last_name','email','payroll_code','supervisor','department_id','department_name','division_id','division','negotiating_unit','title','active'];
     protected $hidden = ['password', 'remember_token','created_at','updated_at','user_perms','module_perms'];
     protected $casts = ['active'=>'boolean'];
     protected $appends = ['user_permissions','module_permissions'];
