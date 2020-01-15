@@ -15,14 +15,15 @@ class DatabaseSeeder extends Seeder
             'unique_id' => '_demo_tim',
             'first_name' => 'Tim',
             'last_name' => 'Cortesi',
-            'email' => 'tcortesi@binghamton.edu',
+            'email' => 'atanriv1@binghamton.edu',
             'title'=>'Assistant Director',
             'payroll_code'=>12342123,
             'supervisor'=>'Michael Allington',
             'department_id'=>'123',
             'department_name'=>'ITS',
             'division_id'=>'2',
-            'division'=>'ITS'
+            'division'=>'ITS',
+            'negotiation_unit'=>'90'
         ]);
         $user1->save();
 
@@ -37,7 +38,8 @@ class DatabaseSeeder extends Seeder
             'department_id'=>'123',
             'department_name'=>'ITS',
             'division_id'=>'2',
-            'division'=>'ITS'
+            'division'=>'ITS',
+            'negotiation_unit'=>'90'
         ]);
         $user2->save();
 
@@ -66,7 +68,6 @@ class DatabaseSeeder extends Seeder
         $moduleVersion2->save();
 
 
-
         $moduleAssignment1 = new App\ModuleAssignment([
             'user_id' => $user1->id,
             'module_version_id' => $moduleVersion->id,
@@ -85,15 +86,15 @@ class DatabaseSeeder extends Seeder
             'assigned_by_user_id' => $user1->id,
         ]);
         $moduleAssignment2->save();
-        $moduleAssignment3 = new App\ModuleAssignment([
-            'user_id' => $user1->id,
-            'module_version_id' => $moduleVersion2->id,
-            'module_id' => $moduleVersion2->module_id,
-            'date_assigned' => now(),
-            'date_due' => now()->addDays(30),
-            'assigned_by_user_id' => $user1->id,
-        ]);
-        $moduleAssignment3->save();
+//        $moduleAssignment3 = new App\ModuleAssignment([
+//            'user_id' => $user1->id,
+//            'module_version_id' => $moduleVersion2->id,
+//            'module_id' => $moduleVersion2->module_id,
+//            'date_assigned' => now(),
+//            'date_due' => now()->addDays(30),
+//            'assigned_by_user_id' => $user1->id,
+//        ]);
+//        $moduleAssignment3->save();
 
         $userPermission1 = new App\UserPermission([
             'user_id' => $user1->id,

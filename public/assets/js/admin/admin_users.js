@@ -12,6 +12,7 @@ user_form_attributes = [
     {type:"text", name:"department_name", label:"Department Name"},
     {type:"text", name:"division_id", label:"Division ID"},
     {type:"text", name:"division", label:"Division Name"},
+    {type:"text", name:"negotiation_unit", label:"Negotiation Unit"},
     {type:"text", name:"title", label:"Title"},
 ];
 
