@@ -61,6 +61,21 @@
                 <li><a href="/"><i class="fa fa-arrow-left"></i> Home</a></li>
                 <li><a href="{{ url('/logout') }}"><i class="fa fa-times-circle"></i> Logout</a></li>
               </ul>
+              @can('view_in_admin','App\User')
+                  <li class=" visible-xs-block @if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
+              @endcan
+              @can('view_in_admin','App\Group')
+                  <li class="visible-xs-block @if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
+              @endcan
+              @can('view_in_admin','App\Module')
+                  <li class="visible-xs-block @if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
+              @endcan
+              @can('view_reports','App\Report')
+                  <li class="visible-xs-block @if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
+              @endcan
+              @can('manage_bulk_assignments','App\BulkAssignment')
+                  <li class="visible-xs-block @if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Bulk Assignments</a></li>
+                  @endcan
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right visible-xs-block">

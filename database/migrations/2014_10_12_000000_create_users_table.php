@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('department_name')->nullable();
             $table->string('division_id')->nullable();
             $table->string('division')->nullable();
-            $table->string('negotiating_unit')->nullable();
+            $table->string('negotiation_unit')->nullable();
             $table->string('title')->nullable();
             $table->boolean('active')->nullable(false)->default(true);
             $table->rememberToken();

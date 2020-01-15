@@ -37,7 +37,7 @@ class ModuleAssignmentObserver
         if($moduleAssignment->isDirty('date_completed')){
             $module_name = Module::where('id','=',$moduleAssignment->module_id)->first();
             $user = User::where('id',$moduleAssignment['user_id'])->first();
-            if($user->active && $user->send_email_check()){
+            if($user->active && !$user->send_email_check()){
                 $user_messages =[
                     'module_name'=> $module_name->name
                 ];
