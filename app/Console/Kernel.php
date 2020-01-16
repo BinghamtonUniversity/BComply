@@ -77,7 +77,7 @@ class Kernel extends ConsoleKernel
                     }
                 }
             }
-        })->everyMinute();
+        })->dailyAt(config('app.daily_task'))->timezone('America/New_York');
         //Bulk Assignment Scheduler
         $schedule->call(function(){
             $bulkAssignments = BulkAssignment::whereJsonContains('assignment',['later_date'=>true])->get();
@@ -109,7 +109,7 @@ class Kernel extends ConsoleKernel
 
                 }
             }
-        })->dailyAt('2:00')->timezone('America/New_York');
+        })->dailyAt(config('app.bulk_assignment_scheduler'))->timezone('America/New_York');
     }
 
     /**

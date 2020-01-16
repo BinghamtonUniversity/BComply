@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'BComply'),
     'certificate_img_url' => env('CERT_IMG_URL', '#'),
+    'assignment_reminder_task'=>env('ASSIGNMENT_REMINDER_TASK_RUN','2:00'),
+    'bulk_assignment_scheduler'=>env('BULK_ASSIGNMENT_SCHEDULE_RUN','2:30'),
 
     /*
     |--------------------------------------------------------------------------
