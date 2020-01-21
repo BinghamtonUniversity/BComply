@@ -58,7 +58,37 @@ class ModuleAssignmentController extends Controller
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
         $module_version = $module_assignment->version()->first();
         $module = Module::where('id',$module_version->module_id)->first();
-
+        if(isset($module->templates->certificate) && !is_null($module->templates->certificate)){
+            $m = new \Mustache_Engine;
+            $custom_certificate = $m->render($module->templates->certificate,
+                [
+                    'user'=>[
+                        'first_name'=> Auth::user()->first_name,
+                        'last_name'=>Auth::user()->last_name,
+                    ],
+                    'module'=>[
+                        'name'=>$module->name,
+                        'version_name'=>$module_version->name
+                    ],
+                    'assignment'=>[
+                        'date_completed'=>$module_assignment->date_completed->format('m/d/y')
+                    ]
+                ]);
+            $output = '
+            <div class="container-fluid" 
+            style="border: solid; 
+            border-color:#005a43; 
+            text-align: center;">
+                <div class="container">
+                    <div class="row">
+                        '.$custom_certificate.'
+                        <img style="max-width: 150px" src="'.config('app.certificate_img_url').'">
+                        <h3>SUNY Binghamton</h3>
+                    </div>
+                </div>
+            </div>';
+        }
+        else{
             $output = '
             <div style="border: solid; border-color:#005a43; text-align: center;"class="container-fluid">
                 <div class="container">
@@ -75,6 +105,8 @@ class ModuleAssignmentController extends Controller
                     </div>
                 </div>
             </div>';
+        }
+
         return $output;
     }
 }

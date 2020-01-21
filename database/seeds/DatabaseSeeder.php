@@ -49,6 +49,14 @@ class DatabaseSeeder extends Seeder
             'owner_user_id' => $user1->id,
             'message_configuration' => (Object)[],
             'assignment_configuration' => (Object)[],
+            'templates' => (Object)[
+                'assignment'=>'Welcome {{user.first_name}} {{user.last_name}} to {{module.name}}
+Due date {{module.due_date}}',
+                'reminder' => 'Welcome {{user.first_name}} {{user.last_name}} to {{module.name}}
+Due date {{module.due_date}}',
+                'completion_notification'=>'Welcome {{user.first_name}} {{user.last_name}} to {{module.name}}
+Due date {{module.due_date}}'
+                ]
         ]);
         $module->save();
 

@@ -1,5 +1,6 @@
 ajax.get('/api/modules',function(data) {
-    fields = [
+    // debugger;
+    create_fields = [
         {type:"hidden", name:"id"},
         {type:"checkbox", name:"public", label:"Public?","columns":6},
         {type:"checkbox", name:"past_due", label:"Allow After Due",columns:6},
@@ -73,6 +74,58 @@ ajax.get('/api/modules',function(data) {
             ],
             "help":"Please select the days after the due you would like to remind the users"
         },
+        {
+            "name": "templates",
+            "type": "fieldset",
+            "editable":true,
+            "label": "Email Templates",
+            "fields": [
+                {
+                    "type":"textarea",
+                    "name":"reminder",
+                    "id":"reminder",
+                    "label":"Assignment Reminder Template",
+                    "template": "{{attributes.templates.reminder}}"
+                },
+                {
+                    "type":"textarea",
+                    "name":"past_due_reminder",
+                    "id":"past_due_reminder",
+                    "label":"Assignment Past Due Reminder Template",
+                    "template": "{{attributes.templates.past_due_reminder}}",
+                    "show": [
+                            {
+                                "name": "past_due",
+                                "type": "matches",
+                                "value": [
+                                    true
+                                ]
+                            }
+                        ]
+                },
+                {
+                    "type":"textarea",
+                    "name":"completion_notification",
+                    "id":"completion_notification",
+                    "label":"Assignment Complation Template",
+                    "template": "{{attributes.templates.completion_notification}}"
+                },
+                {
+                    "type":"textarea",
+                    "name":"assignment",
+                    "id":"completion_notification",
+                    "label":"Assignment Notification Template",
+                    "template": "{{attributes.templates.assignment}}",
+                },
+                {
+                    "type":"textarea",
+                    "name":"certificate",
+                    "id":"certificate",
+                    "label":"Completion Certificate Template",
+                    "template": "{{attributes.templates.certificate}}"
+                }
+            ]
+        },
         {type:"text", show:false, parse:false, name:"current", label:"Current Version", template:"{{attributes.current_version.name}}"},
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
@@ -80,8 +133,8 @@ ajax.get('/api/modules',function(data) {
         entries:[],
         actions:actions,
         count:20,
-        create:{fields:fields},
-        edit:{fields:fields},
+        create:{fields:create_fields},
+        edit:{fields:create_fields},
         schema:[
             {type:"hidden", name:"id"},
             {type:"checkbox", name:"public", label:"Public?", template:"{{#attributes.public}}Public{{/attributes.public}}{{^attributes.public}}Private{{/attributes.public}}"},
@@ -99,7 +152,7 @@ ajax.get('/api/modules',function(data) {
                 "label":"Post Due Reminders (Days)",
             },
             {type:"text", show:false, parse:false, name:"current", label:"Current Version", template:"{{attributes.current_version.name}}"},
-            {type:"checkbox", name:"past_due", label:"Past Due?",template:"{{#attributes.past_due}}Yes{{/attributes.past_due}}{{^attributes.past_due}}No{{/attributes.past_due}}"}
+            {type:"checkbox", name:"past_due", label:"Past Due?",template:"{{#attributes.past_due}}Yes{{/attributes.past_due}}{{^attributes.past_due}}No{{/attributes.past_due}}"},
         ],data: data
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/modules/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
