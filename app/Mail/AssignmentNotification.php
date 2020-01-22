@@ -16,10 +16,24 @@ class AssignmentNotification extends Mailable
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param ModuleAssignment $moduleAssignment
+     * @param User $user
+     * @param array $user_message
      */
     public function __construct(ModuleAssignment $moduleAssignment, User $user, Array $user_message)
     {
+        $m = new \Mustache_Engine;
+        $this->content = $m->render($user_message['assignment'],[
+            'user'=>[
+                'first_name'=> $user->first_name,
+                'last_name'=>$user->last_name,
+            ],
+            'module'=>[
+                'name'=>$user_message['module_name'],
+                'due_date'=>$moduleAssignment->date_due->format('m/d/y')
+            ],
+            'link'=>url('/assignment/'.$user_message['link'])
+        ]);
         $this->moduleAssignment = $moduleAssignment;
         $this->user = $user;
         $this->user_message = $user_message;
@@ -33,23 +47,16 @@ class AssignmentNotification extends Mailable
     public function build()
     {
         if($this->moduleAssignment->date_due !== null){
-            return $this->view('emails.assignment')->with([
-                    'first_name' => $this->user->first_name,
-                    'last_name' => $this->user->last_name,
-                    'user_message'=>$this->user_message['module_name'],
-                    'due_date'=>$this->moduleAssignment->date_due->format('m/d/y'),
-                    'link'=>$this->user_message['link']
-                ]
-            )->subject('New Course Assignment: '.$this->user_message['module_name'].' Due Date:'.$this->moduleAssignment->date_due->format('m/d/y'));
+            return $this->view('emails.rawData')
+                ->with(['content'=>$this->content])
+                ->subject('New Course Assignment: '.
+                    $this->user_message['module_name'].' Due Date:'.
+                    $this->moduleAssignment->date_due
+                        ->format('m/d/y'));
         }
         else{
-            return $this->view('emails.self_assignment_email')->with([
-                    'first_name' => $this->user->first_name,
-                    'last_name' => $this->user->last_name,
-                    'user_message'=>$this->user_message['module_name'],
-                    'link'=>$this->user_message['link']
-                ]
-            )->subject('Your New BComply Course: '.$this->user_message['module_name']);
+            return $this->view('emails.rawData')
+                ->with(['content'=>$this->content])->subject('Your New BComply Course: '.$this->user_message['module_name']);
         }
 
     }

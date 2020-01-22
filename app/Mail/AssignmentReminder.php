@@ -17,13 +17,31 @@ class AssignmentReminder extends Mailable
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param ModuleAssignment $moduleAssignment
+     * @param User $user
+     * @param array $user_message
      */
     public function __construct(ModuleAssignment $moduleAssignment, User $user, Array $user_message)
     {
+        $m = new \Mustache_Engine;
+        $this->content = $m->render($user_message['reminder'],[
+            'user'=>[
+                'first_name'=> $user->first_name,
+                'last_name'=>$user->last_name,
+            ],
+            'module'=>[
+                'name'=>$user_message['module_name'],
+                'due_date'=>$moduleAssignment->date_due->format('m/d/y')
+            ],
+            'link'=>url('/assignment/'.$user_message['link'])
+        ]);
         $this->moduleAssignment = $moduleAssignment;
         $this->user = $user;
         $this->user_message = $user_message;
+//
+//        $this->moduleAssignment = $moduleAssignment;
+//        $this->user = $user;
+//        $this->user_message = $user_message;
     }
 
     /**
@@ -33,27 +51,19 @@ class AssignmentReminder extends Mailable
      */
     public function build()
     {
-        if($this->moduleAssignment->due_date > Carbon::now()){
-            return $this->view('emails.reminder')->with([
-                    'first_name' => $this->user->first_name,
-                    'last_name' => $this->user->last_name,
-                    'user_message'=>$this->user_message['module_name'],
-                    'due_date'=>$this->moduleAssignment->date_due->format('m/d/y'),
-                    'link'=>$this->user_message['link'],
-                    'hours'=>$this->user_message['hours']
-                ]
-            )->subject('Assignment Reminder: '.$this->user_message['module_name'].' Due Date:'.$this->moduleAssignment->date_due->format('m/d/y'));
+        if($this->moduleAssignment->date_due > Carbon::now()){
+            $this->view('emails.rawData')
+                ->with(['content'=>$this->content])
+                ->subject('Assignment Reminder: '.
+                    $this->user_message['module_name'].' Due Date:'.
+                    $this->moduleAssignment->date_due->format('m/d/y'));
         }
         else{
-            return $this->view('emails.reminder')->with([
-                    'first_name' => $this->user->first_name,
-                    'last_name' => $this->user->last_name,
-                    'user_message'=>$this->user_message['module_name'],
-                    'due_date'=>$this->moduleAssignment->date_due->format('m/d/y'),
-                    'link'=>$this->user_message['link'],
-                    'hours'=>-1
-                ]
-            )->subject('Assignment Reminder: '.$this->user_message['module_name'].' Overdue Date:'.$this->moduleAssignment->date_due->format('m/d/y'));
+            $this->view('emails.rawData')
+                ->with(['content'=>$this->content])
+                ->subject('Assignment Reminder: '.
+                    $this->user_message['module_name'].' Overdue Date:'.
+                    $this->moduleAssignment->date_due->format('m/d/y'));
         }
     }
 }

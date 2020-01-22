@@ -80,7 +80,7 @@ class ReportController extends Controller
             ->leftJoin('groups', function($join) {
                 $join->on('group_memberships.group_id','=','groups.id');
             })->groupBy('group_memberships.user_id')
-            ->select('group_memberships.user_id', DB::raw('group_concat(groups.name) as groups'));
+            ->select('group_memberships.user_id', DB::raw('group_concat(`groups`.`name`) as `groups`'));
         $q = DB::table('users')
             ->leftJoin('module_assignments', function ($join) {
                 $join->on('users.id', '=', 'module_assignments.user_id');

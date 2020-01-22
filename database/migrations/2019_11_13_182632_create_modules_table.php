@@ -25,6 +25,7 @@ class CreateModulesTable extends Migration
             $table->json('reminders')->nullable()->default(null);
             $table->json('past_due_reminders')->nullable()->default(null);
             $table->unsignedBigInteger('module_version_id')->nullable()->default(null)->index();
+            $table->json('templates')->nullable()->default(null);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('owner_user_id')->references('id')->on('users');

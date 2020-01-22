@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SimpleUser extends Model
 {
-    protected $fillable = ['unique_id','first_name', 'last_name','email','code','supervisor','department','division','title','active'];
+    protected $fillable = ['unique_id','first_name', 'last_name','email','payroll_code','supervisor','department_id','department_name','division_id','division','negotiation_unit','title','active'];
     protected $casts = ['active'=>'boolean'];
     protected $table = 'users';
 

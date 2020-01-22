@@ -29,15 +29,42 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
         // Assignment Reminder Scheduler
         $schedule->call(function(){
+            $default_reminder_text = "
+            <div class='container'>
+                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+                <br>
+                <p style='font-size:16px;'>Your assignment {{module.name}} has a due date soon:
+                    <br>
+                    Due date {{module.due_date}}
+                    <br>
+                    Assignment Link: 
+                    <a href='{{link}}'>{{module.name}}</a>
+                </p>
+            </div>
+            ";
+            $default_past_due_reminder_text = "
+            <div class='container'>
+                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+                <br>
+                <p style='font-size:16px;'>Your assignment {{module.name}} :
+                    <br>
+                    Due date {{module.due_date}}
+                    <br>
+                    Assignment Link: 
+                    <a href='{{link}}'>{{module.name}}</a>
+                </p>
+            </div>";
+
             $modules = Module::all();
             $module_assignments = ModuleAssignment::whereNull('date_completed')->with('user')->get();
+
             //Checks all of the assignment due dates to send emails to users
             foreach($module_assignments as $assignment){
                 $module = $modules->where('id',$assignment->module_id)->first();
@@ -47,11 +74,21 @@ class Kernel extends ConsoleKernel
                     if($differenceInDays>0){
                         if($module->past_due){
                             if(in_array($differenceInDays,$module->reminders) || in_array($differenceInDays,$module->past_due_reminders) ){
-                                $user_messages =[
-                                    'module_name'=> $module['name'],
-                                    'link' => $assignment['id'],
-                                    'hours'=> 0
-                                ];
+                                if($assignment->date_due>Carbon::now()){
+                                    $user_messages =[
+                                        'module_name'=> $module['name'],
+                                        'link' => $assignment['id'],
+                                        'reminder'=>$module->templates->reminder?$module->templates->reminder:$default_reminder_text
+                                    ];
+                                }
+                                else{
+                                    $user_messages =[
+                                        'module_name'=> $module['name'],
+                                        'link' => $assignment['id'],
+                                        'reminder'=>$module->templates->past_due_reminder?$module->templates->past_due_reminder:$default_past_due_reminder_text
+                                    ];
+                                }
+
                                 Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
                             }
                         }else{
@@ -59,7 +96,7 @@ class Kernel extends ConsoleKernel
                                 $user_messages =[
                                     'module_name'=> $module['name'],
                                     'link' => $assignment['id'],
-                                    'hours'=> 0
+                                    'reminder'=>$module->templates->reminder?$module->templates->reminder:$default_reminder_text
                                 ];
                                 Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
                             }
@@ -67,17 +104,18 @@ class Kernel extends ConsoleKernel
                     }
                     else{
                         if($assignment->date_due > Carbon::now()){
-                            $user_messages =[
-                                'module_name'=> $module['name'],
-                                'link' => $assignment['id'],
-                                'hours'=> 'Today'
-                            ];
-                            Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
+                                $user_messages =[
+                                    'module_name'=> $module['name'],
+                                    'link' => $assignment['id'],
+                                    'reminder'=>$module->templates->reminder?$module->templates->reminder:$default_reminder_text
+                                ];
+                                Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
                         }
                     }
                 }
             }
-        })->everyMinute();
+        })->dailyAt(config('app.assignment_reminder_task'))->timezone('America/New_York')->onOneServer();
+
         //Bulk Assignment Scheduler
         $schedule->call(function(){
             $bulkAssignments = BulkAssignment::whereJsonContains('assignment',['later_date'=>true])->get();
@@ -109,7 +147,7 @@ class Kernel extends ConsoleKernel
 
                 }
             }
-        })->dailyAt('2:00')->timezone('America/New_York');
+        })->dailyAt(config('app.bulk_assignment_scheduler'))->timezone('America/New_York')->onOneServer();
     }
 
     /**
