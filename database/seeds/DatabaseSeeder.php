@@ -50,12 +50,44 @@ class DatabaseSeeder extends Seeder
             'message_configuration' => (Object)[],
             'assignment_configuration' => (Object)[],
             'templates' => (Object)[
-                'assignment'=>'Welcome {{user.first_name}} {{user.last_name}} to {{module.name}}
-Due date {{module.due_date}}',
-                'reminder' => 'Welcome {{user.first_name}} {{user.last_name}} to {{module.name}}
-Due date {{module.due_date}}',
-                'completion_notification'=>'Welcome {{user.first_name}} {{user.last_name}} to {{module.name}}
-Due date {{module.due_date}}'
+                'assignment'=>"<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
+                        <br>
+                        <p style='font-size:16px;'>You are assigned to {{module.name}}</p>
+                        <br>
+                        <p style='font-size:16px;'>Due Date: {{module.due_date}}</p>
+                        <br>
+                        <p style='font-size:16px;'>Access to Assignment: 
+                            <a href='{{link}}'>{{module.name}}</a>
+                        </p>",
+                'reminder' => '<div class=\'container\'>
+                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+                <br>
+                <p style=\'font-size:16px;\'>Your assignment {{module.name}} has a due date soon:
+                    <br>
+                    Due date {{module.due_date}}
+                    <br>
+                    Assignment Link: 
+                    <a href=\'{{link}}\'>{{module.name}}</a>
+                </p>
+            </div>',
+                'completion_notification'=>"<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
+                            <br>
+                            <p style='font-size:16px;'>You completed the {{module.name}} course</p>
+                            <br>
+                            <p style='font-size:16px;'>Certificate Link: 
+                                <a href='{{link}}'>Certificate</a>
+                            </p>",
+                'past_due_reminder'=>"<div class='container'>
+                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+                <br>
+                <p style='font-size:16px;'>Your assignment {{module.name}} has a due date soon:
+                    <br>
+                    Due date {{module.due_date}}
+                    <br>
+                    Assignment Link: 
+                    <a href='{{link}}'>{{module.name}}</a>
+                </p>
+            </div>"
                 ]
         ]);
         $module->save();
