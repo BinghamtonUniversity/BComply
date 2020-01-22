@@ -114,7 +114,7 @@ class Kernel extends ConsoleKernel
                     }
                 }
             }
-        })->dailyAt(config('app.assignment_reminder_task'))->timezone('America/New_York');
+        })->dailyAt(config('app.assignment_reminder_task'))->timezone('America/New_York')->onOneServer();
 
         //Bulk Assignment Scheduler
         $schedule->call(function(){
@@ -147,7 +147,7 @@ class Kernel extends ConsoleKernel
 
                 }
             }
-        })->dailyAt(config('app.bulk_assignment_scheduler'))->timezone('America/New_York');
+        })->dailyAt(config('app.bulk_assignment_scheduler'))->timezone('America/New_York')->onOneServer();
     }
 
     /**

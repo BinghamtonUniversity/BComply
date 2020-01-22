@@ -30,6 +30,8 @@ class ModuleAssignmentObserver
                         <br>
                         <p style='font-size:16px;'>You are assigned to {{module.name}}</p>
                         <br>
+                        <p style='font-size:16px;'>Due Date: {{module.due_date}}</p>
+                        <br>
                         <p style='font-size:16px;'>Access to Assignment: 
                             <a href='{{link}}'>{{module.name}}</a>
                         </p>";
