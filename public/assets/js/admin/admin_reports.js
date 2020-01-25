@@ -15,15 +15,12 @@ ajax.get('/api/reports',function(data) {
     }).on("model:created",function(grid_event) {
         ajax.post('/api/reports',grid_event.model.attributes,function(data) {
             grid_event.model.attributes = data;
-
             grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/reports/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
-            // grid_event.model.attributes = data;
-            // debugger;
             grid_event.model.update(data);
             grid_event.model.draw();
         },function(data) {

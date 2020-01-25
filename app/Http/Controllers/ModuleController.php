@@ -16,6 +16,7 @@ class ModuleController extends Controller
     public function get_all_modules(){
         if (in_array('manage_modules',Auth::user()->user_permissions) ||
             in_array('assign_modules',Auth::user()->user_permissions)) {
+
             // If user can manage modules, return all modules
             return Module::with('owner')->with('current_version')->get();
         }
@@ -23,14 +24,13 @@ class ModuleController extends Controller
             // Only return modules where the user has admin permissions
             return Module::whereIn('id',array_keys((Array)(Auth::user()->module_permissions)))
                 ->orWhere('owner_user_id','=',Auth::user()->id)->with('owner')->with('current_version')->get();
-
         }
     }
     public function get_public_module_versions(){
         return Module::where('public',true)->where('module_version_id','<>',null)->with('current_version')->get();
     }
     public function get_module(Request $request, Module $module){
-        return $module;
+        return $module->with('owner')->first();
     }
     public function get_user_modules(Request $request, Module $module, User $user){
 //        dd($request);
@@ -43,10 +43,10 @@ class ModuleController extends Controller
             return ModuleVersion::get();
         }
     }
-    public function add_module(Request $request,Module $module){
+    public function add_module(Request $request){
         $module = new Module($request->all());
         $module->save();
-        return $module;
+        return $module->with('owner')->first();
     }
     public function add_module_version(Request $request,Module $module){
         $module_version = new ModuleVersion($request->all());
@@ -65,12 +65,13 @@ class ModuleController extends Controller
         return 'Success';
     }
     public function get_module_assignments(Request $request,Module $module){
+
         return ModuleAssignment::where('module_id',$module->id)->with('version')->with('user')->get();
     }
     public function update_module(Request $request,Module $module){
         $module->update($request->all());
         $module->save();
-        return $module;
+        return $module->with('owner')->first();
     }
     public function delete_module(Request $request,Module $module){
         $module->delete();
@@ -89,7 +90,7 @@ class ModuleController extends Controller
         ]);
         $permission->module_id = $module->id;
         $permission->save();
-        return ModulePermission::where('id', $permission->id)->with('user')->first();
+        return $permission->with('user')->first();
     }
     public function delete_module_permission(Request $request, Module $module, ModulePermission $module_permission) {
         return ModulePermission::where('module_id', $module->id)->where('id',$module_permission->id)->delete();   
