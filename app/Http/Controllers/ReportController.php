@@ -33,7 +33,6 @@ class ReportController extends Controller
         else{
             return "Failed to authenticate";
         }
-
     }
 
     public function get_report(Request $request, Report $report) {
@@ -43,12 +42,12 @@ class ReportController extends Controller
     public function add_report(Request $request) {
         $report = new Report($request->all());
         $report->save();
-        return $report;
+        return $report->with('owner')->first();
     }
 
     public function update_report(Request $request, Report $report) {
         $report->update($request->all());
-        return Report::where('id',$report->id)->with('owner')->first();
+        return $report->with('owner')->first();
     }
 
     public function delete_report(Request $request, Report $report) {
