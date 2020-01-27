@@ -24,7 +24,7 @@ class UserObserver
     {
         $bulk_assignments = BulkAssignment::all();
         foreach($bulk_assignments as $bulk_assignment) {
-            if($bulk_assignment->assignment->auto){
+            if(isset($bulk_assignment->assignment) && isset($bulk_assignment->assignment->auto) && $bulk_assignment->assignment->auto){
                 $module = Module::where('id',$bulk_assignment->assignment->module_id)->first();
                 $q = BulkAssignment::base_query();
                 $q->where('users.id',$user->id)->where('users.active',true);

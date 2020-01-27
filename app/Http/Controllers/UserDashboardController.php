@@ -6,6 +6,7 @@ use App\Module;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\ModuleAssignment;
 
 class UserDashboardController extends Controller
@@ -53,10 +54,16 @@ class UserDashboardController extends Controller
         return view('shop',['page'=>'shop','ids'=>[$module->id],'title'=>'Shop Courses','user'=>Auth::user()]);
     }
 
-    public function logout(){
-//        if(!Auth::check())
+    public function logout(Request $request){
+        if (Auth::check()) {
             Auth::logout();
-        return redirect('demo');
+            $request->session()->invalidate();
+            if (cas()->checkAuthentication()) {
+                cas()->logout();
+            }
+        } else {
+            return response('You are not logged in.', 401);
+        }
     }
 
     public function admin(){

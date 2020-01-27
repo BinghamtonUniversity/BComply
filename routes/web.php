@@ -1,16 +1,16 @@
 <?php
 
 Route::any('/demo', ['uses' => 'DemoController@list']);
+Route::any('/login', ['uses' => 'CASController@login']);
+Route::get('/logout','UserDashboardController@logout');
 
 Route::group(['middleware'=>['custom.auth']], function () {
-
     /* User Pages */
     Route::get('/',['uses' => 'UserDashboardController@my_assignments']);
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
     Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
     Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run')->middleware('can:view,module_assignment');
     Route::get('/assignment/{module_assignment}/certificate', 'ModuleAssignmentController@certificate')->middleware('can:certificate_policy,module_assignment');
-    Route::get('/logout','UserDashboardController@logout');
 
     /* Admin Pages */
     Route::group(['prefix' => 'admin'], function () {

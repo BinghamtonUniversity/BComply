@@ -20,7 +20,7 @@ class CustomAuthentication
     public function handle($request, Closure $next)
     {
         if (!Auth::check()) {
-            return redirect('/demo?redirect='.url()->current());
+            return redirect('/login?redirect='.url()->current());
         }
         return $next($request);
     }
