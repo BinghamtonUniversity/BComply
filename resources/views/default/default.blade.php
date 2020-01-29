@@ -60,7 +60,7 @@
               @endif
             </li>
             <li class="visible-xs-block">&nbsp;</li>
-            <li class="visible-xs-block @if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; Home</a></li>
+            <li class="visible-xs-block @if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; My Assignments</a></li>
             <li class="visible-xs-block @if($page  =="history") active @endif"><a href="/history"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
             <li class="visible-xs-block @if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Courses</a></li>
           </ul>
@@ -71,7 +71,7 @@
     @if(!is_null(Auth::user()))
       <div class="sidebar col-sm-3 col-md-2 ">
         <ul class="nav nav-sidebar">
-          <li class="@if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; Home</a></li>
+          <li class="@if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; My Assignments</a></li>
           <li class="@if($page  =="history") active @endif"><a href="/history"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
           <li class="@if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Courses</a></li>
         </ul>
@@ -109,6 +109,7 @@
       }
       @if(isset($actions)) window.actions={!!json_encode($actions)!!}; @endif
     </script>
+    <script src="/assets/js/user/user_dashboard.js"></script>
     @if($page ==='shop' || $page==='modules_assignments')
         <script src="/assets/js/user/user_dashboard_{{$page}}.js"></script>
     @endif

@@ -36,5 +36,8 @@ class AppServiceProvider extends ServiceProvider
         SimpleUser::observe(SimpleUserObserver::class);
         GroupMembership::observe(GroupMembershipObserver::class);
         ModuleAssignment::observe(ModuleAssignmentObserver::class);
+        \Str::macro('snakeToTitle', function($value) {
+            return \Str::title(str_replace('_', ' ', $value));
+        });
     }
 }

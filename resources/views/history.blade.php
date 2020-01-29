@@ -2,42 +2,42 @@
 @section('title', 'Assignment History')
 @section('content')
     <div class="row">
-        <div class="col-sm-12" style="text-align:center;">
-            <center><h1 style="text-align:center;">Your Previous Assignments</h1></center>
+        <div class="col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">My History</a></li>
+                </ol>
+            </nav>
             <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
                     @if(count($assignments) > 0)
-                        <div class="list-group">
                             @foreach ($assignments as $assignment)
-{{--                                    @if ($assignment->version->type === 'articulate_tincan')--}}
-                                        <ul class="list-group">
-                                                <li class="list-group-item">
-                                                    <div class="row">
-                                                        <div class="col-lg-10 col-sm-10">
-                                                            @if(!is_null($assignment->date_completed))
-                                                                <div class="monaco-count-badge pull-left">Completed: {{$assignment->date_completed}}</div>
-                                                                <div class="badge pull-right">Score: {{$assignment->score}}%</div>
-                                                            @else
-                                                                <div class="monaco-count-badge pull-left">Expired</div>
-                                                            @endif
-{{--                                    @endif--}}
-                                                                <b>{{$assignment->version->name}}</b>
-                                                        </div>
-                                                        @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))
-                                                            <div class="col-lg-2 col-sm-2" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate">Certificate</a></div>
-                                                        @endif
-                                                    </div>
-                                                </li>
-                                        </ul>
+                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                            <div class="panel panel-default">
+                                <a class="trigger-help" href="/assignment/{{$assignment->id}}"
+                                    data-toggle="popover" data-placement="top" title="Description" data-content="{{$assignment->module->description}}">
+                                    <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($assignment->status)}}</div>
+                                    <div class="panel-body" style="padding-top:30px;text-align:center;">
+                                        <i class="fa fa-book-open fa-10x"></i>
+                                    </div>
+                                    <hr style="margin:0 0px;">
+                                    <div class="panel-body">
+                                            <div class="module-name">{{$assignment->version->name}}</div>
+                                            <div class="badge">Completed: {{$assignment->date_completed->format('m/d/y')}}</div>
+                                            <!-- @if(!is_null($assignment->score))<div class="">Score: {{$assignment->score}}</div>@endif -->
+                                            @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))
+                                                <div class="" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate"><i class="fa fa-download"></i> Download Certificate</a></div>
+                                            @endif
+                                    </div>
+                                </a>
+                            </div>
+                            </div>
                             @endforeach
-                        </div>
                     @else
                         <div class="alert alert-warning">
                             <h4 style="margin-top:0px;">You do not have any assignments in your history!</h4>
                             <div>Contact someone if you feel that this is in error.</div>
                         </div>
                     @endif
-                </div>
             </div>
         </div>
     </div>

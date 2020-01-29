@@ -737,3 +737,25 @@ a.list-group-action {
     left: 16px;
   }
 /* End Extra Graphene Forms Stuff */
+
+.panel.past-due {
+    background-color:#d9534f;
+    color:black;
+}
+.panel.past-due a:hover{
+    cursor: not-allowed;
+}
+.panel.past-due a{
+    color:black;
+}
+.panel.past-due hr{
+    border-color:#a94442;
+}
+.panel.past-due .badge{
+    background-color:#ccb6b6;
+    color:black;
+}
+.module-name {
+    font-size:15px;
+    font-weight:bold;
+}

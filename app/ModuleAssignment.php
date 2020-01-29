@@ -15,4 +15,8 @@ class ModuleAssignment extends Model
     public function version(){
         return $this->belongsTo('App\ModuleVersion','module_version_id');
     }
+    public function module(){
+        return $this->belongsTo('App\Module','module_id');
+    }
+
 }
