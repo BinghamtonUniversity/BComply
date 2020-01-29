@@ -16,7 +16,7 @@ return [
     | recommended for protecting against DOS attacks.  If using load
     | balanced hosts, then separate each with a comma.
     */
-    'cas_real_hosts'      => env('CAS_REAL_HOSTS', 'cas-dev.cc.binghamton.edu'),
+    'cas_real_hosts'      => env('CAS_HOSTNAME', 'cas-dev.cc.binghamton.edu'),
 
 
     /*
