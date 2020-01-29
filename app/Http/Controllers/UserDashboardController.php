@@ -17,6 +17,9 @@ class UserDashboardController extends Controller
             ->whereNull('date_completed')
             ->with('version')
             ->with('module')->get();
+        foreach($assignments as $index => $assignment) {
+            if (is_null($assignment->icon) || $assignment->icon=='') {$assignments[$index]->icon='book-open';}
+        }
         return view('my_assignments',['page'=>'my_assignments','assignments'=>$assignments,'user'=>Auth::user()]);
     }
 
@@ -26,6 +29,9 @@ class UserDashboardController extends Controller
             ->with('version')
             ->with('module')
             ->orderBy('date_completed','desc')->get();
+        foreach($assignments as $index => $assignment) {
+            if (is_null($assignment->icon) || $assignment->icon=='') {$assignments[$index]->icon='book-open';}
+        }    
         return view('history',['page'=>'history','assignments'=>$completed_assignments,'user'=>Auth::user()]);
     }
 

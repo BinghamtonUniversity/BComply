@@ -10,7 +10,7 @@ class Module extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name','description','owner_user_id','message_configuration','assignment_configuration','module_version_id','reminders','public','past_due','past_due_reminders','templates'];
+    protected $fillable = ['name','description','icon','owner_user_id','message_configuration','assignment_configuration','module_version_id','reminders','public','past_due','past_due_reminders','templates'];
     protected $casts = ['message_configuration' => 'object','assignment_configuration'=>'object','reminders'=>'object','past_due_reminders'=>'object','templates'=>'object'];
     protected $hidden = ['permissions'];
     protected $appends = ['module_permissions'];

@@ -74,8 +74,9 @@
                   <li class="visible-xs-block @if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
               @endcan
               @can('manage_bulk_assignments','App\BulkAssignment')
-                  <li class="visible-xs-block @if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Bulk Assignments</a></li>
-                  @endcan
+                  <li class="visible-xs-block @if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-fw fa-notes-medical"></i>&nbsp; Bulk Assignments</a></li>
+              @endcan
+              <li class="visible-xs-block"><a href="https://github.com/BinghamtonUniversity/BComply/wiki" target="_blank"><i class="fa fa-info fa-fw"></i>&nbsp; View Documentation</a></li>
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right visible-xs-block">
@@ -101,6 +102,7 @@
             @can('manage_bulk_assignments','App\BulkAssignment')
                 <li class="@if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Bulk Assignments</a></li>
             @endcan
+            <li><a href="https://github.com/BinghamtonUniversity/BComply/wiki" target="_blank"><i class="fa fa-fw fa-info"></i>&nbsp; View Documentation</a></li>
         </ul>
     </div>
     <div class="container-fluid" id="main-container">

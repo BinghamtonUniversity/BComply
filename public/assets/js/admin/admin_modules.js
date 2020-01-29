@@ -4,7 +4,8 @@ ajax.get('/api/modules',function(data) {
         {type:"hidden", name:"id"},
         {type:"checkbox", name:"public", label:"Public?","columns":6},
         {type:"checkbox", name:"past_due", label:"Allow After Due",columns:6},
-        {type:"text", name:"name", label:"Name"},
+        {type:"text", name:"name", label:"Name", columns:8},
+        {type:"text", name:"icon", label:"Icon", columns:4},
         {type:"textarea", name:"description", label:"Description Name"},
         {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
         {

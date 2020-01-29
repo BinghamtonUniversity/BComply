@@ -17,6 +17,7 @@ class CreateModulesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->longText('description')->nullable()->default(null);
+            $table->string('icon')->nullable()->default(null);
             $table->unsignedBigInteger('owner_user_id')->nullable()->default(null);
             $table->json('message_configuration')->nullable()->default(null);
             $table->json('assignment_configuration')->nullable()->default(null);

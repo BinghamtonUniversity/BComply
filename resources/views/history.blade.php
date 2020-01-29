@@ -17,7 +17,7 @@
                                     data-toggle="popover" data-placement="top" title="Description" data-content="{{$assignment->module->description}}">
                                     <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($assignment->status)}}</div>
                                     <div class="panel-body" style="padding-top:30px;text-align:center;">
-                                        <i class="fa fa-book-open fa-10x"></i>
+                                        <i class="fa fa-{{$assignment->module->icon}} fa-10x"></i>
                                     </div>
                                     <hr style="margin:0 0px;">
                                     <div class="panel-body">
