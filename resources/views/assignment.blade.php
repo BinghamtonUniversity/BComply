@@ -1,5 +1,5 @@
 <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-    @if($assignment->past_due)
+    @if((\Carbon\Carbon::now()>$assignment->date_due && !$assignment->module->past_due))
         <div class="panel panel-default past-due">
             <a class="trigger-help" href="#" data-toggle="popover" data-placement="top" title="Notice!" data-content=
                 "This assignment is past due, and cannot be completed after the due date!">

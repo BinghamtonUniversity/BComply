@@ -17,17 +17,7 @@ class UserDashboardController extends Controller
             ->whereNull('date_completed')
             ->with('version')
             ->with('module')->get();
-        $elected_assignments=[];
-
-        foreach ($assignments as $assignment){
-            if(is_null($assignment->date_completed)){
-                if(Carbon::now()>$assignment->date_due && !$assignment->module->past_due) {
-                    $assignment->past_due = true;
-                }
-                $elected_assignments[]=$assignment;
-            }
-        }
-        return view('my_assignments',['page'=>'my_assignments','assignments'=>$elected_assignments,'user'=>Auth::user()]);
+        return view('my_assignments',['page'=>'my_assignments','assignments'=>$assignments,'user'=>Auth::user()]);
     }
 
     public function assignment_history(Request $request){

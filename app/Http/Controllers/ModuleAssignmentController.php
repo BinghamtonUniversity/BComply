@@ -13,8 +13,10 @@ use PDF;
 class ModuleAssignmentController extends Controller
 {
     public function run(Request $request, ModuleAssignment $module_assignment){
-        $assignment = ModuleAssignment::where('id',$module_assignment->id)->with('version')->first();
-        if($module_assignment->module_version_id)
+        $assignment = ModuleAssignment::where('id',$module_assignment->id)
+            ->with('version')
+            ->with('module')
+            ->first();
         return view('module_assignment',[
             'user'=>Auth::user(),
             'assignment' => $assignment,

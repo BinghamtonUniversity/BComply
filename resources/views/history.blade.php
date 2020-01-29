@@ -33,7 +33,7 @@
                             </div>
                             @endforeach
                     @else
-                        <div class="alert alert-warning">
+                        <div class="alert alert-warning" style="text-align:center;align-content:center;margin:auto">
                             <h4 style="margin-top:0px;">You do not have any assignments in your history!</h4>
                             <div>Contact someone if you feel that this is in error.</div>
                         </div>

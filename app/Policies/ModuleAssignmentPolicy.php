@@ -21,18 +21,7 @@ class ModuleAssignmentPolicy
      */
     public function view(User $user, ModuleAssignment $moduleAssignment)
     {
-        $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
-            ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
-            ->with('version')->get()->unique('module_id');
-        $elected_assignments=[];
-        foreach ($assignments as $assignment){
-            if(is_null($assignment->date_completed)){
-                $elected_assignments[]=$assignment->id;
-            }
-        }
-        if(in_array($moduleAssignment->id, $elected_assignments)){
-            return true;
-        }
+        return ($moduleAssignment->user_id == $user->id);
     }
     public function complete_policy(User $user, ModuleAssignment $moduleAssignment){
         $module = Module::where('id','=',$moduleAssignment->module_id)->first();
