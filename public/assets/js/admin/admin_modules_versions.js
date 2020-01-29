@@ -23,13 +23,15 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
     ], data: data
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/modules/'+id+'/versions/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
+            grid_event.model.update(data)
+            // grid_event.model.attributes = data;
         },function(data) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/modules/'+id+'/versions',grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
+            grid_event.model.update(data)
+            // grid_event.model.attributes = data;
         },function(data) {
             grid_event.model.undo();
         });

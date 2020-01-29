@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Group;
+use App\GroupMembership;
+use App\ModulePermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
@@ -40,6 +42,10 @@ class UserController extends Controller
     }
 
     public function delete_user(Request $request, User $user) {
+        ModulePermission::where('user_id',$user->id)->delete();
+        ModuleAssignment::where('user_id',$user->id)->delete();
+        GroupMembership::where('user_id',$user->id)->delete();
+        UserPermission::where('user_id',$user->id)->delete();
         $user->delete();
         return "1";
     }
@@ -156,8 +162,7 @@ class UserController extends Controller
         foreach($users as $index => $user) {
             $users[$index] = array_intersect_key($user, array_flip(['id','unique_id','first_name','last_name','email']));
         }
+
         return $users;
     }
-
-
 }

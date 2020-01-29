@@ -33,6 +33,7 @@ class ModuleAssignmentController extends Controller
             $module_assignment->date_completed = now();
 
             $module_assignment->save();
+            return $module_assignment;
         }
         else{
             return response(['error'=>'The user has already completed this module'], 409)->header('Content-Type', 'application/json');

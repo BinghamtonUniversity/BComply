@@ -22,7 +22,7 @@ ajax.get('/api/reports',function(data) {
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/reports/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.update(data);
-            grid_event.model.draw();
+            // grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
@@ -160,7 +160,8 @@ ajax.get('/api/reports',function(data) {
             }
         ).modal().on('save',function(form_event) {
             ajax.put('/api/reports/'+report_id,{'report':form_event.form.get()},function(data) {
-                grid_event.model.attributes.report = data
+                // grid_event.model.attributes.report = data
+                grid_event.model.update(data);
                 form_event.form.trigger('close');
             });
         }).on('cancel',function(form_event) {

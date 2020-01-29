@@ -16,30 +16,59 @@ class BulkAssignmentController extends Controller
     private $tables = ['users','groups'];
     public function __construct() {}
 
+    /**
+     * @param BulkAssignment $bulkAssignment
+     * @return BulkAssignment[]|\Illuminate\Database\Eloquent\Collection
+     */
     public function get_all_bulk_assignments(BulkAssignment $bulkAssignment) {
         return BulkAssignment::all();
     }
 
+    /**
+     * @param Request $request
+     * @param BulkAssignment $bulkAssignment
+     * @return BulkAssignment
+     */
     public function get_bulk_assignment(Request $request, BulkAssignment $bulkAssignment) {
         return $bulkAssignment;
     }
 
+    /**
+     * @param Request $request
+     * @return BulkAssignment
+     */
     public function add_bulk_assignment(Request $request) {
         $bulkAssignment = new BulkAssignment($request->all());
         $bulkAssignment->save();
         return $bulkAssignment;
     }
 
+    /**
+     * @param Request $request
+     * @param BulkAssignment $bulkAssignment
+     * @return BulkAssignment
+     */
     public function update_bulk_assignment(Request $request, BulkAssignment $bulkAssignment) {
         $bulkAssignment->update($request->all());
+
         return $bulkAssignment;
     }
 
+    /**
+     * @param Request $request
+     * @param BulkAssignment $bulkAssignment
+     * @return string
+     * @throws \Exception
+     */
     public function delete_bulk_assignment(Request $request, BulkAssignment $bulkAssignment) {
         $bulkAssignment->delete();
         return 'Success';
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function get_columns(Request $request) {
         $columns = [];
         foreach($this->tables as $table) {
@@ -57,6 +86,12 @@ class BulkAssignmentController extends Controller
         return $this->tables;
     }
 
+    /**
+     * @param Request $request
+     * @param BulkAssignment $bulkAssignment
+     * @param null $test
+     * @return array|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function execute(Request $request, BulkAssignment $bulkAssignment, $test=null) {
         $testonly = is_null($test)?false:true;
         $module = Module::where('id',$bulkAssignment->assignment->module_id)->with('current_version')->first();

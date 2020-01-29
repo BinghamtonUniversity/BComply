@@ -65,7 +65,7 @@
                   <li class=" visible-xs-block @if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
               @endcan
               @can('view_in_admin','App\Group')
-                  <li class="visible-xs-block @if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
+                  <li class="visible-xs-block @if($page=="groups") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
               @endcan
               @can('view_in_admin','App\Module')
                   <li class="visible-xs-block @if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
@@ -90,7 +90,7 @@
                 <li class="@if($page=="users") active @endif"><a href="/admin/users"><i class="fa fa-user fa-fw"></i>&nbsp; Users</a></li>
             @endcan
             @can('view_in_admin','App\Group')
-                <li class="@if($page=="teams") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
+                <li class="@if($page=="groups") active @endif"><a href="/admin/groups"><i class="fa fa-users fa-fw"></i>&nbsp; Groups</a></li>
             @endcan
             @can('view_in_admin','App\Module')
                 <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
@@ -158,7 +158,7 @@
     <script>_.findWhere = _.find; _.where = _.filter;_.pluck = _.map;_.contains = _.includes;</script>
     <script src='/assets/js/vendor/hogan.min.js'></script>
     <script src='/assets/js/vendor/toastr.min.js'></script> 
-    <script src='/assets/js/vendor/gform_bootstrap.min.js'></script> 
+    <script src='/assets/js/vendor/gform_bootstrap.js'></script>
     <script src='/assets/js/vendor/GrapheneDataGrid.min.js'></script> 
     <script src='/assets/js/vendor/moment.js'></script> 
     <script src='/assets/js/vendor/bootstrap-datetimepicker.min.js'></script> 

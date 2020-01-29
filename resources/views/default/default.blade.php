@@ -97,7 +97,7 @@
     <script>_.findWhere = _.find; _.where = _.filter;_.pluck = _.map;_.contains = _.includes;</script>
     <script src='/assets/js/vendor/hogan.min.js'></script>
     <script src='/assets/js/vendor/toastr.min.js'></script>
-    <script src='/assets/js/vendor/gform_bootstrap.min.js'></script>
+    <script src='/assets/js/vendor/gform_bootstrap.js'></script>
     <script src='/assets/js/vendor/GrapheneDataGrid.min.js'></script>
     <script src='/assets/js/vendor/moment.js'></script>
     <script src='/assets/js/vendor/bootstrap-datetimepicker.min.js'></script>

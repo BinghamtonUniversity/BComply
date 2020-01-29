@@ -13,7 +13,6 @@ class UserDashboardController extends Controller
     public function my_assignments(Request $request) {
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
-//            ->whereNull('date_completed')
             ->with('version')->get()->unique('module_id');
         $elected_assignments=[];
         $modules = Module::all();
@@ -21,11 +20,14 @@ class UserDashboardController extends Controller
         foreach ($assignments as $assignment){
             if(is_null($assignment->date_completed)){
                 $module = $modules->where('id',$assignment->module_id)->first();
-                if((!$module->past_due && $assignment->date_due>Carbon::now()) || ($module->past_due)){
+                if(!is_null($module)&&
+                    ((!$module->past_due && $assignment->date_due>Carbon::now()) || ($module->past_due))
+                ){
                     $elected_assignments[]=$assignment;
                 }
             }
         }
+//        dd($elected_assignments);
         return view('my_assignments',['page'=>'my_assignments','assignments'=>$elected_assignments,'user'=>Auth::user()]);
     }
 
@@ -38,7 +40,7 @@ class UserDashboardController extends Controller
         foreach ($current_assignments as $assignment){
             if(is_null($assignment->date_completed)){
                 $module = $modules->where('id',$assignment->module_id)->first();
-                if((!$module->past_due && $assignment->date_due>Carbon::now()) || ($module->past_due)){
+                if(!is_null($module)&& ((!$module->past_due && $assignment->date_due>Carbon::now()) || ($module->past_due))){
                     $elected_assignments[]=$assignment->id;
                 }
             }
