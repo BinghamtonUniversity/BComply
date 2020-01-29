@@ -18,21 +18,21 @@ class UserDashboardController extends Controller
             ->with('version')
             ->with('module')->get();
         foreach($assignments as $index => $assignment) {
-            if (is_null($assignment->icon) || $assignment->icon=='') {$assignments[$index]->icon='book-open';}
+            if (is_null($assignment->module->icon) || $assignment->module->icon=='') {$assignments[$index]->module->icon='book-open';}
         }
         return view('my_assignments',['page'=>'my_assignments','assignments'=>$assignments,'user'=>Auth::user()]);
     }
 
     public function assignment_history(Request $request){
-        $completed_assignments = ModuleAssignment::where('user_id',Auth::user()->id)
+        $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->whereNotNull('date_completed')
             ->with('version')
             ->with('module')
             ->orderBy('date_completed','desc')->get();
         foreach($assignments as $index => $assignment) {
-            if (is_null($assignment->icon) || $assignment->icon=='') {$assignments[$index]->icon='book-open';}
+            if (is_null($assignment->module->icon) || $assignment->module->icon=='') {$assignments[$index]->module->icon='book-open';}
         }    
-        return view('history',['page'=>'history','assignments'=>$completed_assignments,'user'=>Auth::user()]);
+        return view('history',['page'=>'history','assignments'=>$assignments,'user'=>Auth::user()]);
     }
 
     public function shop_courses(Request $request, Module $module){
