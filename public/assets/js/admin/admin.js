@@ -79,7 +79,6 @@ window.ajax.delete = function(url,data,callback_success,callback_error) {
 gform.types['user']= _.extend({}, gform.types['smallcombo'], {
 
     toString: function(name,display){
-
       if(!display){
           // console.log(this.value);
         if(typeof this.combo !== 'undefined'){
@@ -92,7 +91,7 @@ gform.types['user']= _.extend({}, gform.types['smallcombo'], {
           // console.log(this.value);
         if(typeof this.options !== 'undefined' && this.options.length){
             // console.log(this.value);
-          return _.find(this.options,{id:this.value})||this.value;
+          return _.find(this.options,{id:parseInt(this.value)})||this.value;
         }else{
             // console.log(this.value);
           return this.value;
@@ -107,7 +106,9 @@ gform.types['user']= _.extend({}, gform.types['smallcombo'], {
                 {
                     title:'{{{label}}}{{^label}}User{{/label}} <span class="text-success pull-right">{{value}}</span>',
                     label:"{{first_name}}{{#last_name}} {{last_name}}{{/last_name}}",
-                    value:"{{id}}",
+                    value:function(item){
+                        return item.id;
+                    },
                     display:'{{first_name}} {{last_name}}<div style="color:#aaa">{{email}}</div>'
                 }
         }

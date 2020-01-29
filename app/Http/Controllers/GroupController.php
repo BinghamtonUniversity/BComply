@@ -27,6 +27,7 @@ class GroupController extends Controller
         return $group;
     }
     public function delete_group(Request $request, Group $group){
+        GroupMembership::where('group_id',$group->id)->delete();
         $group->delete();
         return 'Success';
     }

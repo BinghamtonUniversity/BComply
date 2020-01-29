@@ -17,9 +17,9 @@ ajax.get('/api/modules/'+id+'/permissions',function(data) {
         ]},
     ], data: data
     }).on("model:created",function(grid_event) {
-        ajax.put('/api/modules/'+id+'/permissions',grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+        console.log(id);
+        ajax.put('/api/modules/'+id+'/permissions/',grid_event.model.attributes,function(data) {
+            grid_event.model.update(data)
         },function(data) {
             grid_event.model.undo();
         });
@@ -31,8 +31,3 @@ ajax.get('/api/modules/'+id+'/permissions',function(data) {
         toastr.error('This doesn\'t do anything!');
     })
 });
-
-// Built-In Events:
-//'edit','model:edit','model:edited','model:create','model:created','model:delete','model:deleted'
-
-

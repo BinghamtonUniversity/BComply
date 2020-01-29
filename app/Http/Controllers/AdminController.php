@@ -18,9 +18,23 @@ class AdminController extends Controller
 {
     public function __construct() {
     }
+
+    /**
+     * Renders default admin pages
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function admin(Request $request) {
         return view('default.admin',['page'=>'dashboard','ids'=>[Auth::user()->id],'title'=>'Admin']);
     }
+
+    /**
+     * Renders users page.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function users(Request $request) {
         $user = Auth::user();
         return view('default.admin',['page'=>'users','ids'=>[],'title'=>'Manage Users',
@@ -38,23 +52,53 @@ class AdminController extends Controller
                 modify user administrative permissions, and assign training modules to existing users.'
         ]);
     }
+
+    /**
+     * Handle the user "created" event.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function user_assignments(Request $request, User $user) {
         return view('default.admin',['page'=>'users_assignments','ids'=>[$user->id],'title'=>$user->first_name.' '.$user->last_name.' Module Assignments','help'=>
             'Use this page to manage training module assignments for the current user.  You may add new
             modules, view a status report for currently assigned modules, and remove assigned modules.'
         ]);
     }
+
+
+    /**
+     * Returns/ renders groups page
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function groups(Request $request) {
         return view('default.admin',['page'=>'groups','ids'=>[],'title'=>'Manage Groups','help'=>
             'Use this page to manage groups within the BComply Application.  You may add/remove exsting groups, 
             rename groups, and manage group memeberships.'
         ]);
     }
+    /**
+     * Handle the user "created" event.
+     *
+     * @param Request $request
+     * @param Group $group
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function group_members(Request $request, Group $group) {
         return view('default.admin',['page'=>'groups_members','ids'=>[$group->id],'title'=>$group->name.' Memberships','help'=>
             'Use this page to add / remove users from the current group.'
         ]);
     }
+
+    /**
+     * Handle the user "created" event.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function modules(Request $request) {
         $user = Auth::user();
         return view('default.admin',['page'=>'modules','ids'=>[],'title'=>'Manage Modules',
@@ -73,24 +117,47 @@ class AdminController extends Controller
                 modules, manage administrative permissions for modudles, and manage module versions.'
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @param Module $module
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function module_versions(Request $request, Module $module) {
         return view('default.admin',['page'=>'modules_versions','ids'=>[$module->id],'title'=>$module->name.' Versions','help'=>
             'Use this page to manage module versions.  You may create, modify, 
             delete, upload, and configure module version.'
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @param Module $module
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function module_permissions(Request $request, Module $module) {
         return view('default.admin',['page'=>'modules_permissions','ids'=>[$module->id],'title'=>$module->name.' Admin Permissions','help'=>
             'Use this page to manage module permissions within the BComply Application.  You may 
             add new permissions for a specified user, or remove existing permissions for that use.'
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @param Module $module
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function module_assignments(Request $request, Module $module) {
         return view('default.admin',['page'=>'modules_assignments','ids'=>[$module->id],'title'=>$module->name.' Assignments','help'=>
             'Use this page to manage training module assignments for the current module version.  You may add new
             users, view a status report for currently assigned users, and remove assigned users.'
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function reports(Request $request) {
         $user = Auth::user();
         return view('default.admin',['page'=>'reports','ids'=>[],'title'=>'Reports',
@@ -107,10 +174,22 @@ class AdminController extends Controller
                 'Build and Manage Reports'
         ]);
     }
-    public function run_report(Request $request, Report $report,Module $module) {
+
+    /**
+     * @param Request $request
+     * @param Report $report
+     * @param Module $module
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function run_report(Request $request, Report $report, Module $module) {
         return view('default.admin',['page'=>'reports_execute','ids'=>[$report->id],'title'=>$report->name,'help'=>$report->description
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function bulk_assignments(Request $request){
         return view('default.admin',['page'=>'bulk_assignments','id'=>[],'title'=>'Bulk Assignments','help'=>'Use this page to manage assignments within the BComply Application.  You may create new
             bulk assignment rules'

@@ -21,15 +21,17 @@ ajax.get('/api/bulk_assignments',function(data) {
     })
         .on("model:created",function(grid_event) {
         ajax.post('/api/bulk_assignments',grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+            grid_event.model.update(data)
+            // grid_event.model.attributes = data;
+            // grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/bulk_assignments/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+            grid_event.model.update(data)
+            // grid_event.model.attributes = data;
+            // grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
@@ -222,9 +224,10 @@ ajax.get('/api/bulk_assignments',function(data) {
                 "data": assignment
             }
         ).modal().on('save',function(form_event) {
-
             ajax.put('/api/bulk_assignments/'+assignment_id,{'assignment':form_event.form.get()},function(data) {
-                grid_event.model.attributes.assignment = data
+                // grid_event.model.attributes.assignment = data
+                // grid_event.model.draw();
+                grid_event.model.update(data);
                 form_event.form.trigger('close');
             });
         }).on('cancel',function(form_event) {

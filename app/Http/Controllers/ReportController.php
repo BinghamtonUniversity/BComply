@@ -47,7 +47,7 @@ class ReportController extends Controller
 
     public function update_report(Request $request, Report $report) {
         $report->update($request->all());
-        return $report->with('owner')->first();
+        return $report->where('id',$report->id)->with('owner')->first();
     }
 
     public function delete_report(Request $request, Report $report) {

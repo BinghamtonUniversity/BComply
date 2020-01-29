@@ -16,14 +16,15 @@ ajax.get('/api/groups/'+id+'/members?simple=true',function(data) {
         ]},
     ], data: data
     }).on("model:created",function(grid_event) {
-        ajax.post('/api/groups/'+id+'/members',grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+        ajax.post('/api/groups/'+id+'/members/',grid_event.model.attributes,function(data) {
+            grid_event.model.update(data)
         },function(data) {
             grid_event.model.undo();
         });
     }).on("model:deleted",function(grid_event) {
-        ajax.delete('/api/groups/'+id+'/members/'+grid_event.model.attributes.user_id,{},function(data) {},function(data) {
+        ajax.delete('/api/groups/'+id+'/members/'+grid_event.model.attributes.user_id,{},
+            function(data) {},
+            function(data) {
             grid_event.model.undo();
         });
     })

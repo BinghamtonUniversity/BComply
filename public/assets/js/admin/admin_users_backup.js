@@ -19,15 +19,17 @@ ajax.get('/api/users',function(data) {
     ], data: data
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/users/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+            grid_event.model.update(data);
+            // grid_event.model.attributes = data;
+            // grid_event.model.draw();
         },function(err) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/users',grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+            grid_event.model.update(data);
+            // grid_event.model.attributes = data;
+            // grid_event.model.draw();
         },function(err) {
             grid_event.model.undo();
 

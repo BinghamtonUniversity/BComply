@@ -35,9 +35,11 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/users/'+id+'/assignments/'+grid_event.model.attributes.module_id,grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+            grid_event.model.update(data);
+            // grid_event.model.attributes = data;
+            // grid_event.model.draw();
         },function(data) {
+            // grid_event.model.update(data);
             grid_event.model.undo();
         });
     }).on("model:report",function(grid_event) {

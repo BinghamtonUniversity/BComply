@@ -10,6 +10,10 @@ class BulkAssignment extends Model
     protected $fillable = ['name','description','assignment'];
     protected $casts = ['assignment' => 'object'];
 
+
+    /**
+     * @return \Illuminate\Database\Query\Builder
+     */
     static public function base_query() {
         return DB::table('users')
         ->leftJoin('group_memberships', function ($join) {

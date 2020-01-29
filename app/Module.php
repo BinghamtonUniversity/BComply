@@ -16,15 +16,32 @@ class Module extends Model
     protected $appends = ['module_permissions'];
     protected $with = ['permissions'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function current_version(){
         return $this->belongsTo(ModuleVersion::class,'module_version_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function permissions(){
         return $this->hasMany(ModulePermission::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function owner(){
         return $this->belongsTo(User::class,'owner_user_id');
     }
+
+    /**
+     * @param array $assignment_arr
+     * @param bool $testonly
+     * @return ModuleAssignment|bool|null
+     */
     public function assign_to(Array $assignment_arr, $testonly=false) {
         if (is_null($this->module_version_id)) {
             // Not Current Version Exists!

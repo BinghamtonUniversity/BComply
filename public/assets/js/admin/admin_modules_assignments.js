@@ -31,8 +31,10 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+id,grid_event.model.attributes,function(data) {
-            grid_event.model.attributes = data;
-            grid_event.model.draw();
+           // debugger;
+            grid_event.model.update(data)
+            // grid_event.model.attributes = data;
+            // grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
         });
@@ -91,8 +93,9 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
             .modal().on('save', function (form_event) {
             console.log(form_event.form.get());
             ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
-                grid_event.model.attributes.assignment = data;
-                grid_event.model.draw();
+                // grid_event.model.attributes.assignment = data;
+                // grid_event.model.draw();
+                grid_event.model.update(data)
                 form_event.form.trigger('close');
             }, function (err) {
                 grid_event.model.undo();

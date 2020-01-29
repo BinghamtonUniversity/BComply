@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\BulkAssignment;
+use App\Report;
 use Illuminate\Support\Facades\Storage;
 use App\Module;
 use App\User;
@@ -46,7 +48,8 @@ class ModuleController extends Controller
     public function add_module(Request $request){
         $module = new Module($request->all());
         $module->save();
-        return $module->with('owner')->first();
+
+        return $module->where('id',$module->id)->with('owner')->first();
     }
     public function add_module_version(Request $request,Module $module){
         $module_version = new ModuleVersion($request->all());
@@ -61,6 +64,7 @@ class ModuleController extends Controller
         return $module_version;
     }
     public function delete_module_version(Request $request,Module $module, ModuleVersion $module_version){
+
         $module_version->delete();
         return 'Success';
     }
@@ -74,7 +78,14 @@ class ModuleController extends Controller
         return $module->with('owner')->first();
     }
     public function delete_module(Request $request,Module $module){
+        BulkAssignment::whereJsonContains('assignment',['module_id'=>(String)$module->id])->delete();
+        ModuleAssignment::where('module_id',$module->id)->delete();
+        ModuleVersion::where('module_id',$module->id)->delete();
         $module->delete();
+        //Delete bulk assignment
+        //Delete module assingments
+        //Module version
+        //Set current version to null -> We are already deleting the module with all of its versions, why assigning the current version to null?
         return 'Success';
     }
     public function get_module_permissions(Request $request, Module $module) {
@@ -90,7 +101,7 @@ class ModuleController extends Controller
         ]);
         $permission->module_id = $module->id;
         $permission->save();
-        return $permission->with('user')->first();
+        return $permission->where('id',$permission->id)->with('user')->first();
     }
     public function delete_module_permission(Request $request, Module $module, ModulePermission $module_permission) {
         return ModulePermission::where('module_id', $module->id)->where('id',$module_permission->id)->delete();   

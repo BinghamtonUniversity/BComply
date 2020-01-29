@@ -23,14 +23,16 @@ class GroupMembershipObserver
             if(isset($bulk_assignment->assignment) && isset($bulk_assignment->assignment->auto) && $bulk_assignment->assignment->auto){
                 if (($bulk_assignment->assignment->later_date && $bulk_assignment->assignment->later_assignment_date <= Carbon::today())
                     || (!$bulk_assignment->assignment->later_date)){
-                    $module = Module::where('id', $bulk_assignment->assignment->module_id)->first();
+                    $module = Module::where('id', $bulk_assignment->assignment->module_id)->whereNotNull('module_version_id')->first();
+
                     $q = BulkAssignment::base_query();
 
                     $q->where('users.id', $groupMembership->user_id)->where('users.active', true);
+
                     QueryBuilder::build_where($q, $bulk_assignment->assignment);
                     $user_result = $q->select('users.id')->first();
 
-                    if (!is_null($user_result)) {
+                    if (!is_null($user_result)&&!is_null($module)) {
                         if ($bulk_assignment->assignment->date_due_format === 'relative') {
                             $date_due = Carbon::now()->addDays($bulk_assignment->assignment->days_from_now);
                         } else {
