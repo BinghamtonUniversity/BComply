@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $user1 = new App\User([
-            'unique_id' => '_demo_tim',
+            'unique_id' => 'B00505893',
             'first_name' => 'Tim',
             'last_name' => 'Cortesi',
             'email' => 'tcortesi@binghamton.edu',
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         $user1->save();
 
         $user2 = new App\User([
-            'unique_id' => '_demo_ali',
+            'unique_id' => 'B00450942',
             'first_name' => 'Ali',
             'last_name' => 'Tanriverdi',
             'email' => 'atanrive@binghamton.edu',
@@ -106,7 +106,8 @@ class DatabaseSeeder extends Seeder
             'reference' => (Object)['filename'=>'story.html'],
         ]);
         $moduleVersion2->save();
-
+        $module->module_version_id = $moduleVersion->id;
+        $module->save();
 
         $moduleAssignment1 = new App\ModuleAssignment([
             'user_id' => $user1->id,

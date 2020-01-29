@@ -105,5 +105,8 @@ Route::group(['middleware'=>['custom.auth']], function () {
 
         /* Module Assignment Bulk Completion */
         Route::put('/assignment/{module_assignment}/complete','ModuleAssignmentController@check_complete')->middleware('can:complete_policy, App\ModuleAssignment,module_assignment');
+
+        //php artisan migrate:refresh --seed
+        Route::get('/db/refresh','AdminController@refresh_db');
     });
 });

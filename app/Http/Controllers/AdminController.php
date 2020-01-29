@@ -10,7 +10,7 @@ use App\ModuleVersion;
 use App\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
-
+use Illuminate\Support\Facades\Artisan;
 
 use Illuminate\Http\Request;
 
@@ -196,10 +196,16 @@ class AdminController extends Controller
         ]);
 
     }
-//    public function run_assignment(Request $request,BulkAssignment $bulkAssignment) {
-//        return view('default.admin',['page'=>'BulkAssignments_execute','id'=>$bulkAssignment->id,'module'=>$bulkAssignment,'title'=>$bulkAssignment->name,'help'=>$bulkAssignment->description
-//        ]);
-//    }
+
+    // Don't do this! Hella Bad and loses all data!
+    public function refresh_db(Request $request) {
+        if (config('app.env')==='development' || config('app.env')==='dev') {
+            $response = Artisan::call('migrate:refresh',['--seed'=>null]);
+            return ['msg'=>'Running php artisan migrate:refresh --seed','ret'=>$response];
+        } else {
+            return ['msg'=>'App In Production, Not Allowed','ret'=>false];
+        }
+    }
 
 
 }
