@@ -20,7 +20,7 @@ class GroupMembershipObserver
         $bulk_assignments = BulkAssignment::whereJsonContains('assignment',['auto'=>true])->get();
 
         foreach($bulk_assignments as $bulk_assignment) {
-            if($bulk_assignment->assignment->auto) {
+            if(isset($bulk_assignment->assignment) && isset($bulk_assignment->assignment->auto) && $bulk_assignment->assignment->auto){
                 if (($bulk_assignment->assignment->later_date && $bulk_assignment->assignment->later_assignment_date <= Carbon::today())
                     || (!$bulk_assignment->assignment->later_date)){
                     $module = Module::where('id', $bulk_assignment->assignment->module_id)->first();
