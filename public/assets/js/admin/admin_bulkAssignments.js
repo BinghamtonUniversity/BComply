@@ -63,28 +63,32 @@ ajax.get('/api/bulk_assignments',function(data) {
             $('#adminModal').modal('show')    
         });
     }).on("model:run",function(grid_event) {
-        toastr.info('Processing... Please Wait')
-        ajax.get('/api/bulk_assignments/'+grid_event.model.attributes.id+'/execute',function(data) {
-            template = `
-            <h5>The Following were assigned to the "{{module.current_version.name}}" version of the "{{module.name}}" module:</h5>
-            {{^assign_users.length}}
-                <div class="alert alert-warning">No Users Were Assigned</div>
-            {{/assign_users.length}}
-            {{#assign_users}}
-                {{first_name}} {{last_name}}, 
-            {{/assign_users}}
-            <h5>The Following were already assigned to the "{{module.name}}" module and were skipped:</h5>
-            {{^skip_users.length}}
-                <div class="alert alert-warning">No Users Were Skipped</div>
-            {{/skip_users.length}}
-            {{#skip_users}}
-                {{first_name}} {{last_name}}, 
-            {{/skip_users}}
-            `;
-            $('#adminModal .modal-title').html('Bulk Assignments')
-            $('#adminModal .modal-body').html(gform.m(template,data));
-            $('#adminModal').modal('show')    
-        });
+        if (prompt("Are you absolutely sure you want to do this?  (This operation cannot be undone).  To Confirm, type 'yes' in the box provided","no") === 'yes') {
+            toastr.info('Processing... Please Wait')
+            ajax.get('/api/bulk_assignments/'+grid_event.model.attributes.id+'/execute',function(data) {
+                template = `
+                <h5>The Following were assigned to the "{{module.current_version.name}}" version of the "{{module.name}}" module:</h5>
+                {{^assign_users.length}}
+                    <div class="alert alert-warning">No Users Were Assigned</div>
+                {{/assign_users.length}}
+                {{#assign_users}}
+                    {{first_name}} {{last_name}}, 
+                {{/assign_users}}
+                <h5>The Following were already assigned to the "{{module.name}}" module and were skipped:</h5>
+                {{^skip_users.length}}
+                    <div class="alert alert-warning">No Users Were Skipped</div>
+                {{/skip_users.length}}
+                {{#skip_users}}
+                    {{first_name}} {{last_name}}, 
+                {{/skip_users}}
+                `;
+                $('#adminModal .modal-title').html('Bulk Assignments')
+                $('#adminModal .modal-body').html(gform.m(template,data));
+                $('#adminModal').modal('show')    
+            });
+        } else {
+            toastr.error('Action Cancelled by User')
+        }
     }).on("model:configure_query",function(grid_event) {
         assignment_id = grid_event.model.attributes.id;
         assignment = grid_event.model.attributes.assignment || {};
