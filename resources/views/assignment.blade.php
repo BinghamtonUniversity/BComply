@@ -1,4 +1,4 @@
-<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
     @if((\Carbon\Carbon::now()>$assignment->date_due && !$assignment->module->past_due))
         <div class="panel panel-default past-due">
             <a class="trigger-help" href="#" data-toggle="popover" data-placement="top" title="Notice!" data-content=

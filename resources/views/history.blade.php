@@ -11,7 +11,7 @@
             <div class="row">
                     @if(count($assignments) > 0)
                             @foreach ($assignments as $assignment)
-                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="panel panel-default">
                                 <a class="trigger-help" href="/assignment/{{$assignment->id}}"
                                     data-toggle="popover" data-placement="top" title="Description" data-content="{{$assignment->module->description}}">
@@ -33,10 +33,12 @@
                             </div>
                             @endforeach
                     @else
+                    <div class="col-sm-12">
                         <div class="alert alert-warning" style="text-align:center;align-content:center;margin:auto">
                             <h4 style="margin-top:0px;">You do not have any assignments in your history!</h4>
                             <div>Contact someone if you feel that this is in error.</div>
                         </div>
+                    </div>
                     @endif
             </div>
         </div>

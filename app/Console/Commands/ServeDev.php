@@ -46,7 +46,7 @@ class ServeDev extends Command
         $ip = gethostbyname($this->host());
         if ($ip !== "127.0.0.1") {
             $this->line("<error>You must add the following entry to your /etc/hosts file:</error>");
-            $this->line($this->host()."\t127.0.0.1");
+            $this->line("127.0.0.1\t".$this->host());
             return 0;
         }
         $this->line("<info>Laravel development server started:</info> http://{$this->host()}:{$this->port()}");
