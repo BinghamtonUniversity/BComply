@@ -118,7 +118,7 @@
                                     for($i=0;$i<=$index;$i++) {
                                         echo (isset($ids[$i-1])?('/'.$ids[$i-1]):'').'/'.$crumbs[$i];
                                     }
-                                ?>">{{ucwords($crumb)}}</a></li>
+                                ?>">{{Str::snakeToTitle(Str::snake($crumb))}}</a></li>
                             @endforeach
                         @endif
                     </ol>

@@ -191,7 +191,7 @@ class AdminController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function bulk_assignments(Request $request){
-        return view('default.admin',['page'=>'bulk_assignments','id'=>[],'title'=>'Bulk Assignments','help'=>'Use this page to manage assignments within the BComply Application.  You may create new
+        return view('default.admin',['page'=>'bulkAssignments','ids'=>[],'title'=>'Bulk Assignments','help'=>'Use this page to manage assignments within the BComply Application.  You may create new
             bulk assignment rules'
         ]);
 
