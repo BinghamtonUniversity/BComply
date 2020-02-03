@@ -82,6 +82,55 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                         ]
                     },
                     {
+                        "type":"checkbox",
+                        "name":"specify_start_date",
+                        "label":"Specify Start Date",
+                        "columns":6
+                    },
+                    {
+                        "type":"datetime",
+                        "label":"Date and Time Started",
+                        "name":"date_started",
+                        "format": {
+                            "input": "YYYY-MM-DD HH:mm:ss"
+                        },
+                        "show": [
+                            {
+                                "name": "specify_start_date",
+                                "type": "matches",
+                                "value": [
+                                    true
+                                ]
+                            }
+                        ],
+                        "columns":6
+                    },
+                    {
+                        "type":"checkbox",
+                        "name":"specify_completed_date",
+                        "label":"Specify Date Completed",
+                        "columns":6,
+                        "forceRow": true,
+                    },
+                    {
+                        "type":"datetime",
+                        "label":"Date and Time Completed",
+                        "name":"date_completed",
+                        "format": {
+                            "input": "YYYY-MM-DD HH:mm:ss"
+                        },
+                        "show": [
+                            {
+                                "name": "specify_completed_date",
+                                "type": "matches",
+                                "value": [
+                                    true
+                                ]
+                            }
+                        ],
+                        "columns":6
+                    },
+                    {
                         "type":"text",
                         "label":"Score",
                         "name":"score",
