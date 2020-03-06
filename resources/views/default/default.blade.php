@@ -38,7 +38,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/" style="background: rgb(51, 85, 136);color:white;padding: 0px 0px 0px 25px;">
+          <a class="navbar-brand" href="/" style="background: #004333;color:white;padding: 0px 0px 0px 25px;">
             <h3 style="color:#fff;margin-top:12px;"><i class="fa fa-address-book"></i> BComply</h3>
           </a>
         </div>

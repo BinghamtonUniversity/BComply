@@ -18,9 +18,10 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         {type:"datetime", name:"date_assigned", label:"Date Assigned",parse:false,show:false,format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},
-        {type:"datetime", name:"date_due", label:"Date Due",format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        }},
+        {type:"datetime", name:"date_due", label:"Date Due",
+            format: {input: "YYYY-MM-DD HH:mm:ss" },
+            required: true
+        },
         {type:"text", parse:false,show:false, name:"date_started", label:"Date Started"},
         {type:"text", parse:false,show:false, name:"date_completed", label:"Date Completed"},
 
@@ -80,6 +81,55 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                                 "value": "passed"
                             }
                         ]
+                    },
+                    {
+                        "type":"checkbox",
+                        "name":"specify_start_date",
+                        "label":"Specify Start Date",
+                        "columns":6
+                    },
+                    {
+                        "type":"datetime",
+                        "label":"Date and Time Started",
+                        "name":"date_started",
+                        "format": {
+                            "input": "YYYY-MM-DD HH:mm:ss"
+                        },
+                        "show": [
+                            {
+                                "name": "specify_start_date",
+                                "type": "matches",
+                                "value": [
+                                    true
+                                ]
+                            }
+                        ],
+                        "columns":6
+                    },
+                    {
+                        "type":"checkbox",
+                        "name":"specify_completed_date",
+                        "label":"Specify Date Completed",
+                        "columns":6,
+                        "forceRow": true,
+                    },
+                    {
+                        "type":"datetime",
+                        "label":"Date and Time Completed",
+                        "name":"date_completed",
+                        "format": {
+                            "input": "YYYY-MM-DD HH:mm:ss"
+                        },
+                        "show": [
+                            {
+                                "name": "specify_completed_date",
+                                "type": "matches",
+                                "value": [
+                                    true
+                                ]
+                            }
+                        ],
+                        "columns":6
                     },
                     {
                         "type":"text",

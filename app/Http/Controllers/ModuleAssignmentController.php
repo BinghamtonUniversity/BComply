@@ -24,15 +24,26 @@ class ModuleAssignmentController extends Controller
         ]);
     }
     public function check_complete(Request $request, ModuleAssignment $module_assignment){
-//        dd($request->score);
+//        dd($request);
         if(is_null($module_assignment->date_completed)){
             if(is_null($module_assignment->date_started)){
-                $module_assignment->date_started = now();
+                if($request->specify_start_date){
+                    $module_assignment->date_started = $request->date_started;
+                }
+                else{
+                    $module_assignment->date_started=now();
+                }
             }
+            if($request->specify_completed_date){
+                $module_assignment->date_completed = $request->date_completed;
+            }
+            else{
+                $module_assignment->date_completed = now();
+            }
+
             $module_assignment->status = $request->status;
             $module_assignment->updated_by_user_id = Auth::user()->id;
             $module_assignment->score = $request->score;
-            $module_assignment->date_completed = now();
 
             $module_assignment->save();
             return $module_assignment;

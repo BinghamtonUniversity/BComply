@@ -7,8 +7,10 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         '',
         // {"name":"edit"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
+        {"name":"complete","label":"Mark as Completed","type":"danger"},
         '',
         {"name":"delete","label":"Remove Module Assignment"}
+
     ],
     count:20,
     schema:[
@@ -20,7 +22,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         }},
         {type:"datetime", name:"date_due", label:"Date Due",format: {
             input: "YYYY-MM-DD HH:mm:ss"
-        }},
+        },required:true},
         {type:"text", name:"date_started", label:"Date Started", show:false, parse:false},
         {type:"text", name:"date_completed", label:"Date Completed", show:false, parse:false},
     ], data: data
@@ -61,6 +63,102 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         $('#adminModal .modal-title').html('Module Report')
         $('#adminModal .modal-body').html(gform.m(template,grid_event.model.attributes));
         $('#adminModal').modal('show')
+    }).on('model:complete',function(grid_event) {
+        data = grid_event.model.attributes.assignment || {};
+        new gform(
+            {
+                "fields": [
+                    {
+                        "type": "radio",
+                        "label": "Status",
+                        "name": "status",
+                        "options": [
+                            {
+                                "label": "Attended",
+                                "value": "attended"
+                            },
+                            {
+                                "label": "Completed",
+                                "value": "completed"
+                            },
+                            {
+                                "label": "Passed",
+                                "value": "passed"
+                            }
+                        ]
+                    },
+                    {
+                        "type":"checkbox",
+                        "name":"specify_start_date",
+                        "label":"Specify Start Date",
+                        "columns":6
+                    },
+                    {
+                        "type":"datetime",
+                        "label":"Date and Time Started",
+                        "name":"date_started",
+                        "format": {
+                            "input": "YYYY-MM-DD HH:mm:ss"
+                        },
+                        "show": [
+                            {
+                                "name": "specify_start_date",
+                                "type": "matches",
+                                "value": [
+                                    true
+                                ]
+                            }
+                        ],
+                        "columns":6
+                    },
+                    {
+                        "type":"checkbox",
+                        "name":"specify_completed_date",
+                        "label":"Specify Date Completed",
+                        "columns":6,
+                        "forceRow": true,
+                    },
+                    {
+                        "type":"datetime",
+                        "label":"Date and Time Completed",
+                        "name":"date_completed",
+                        "format": {
+                            "input": "YYYY-MM-DD HH:mm:ss"
+                        },
+                        "show": [
+                            {
+                                "name": "specify_completed_date",
+                                "type": "matches",
+                                "value": [
+                                    true
+                                ]
+                            }
+                        ],
+                        "columns":6
+                    },
+                    {
+                        "type":"text",
+                        "label":"Score",
+                        "name":"score",
+                        "value":100,
+                    }
+                ],
+                "data": data
+            })
+            .modal().on('save', function (form_event) {
+            console.log(form_event.form.get());
+            ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
+                // grid_event.model.attributes.assignment = data;
+                // grid_event.model.draw();
+                grid_event.model.update(data)
+                form_event.form.trigger('close');
+            }, function (err) {
+                grid_event.model.undo();
+                // console.log(data.response)
+            })
+        }).on('cancel', function (form_event) {
+            form_event.form.trigger('close');
+        })
     })
 });
 

@@ -147,7 +147,7 @@ body{
 .nav-sidebar .active > a,
 .nav-sidebar .active > a:hover,
 .nav-sidebar .active > a:focus {
-  border-left:solid #d9534f;
+  border-left:solid #004333;
   color: #fff;
   background-color:rgba(0,0,0,0.4);
 }

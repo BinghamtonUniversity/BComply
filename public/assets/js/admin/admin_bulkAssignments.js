@@ -114,7 +114,8 @@ ajax.get('/api/bulk_assignments',function(data) {
                     },
                     {type:"datetime", name:"date_due", label:"Due Date",format: {
                         input: "YYYY-MM-DD HH:mm:ss"
-                        },show: [{type: "matches",name: "date_due_format",value: ["fixed"]}]
+                        },show: [{type: "matches",name: "date_due_format",value: ["fixed"]}],
+                        "required": "show",
                     },
                     {type:"number",name:"days_from_now",label:"Due Date",show: [{type: "matches",name: "date_due_format",value: ["relative"]}]},     
                     {type:"checkbox", name:"auto", label:"Auto Assign?",help:"Use this option if you want auto-run this rule whenever group memberships or user attributes change"},
