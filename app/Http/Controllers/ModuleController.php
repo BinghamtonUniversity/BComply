@@ -75,7 +75,7 @@ class ModuleController extends Controller
     public function update_module(Request $request,Module $module){
         $module->update($request->all());
         $module->save();
-        return $module->with('owner')->first();
+        return $module->where('module_id',$module->id)->with('owner')->first();
     }
     public function delete_module(Request $request,Module $module){
         BulkAssignment::whereJsonContains('assignment',['module_id'=>(String)$module->id])->delete();

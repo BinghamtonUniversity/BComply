@@ -22,7 +22,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         }},
         {type:"datetime", name:"date_due", label:"Date Due",format: {
             input: "YYYY-MM-DD HH:mm:ss"
-        }},
+        },required:true},
         {type:"text", name:"date_started", label:"Date Started", show:false, parse:false},
         {type:"text", name:"date_completed", label:"Date Completed", show:false, parse:false},
     ], data: data
