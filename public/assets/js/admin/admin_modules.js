@@ -4,10 +4,10 @@ ajax.get('/api/modules',function(data) {
         {type:"hidden", name:"id"},
         {type:"checkbox", name:"public", label:"Public?","columns":6},
         {type:"checkbox", name:"past_due", label:"Allow After Due",columns:6},
-        {type:"text", name:"name", label:"Name", columns:8},
+        {type:"text", name:"name", label:"Name", columns:8, "required":true},
         {type:"text", name:"icon", label:"Icon", columns:4},
         {type:"textarea", name:"description", label:"Description Name"},
-        {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
+        {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}", "required":true},
         {
             "type":"radio",
             "name":"reminders",
@@ -87,17 +87,16 @@ ajax.get('/api/modules',function(data) {
                     "id":"reminder",
                     "label":"Assignment Reminder Template",
                     "template": "{{attributes.templates.reminder}}",
-                    "value":`<div class=\'container\'>
-                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
-                <br>
-                <p style=\'font-size:16px;\'>Your assignment {{module.name}} has a due date soon:
-                    <br>
-                    Due date {{module.due_date}}
-                    <br>
-                    Assignment Link: 
-                    <a href=\'{{link}}\'>{{module.name}}</a>
-                </p>
-            </div>`
+                    "value":
+`<h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+<br>
+<p style=\'font-size:16px;\'>Your assignment {{module.name}} has a due date soon:
+    <br>
+    Due date {{module.due_date}}
+    <br>
+    Assignment Link: 
+    <a href=\'{{link}}\'>{{module.name}}</a>
+</p>`
                 },
                 {
                     "type":"textarea",
@@ -114,17 +113,16 @@ ajax.get('/api/modules',function(data) {
                                 ]
                             }
                         ],
-                    "value":`<div class='container'>
-                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
-                <br>
-                <p style='font-size:16px;'>Your assignment {{module.name}} has a due date soon:
-                    <br>
-                    Due date {{module.due_date}}
-                    <br>
-                    Assignment Link: 
-                    <a href='{{link}}'>{{module.name}}</a>
-                </p>
-            </div>`
+                    "value":
+`<h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+<br>
+<p style='font-size:16px;'>Your assignment {{module.name}} has a due date soon:
+    <br>
+    Due date {{module.due_date}}
+    <br>
+    Assignment Link: 
+    <a href='{{link}}'>{{module.name}}</a>
+</p>`
                 },
                 {
                     "type":"textarea",
@@ -132,13 +130,14 @@ ajax.get('/api/modules',function(data) {
                     "id":"completion_notification",
                     "label":"Assignment Complation Template",
                     "template": "{{attributes.templates.completion_notification}}",
-                    "value":`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
-                            <br>
-                            <p style='font-size:16px;'>You completed the {{module.name}} course</p>
-                            <br>
-                            <p style='font-size:16px;'>Certificate Link: 
-                                <a href='{{link}}'>Certificate</a>
-                            </p>`
+                    "value":
+`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
+<br>
+<p style='font-size:16px;'>You completed the {{module.name}} course</p>
+<br>
+<p style='font-size:16px;'>Certificate Link: 
+    <a href='{{link}}'>Certificate</a>
+</p>`
                 },
                 {
                     "type":"textarea",
@@ -146,15 +145,16 @@ ajax.get('/api/modules',function(data) {
                     "id":"completion_notification",
                     "label":"Assignment Notification Template",
                     "template": "{{attributes.templates.assignment}}",
-                    "value":`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
-                        <br>
-                        <p style='font-size:16px;'>You are assigned to {{module.name}}</p>
-                        <br>
-                        <p style='font-size:16px;'>Due Date: {{module.due_date}}</p>
-                        <br>
-                        <p style='font-size:16px;'>Access to Assignment: 
-                            <a href='{{link}}'>{{module.name}}</a>
-                        </p>`
+                    "value":
+`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
+<br>
+<p style='font-size:16px;'>You are assigned to {{module.name}}</p>
+<br>
+<p style='font-size:16px;'>Due Date: {{module.due_date}}</p>
+<br>
+<p style='font-size:16px;'>Access to Assignment: 
+    <a href='{{link}}'>{{module.name}}</a>
+</p>`
                 },
                 {
                     "type":"textarea",
@@ -162,10 +162,11 @@ ajax.get('/api/modules',function(data) {
                     "id":"certificate",
                     "label":"Completion Certificate Template",
                     "template": "{{attributes.templates.certificate}}",
-                    "value":`<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
-                    <b>{{module.name}}</b> module <b>{{module.version_name}}</b><br>
-                    at<br>
-                    <b>{{assignment.data_completed}}</b><br>`
+                    "value":
+`<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
+<b>{{module.name}}</b> module <b>{{module.version_name}}</b><br>
+at<br>
+<b>{{assignment.data_completed}}</b><br>`
                 }
             ]
         },
