@@ -86,7 +86,18 @@ ajax.get('/api/modules',function(data) {
                     "name":"reminder",
                     "id":"reminder",
                     "label":"Assignment Reminder Template",
-                    "template": "{{attributes.templates.reminder}}"
+                    "template": "{{attributes.templates.reminder}}",
+                    "value":`<div class=\'container\'>
+                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+                <br>
+                <p style=\'font-size:16px;\'>Your assignment {{module.name}} has a due date soon:
+                    <br>
+                    Due date {{module.due_date}}
+                    <br>
+                    Assignment Link: 
+                    <a href=\'{{link}}\'>{{module.name}}</a>
+                </p>
+            </div>`
                 },
                 {
                     "type":"textarea",
@@ -102,14 +113,32 @@ ajax.get('/api/modules',function(data) {
                                     true
                                 ]
                             }
-                        ]
+                        ],
+                    "value":`<div class='container'>
+                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+                <br>
+                <p style='font-size:16px;'>Your assignment {{module.name}} has a due date soon:
+                    <br>
+                    Due date {{module.due_date}}
+                    <br>
+                    Assignment Link: 
+                    <a href='{{link}}'>{{module.name}}</a>
+                </p>
+            </div>`
                 },
                 {
                     "type":"textarea",
                     "name":"completion_notification",
                     "id":"completion_notification",
                     "label":"Assignment Complation Template",
-                    "template": "{{attributes.templates.completion_notification}}"
+                    "template": "{{attributes.templates.completion_notification}}",
+                    "value":`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
+                            <br>
+                            <p style='font-size:16px;'>You completed the {{module.name}} course</p>
+                            <br>
+                            <p style='font-size:16px;'>Certificate Link: 
+                                <a href='{{link}}'>Certificate</a>
+                            </p>`
                 },
                 {
                     "type":"textarea",
@@ -117,13 +146,26 @@ ajax.get('/api/modules',function(data) {
                     "id":"completion_notification",
                     "label":"Assignment Notification Template",
                     "template": "{{attributes.templates.assignment}}",
+                    "value":`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
+                        <br>
+                        <p style='font-size:16px;'>You are assigned to {{module.name}}</p>
+                        <br>
+                        <p style='font-size:16px;'>Due Date: {{module.due_date}}</p>
+                        <br>
+                        <p style='font-size:16px;'>Access to Assignment: 
+                            <a href='{{link}}'>{{module.name}}</a>
+                        </p>`
                 },
                 {
                     "type":"textarea",
                     "name":"certificate",
                     "id":"certificate",
                     "label":"Completion Certificate Template",
-                    "template": "{{attributes.templates.certificate}}"
+                    "template": "{{attributes.templates.certificate}}",
+                    "value":`<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
+                    <b>{{module.name}}</b> module <b>{{module.version_name}}</b><br>
+                    at<br>
+                    <b>{{assignment.data_completed}}</b><br>`
                 }
             ]
         },
