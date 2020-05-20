@@ -3,7 +3,7 @@ ajax.get('/api/reports/'+id+'/execute',function(data) {
         return {"type":"text","name":b}
     })
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
-        search: false,columns: false,upload:false,download:false,title:'Report',
+        search: true,columns: false,upload:false,download:true,title:'Report',
         entries:[],
         actions:[],
         count:100,
