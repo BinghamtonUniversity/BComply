@@ -42,7 +42,7 @@ class ReportController extends Controller
     public function add_report(Request $request) {
         $report = new Report($request->all());
         $report->save();
-        return $report->with('owner')->first();
+        return $report->where('id',$report->id)->with('owner')->first();
     }
 
     public function update_report(Request $request, Report $report) {
