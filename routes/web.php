@@ -36,6 +36,11 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::put('/tincan/activities/state', 'TinCanController@set_state');
         Route::put('/tincan/statements', 'TinCanController@register_statement');
 
+        /* Articulate Tincan Integration */
+        Route::get('/video/state/{assignment}', 'VideoController@get_duration');
+        Route::put('/video/state/{assignment}', 'VideoController@set_duration');
+        Route::put('/video/statements/{assignment}', 'VideoController@register_statement');
+
         /* User Methods */
         Route::get('/users','UserController@get_all_users')->middleware('can:view_in_admin,App\User');
         Route::get('/users/search/{search_string?}','UserController@search');
