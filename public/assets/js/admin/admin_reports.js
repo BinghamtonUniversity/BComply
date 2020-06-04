@@ -46,13 +46,22 @@ ajax.get('/api/reports',function(data) {
                         "multiple": true,
                         "options": [
                             {"label": "user_id", "value": "users.unique_id as user_id"},
+                            {"label": "payroll_code", "value": "payroll_code"},
+                            {"label": "supervisor", "value": "supervisor"},
+                            {"label": "department_id", "value": "department_id"},
+                            {"label": "department_name", "value": "department_name"},
+                            {"label": "division_id", "value": "division_id"},
+                            {"label": "division", "value": "division"},
+                            {"label": "negotiation_unit", "value": "negotiation_unit"},
+                            {"label": "title", "value": "title"},
+                            {"label": "active", "value": "active"},
                             {"label": "group_memberships", "value": "user_groups.groups as group_memberships"},
                             {"label": "date_started", "value": "date_started"},
                             {"label": "date_due", "value": "date_due"},
                             {"label": "date_completed", "value": "date_completed"},
                             {"label": "status", "value": "module_assignments.status as status"},
                             {"label": "score", "value": "score"},
-                            {"label": "duration", "value": "duration"},
+                            {"label": "duration", "value": "duration"},                
                         ]
                     },
                     {

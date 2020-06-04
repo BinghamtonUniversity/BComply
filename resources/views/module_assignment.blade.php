@@ -18,6 +18,14 @@
             <div class="callout callout-info">{{{$assignment->version->reference->instructions}}}</div>
             <div id="player"></div>
             <script>
+            var done = false;
+            var warn_on_exit = function(event) {
+                if (!done) {
+                    event.preventDefault();
+                    event.returnValue = '';
+                }
+            }
+            window.addEventListener('beforeunload',warn_on_exit,true);
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -69,6 +77,7 @@
                         url: '/api/video/statements/{{$assignment->id}}?verb=completed',
                         data: {time:player.getCurrentTime()},
                         success: function() {
+                            done = true;
                             alert("Thank you for completing this video.  You have now received credit for this training module.")
                             window.location = '/';
                         },
