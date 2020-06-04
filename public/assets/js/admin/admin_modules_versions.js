@@ -96,7 +96,8 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         } else if (module_version_type === 'youtube') {
             form_fields = [
                 {"type":"text","name":"code","label":"Youtube Code","help":"This is the string of characters at the end of the Youtube URL"},
-                {"type":"checkbox","name":"controls","label":"Enable Controls"}
+                {"type":"checkbox","name":"controls","label":"Enable Controls"},
+                {"type":"textarea","name":"instructions","label":"Instructions"}
             ]
         }
         new gform(

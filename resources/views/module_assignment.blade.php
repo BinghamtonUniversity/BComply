@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-sm-12" style="text-align:center;">
+    <div class="col-sm-12">
     @if((\Carbon\Carbon::now()>$assignment->date_due && !$assignment->module->past_due))
         <div class="alert alert-warning" style="text-align:center;align-content:center;margin:auto">
             <h4 style="margin-top:0px;">You can no longer view this module</h4>
@@ -15,6 +15,7 @@
         @if($assignment->version->type === 'articulate_tincan')
             <iframe style="border:0px;" width="100%" height="570" src="{{url('/storage/modules/'.$assignment->module_id.'/versions/'.$assignment->module_version_id)}}/{{$assignment->version->reference->filename}}?activity_id={{$assignment->id}}&endpoint={{url('/api/tincan')}}&auth=0&actor=<?php echo htmlentities(json_encode(["name"=>Auth::user()->first_name.' '.Auth::user()->last_name,"mbox"=>Auth::user()->email]));?>"></iframe>
         @elseif($assignment->version->type === 'youtube')
+            <div class="callout callout-info">{{{$assignment->version->reference->instructions}}}</div>
             <div id="player"></div>
             <script>
             var tag = document.createElement('script');
