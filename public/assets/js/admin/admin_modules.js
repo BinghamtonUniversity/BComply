@@ -148,7 +148,7 @@ To complete this training, please utilize the following link: <a href="{{link}}"
                     "label":"Assignment Complation Template",
                     "template": "{{attributes.templates.completion_notification}}",
                     "value":
-`Hello {{user.first_name}} {{user.last_name}}<br>
+`{{user.first_name}} {{user.last_name}}<br>
 <br>
 This email serves as confirmation that you have completed the "{{module.name}}" training module.<br>
 <br>
