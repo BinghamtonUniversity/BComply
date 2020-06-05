@@ -31,7 +31,8 @@ class CompletionNotification extends Mailable
                     ],
                 'module'=>[
                     'name'=>$user_message['module_name'],
-                    'due_date'=>$moduleAssignment->date_due->format('m/d/y')
+                    'due_date'=>$moduleAssignment->date_due->format('m/d/y'),
+                    'assignment_date'=>$moduleAssignment->date_assigned->format('m/d/y')
                 ],
                 'link'=>url('/assignment/'.$user_message['link'].'/certificate')
         ]);
@@ -47,17 +48,8 @@ class CompletionNotification extends Mailable
      */
     public function build()
     {
-        if(($this->moduleAssignment->status==='completed') || ($this->moduleAssignment->status==='passed')|| ($this->moduleAssignment->status==='attended') ){
-            $subject_message = 'You have successfully completed the course'.$this->user_message['module_name'];
-        }
-        else if($this->moduleAssignment->status==='failed'){
-            $subject_message = 'You have completed the course'.$this->user_message['module_name'];
-        }
         return $this->view('emails.rawData')
             ->with(['content'=>$this->content])
-            ->subject('New Course Assignment: '.
-                $this->user_message['module_name'].' Due Date:'.
-                $this->moduleAssignment->date_due
-                    ->format('m/d/y'))->subject($subject_message);
-    }
+            ->subject('BComply "'.$this->user_message['module_name'].'" Training Module '.$this->moduleAssignment->status);
+        }
 }
