@@ -45,6 +45,7 @@ class Kernel extends ConsoleKernel
                 $user = $assignment->user()->where('id',$assignment->user_id)->first();
                 if($user->active && $user->send_email_check()){
                     $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
+                    $user_message = null;
                     if($assignment->date_due<=Carbon::now() && $module->past_due && in_array($differenceInDays,$module->past_due_reminders) && $module->templates->past_due_reminder != '') {
                         $user_message =[
                             'module_name'=> $module['name'],
@@ -58,7 +59,7 @@ class Kernel extends ConsoleKernel
                             'reminder'=>$module->templates->reminder
                         ];
                     }
-                    if (isset($user_message)) {
+                    if (!is_null($user_message)) {
                         Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_message));
                     }
                 }
