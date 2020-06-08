@@ -77,8 +77,8 @@ class ModuleAssignmentController extends Controller
             $custom_certificate = $m->render($module->templates->certificate,
                 [
                     'user'=>[
-                        'first_name'=> Auth::user()->first_name,
-                        'last_name'=>Auth::user()->last_name,
+                        'first_name'=> $module_assignment->user->first_name,
+                        'last_name'=>$module_assignment->user->last_name,
                     ],
                     'module'=>[
                         'name'=>$module->name,
@@ -103,24 +103,8 @@ class ModuleAssignmentController extends Controller
             </div>';
         }
         else{
-            $output = '
-            <div style="border: solid; border-color:#005a43; text-align: center;"class="container-fluid">
-                <div class="container">
-                    <div class="row">
-                        <h3>Certificate of Completion</h3>
-                        <p>This certifies that</p>
-                        <h4>'.Auth::user()->first_name.' '.Auth::user()->last_name.'</h4>
-                        <p>completed the</p>
-                        <h3>'.$module_version->name.' '.$module->name .'</h3>
-                        <p>on '.$module_assignment->date_completed->format('m/d/y') .'</p>
-                        <p>Certifed by:</p>
-                        <img style="max-width: 150px" src="'.config('app.certificate_img_url').'">
-                        <h3>SUNY Binghamton</h3>
-                    </div>
-                </div>
-            </div>';
+            return abort(404);
         }
-
         return $output;
     }
 }
