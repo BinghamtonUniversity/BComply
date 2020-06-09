@@ -14,6 +14,7 @@ user_form_attributes = [
     {type:"text", name:"division", label:"Division Name"},
     {type:"text", name:"negotiation_unit", label:"Negotiation Unit"},
     {type:"text", name:"title", label:"Title"},
+    {type:"text", name:"role_type", label:"role_type"},
 ];
 
 $('#adminDataGrid').html(`

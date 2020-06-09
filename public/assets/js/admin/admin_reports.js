@@ -54,6 +54,7 @@ ajax.get('/api/reports',function(data) {
                             {"label": "division", "value": "division"},
                             {"label": "negotiation_unit", "value": "negotiation_unit"},
                             {"label": "title", "value": "title"},
+                            {"label": "role_type", "value": "role_type"},
                             {"label": "active", "value": "active"},
                             {"label": "group_memberships", "value": "user_groups.groups as group_memberships"},
                             {"label": "date_started", "value": "date_started"},
