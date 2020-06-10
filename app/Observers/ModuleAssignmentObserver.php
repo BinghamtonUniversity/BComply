@@ -33,7 +33,11 @@ class ModuleAssignmentObserver
                     'link' => $moduleAssignment['id'],
                     'assignment'=>$module->templates->assignment
                 ];
-                Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+                try {
+                    Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+                } catch (\Exception $e) {
+                    // keep going
+                }
             }
         }
     }
@@ -56,7 +60,11 @@ class ModuleAssignmentObserver
                         'link' => $moduleAssignment['id'],
                         'completion_notification'=>$module->templates->completion_notification
                     ];
-                    Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
+                    try {
+                        Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
+                    } catch (\Exception $e) {
+                        // keep going
+                    }
                 }
             }
         }
