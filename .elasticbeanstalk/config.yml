@@ -1,6 +1,6 @@
 branch-defaults:
   master:
-    environment: bcomplydev
+    environment: bcomplyprod
 environment-defaults:
   bcomplydev:
     branch: null
