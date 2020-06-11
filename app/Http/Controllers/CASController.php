@@ -24,7 +24,10 @@ class CASController extends Controller {
                 return redirect('/');
             }
         } else {
-            return response('You are not authorized to use this application.', 401);
+            return view('not_authorized',[
+                'page' => 'error',
+                'bnumber'=> $user_attributes['UDC_IDENTIFIER']
+            ]);
         }
 
     }
