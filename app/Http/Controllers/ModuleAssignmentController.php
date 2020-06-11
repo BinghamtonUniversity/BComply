@@ -14,6 +14,7 @@ class ModuleAssignmentController extends Controller
 {
     public function run(Request $request, ModuleAssignment $module_assignment){
         $assignment = ModuleAssignment::where('id',$module_assignment->id)
+            ->where('user_id',Auth::user()->id)
             ->with('version')
             ->with('module')
             ->first();

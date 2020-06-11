@@ -9,7 +9,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/',['uses' => 'UserDashboardController@my_assignments']);
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
     Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
-    Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run')->middleware('can:view,module_assignment');
+    Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');
     Route::get('/assignment/{module_assignment}/certificate', 'ModuleAssignmentController@certificate')->middleware('can:certificate_policy,module_assignment');
 
     /* Admin Pages */
