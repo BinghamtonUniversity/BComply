@@ -164,7 +164,7 @@ You may view the confirmation certificate here: <a href="{{link}}">Certificate</
 `<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
 <b>{{module.name}}</b> module <b>{{module.version_name}}</b><br>
 at<br>
-<b>{{assignment.data_completed}}</b>`
+<b>{{assignment.date_completed}}</b>`
                 }
             ]
         },
