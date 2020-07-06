@@ -24,25 +24,20 @@ class ModuleAssignmentObserver
     public function created(ModuleAssignment $moduleAssignment)
     {
         $module = Module::where('id','=',$moduleAssignment->module_id)->first();
-        $user = User::where('id',$moduleAssignment->user_id)->first();
-        $default_assignment_email_text = "
-                        <h3> Hello {{user.first_name}} {{user.last_name}}</h3>
-                        <br>
-                        <p style='font-size:16px;'>You are assigned to {{module.name}}</p>
-                        <br>
-                        <p style='font-size:16px;'>Due Date: {{module.due_date}}</p>
-                        <br>
-                        <p style='font-size:16px;'>Access to Assignment: 
-                            <a href='{{link}}'>{{module.name}}</a>
-                        </p>";
-        if($moduleAssignment->user_id !== $moduleAssignment->assigned_by){
+        // Don't send email if the assignment template is blank
+        if ($module->templates->assignment != '') {
+            $user = User::where('id',$moduleAssignment->user_id)->first();
             if($user->active && $user->send_email_check()){
                 $user_messages =[
                     'module_name'=> $module['name'],
                     'link' => $moduleAssignment['id'],
-                    'assignment'=>$module->templates->assignment?$module->templates->assignment:$default_assignment_email_text
+                    'assignment'=>$module->templates->assignment
                 ];
-                Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+                try {
+                    Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+                } catch (\Exception $e) {
+                    // keep going
+                }
             }
         }
     }
@@ -56,22 +51,21 @@ class ModuleAssignmentObserver
     public function saved(ModuleAssignment $moduleAssignment){
         if($moduleAssignment->isDirty('date_completed')){
             $module = Module::where('id','=',$moduleAssignment->module_id)->first();
-            $user = User::where('id',$moduleAssignment['user_id'])->first();
-            $default_completion_notification_text = "
-                            <h3> Hello {{user.first_name}} {{user.last_name}}</h3>
-                            <br>
-                            <p style='font-size:16px;'>You completed the {{module.name}} course</p>
-                            <br>
-                            <p style='font-size:16px;'>Certificate Link: 
-                                <a href='{{link}}'>Certificate</a>
-                            </p>";
-            if($user->active && $user->send_email_check()){
-                $user_messages =[
-                    'module_name'=> $module->name,
-                    'link' => $moduleAssignment['id'],
-                    'completion_notification'=>$module->templates->completion_notification?$module->templates->completion_notification:$default_completion_notification_text
-                ];
-                Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
+            // Don't send email if the completion template is blank
+            if ($module->templates->completion_notification != '') {
+                $user = User::where('id',$moduleAssignment['user_id'])->first();
+                if($user->active && $user->send_email_check()){
+                    $user_messages =[
+                        'module_name'=> $module->name,
+                        'link' => $moduleAssignment['id'],
+                        'completion_notification'=>$module->templates->completion_notification
+                    ];
+                    try {
+                        Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
+                    } catch (\Exception $e) {
+                        // keep going
+                    }
+                }
             }
         }
     }

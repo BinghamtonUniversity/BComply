@@ -16,6 +16,10 @@ ajax.get('/api/modules',function(data) {
             "columns":6,
             "options":[
                 {
+                    "label":"< 24 Hours",
+                    "value":0
+                },
+                {
                     "label":"1 Day",
                     "value":1
                 },
@@ -35,7 +39,6 @@ ajax.get('/api/modules',function(data) {
                     "label":"60 Days",
                     "value":60
                 }],
-            "help":"Please select the days you would like to remind the users"
         },
         {
             "type":"radio",
@@ -73,7 +76,6 @@ ajax.get('/api/modules',function(data) {
                     ]
                 }
             ],
-            "help":"Please select the days after the due you would like to remind the users"
         },
         {
             "name": "templates",
@@ -82,21 +84,39 @@ ajax.get('/api/modules',function(data) {
             "label": "Email Templates",
             "fields": [
                 {
+                    "type":"output",
+                    "name":"info_text",
+                    "label":false,
+                    "value":"<div class='alert alert-info'>Note: You may optionally leave templates blank to prevent triggering automated emails</div>",
+                    "parse":false,
+                },
+                {
+                    "type":"textarea",
+                    "name":"assignment",
+                    "id":"assignment",
+                    "label":"Assignment Notification Template",
+                    "template": "{{attributes.templates.assignment}}",
+                    "value":
+`{{user.first_name}} {{user.last_name}}<br>
+<br>
+This email serves as notification that you have been assigned the "{{module.name}}" training module, 
+which is required to be completed by {{module.due_date}}.<br>
+<br>
+To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
+                },
+                {
                     "type":"textarea",
                     "name":"reminder",
                     "id":"reminder",
                     "label":"Assignment Reminder Template",
                     "template": "{{attributes.templates.reminder}}",
                     "value":
-`<h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+`{{user.first_name}} {{user.last_name}}<br>
 <br>
-<p style=\'font-size:16px;\'>Your assignment {{module.name}} has a due date soon:
-    <br>
-    Due date {{module.due_date}}
-    <br>
-    Assignment Link: 
-    <a href=\'{{link}}\'>{{module.name}}</a>
-</p>`
+This is a reminder that the "{{module.name}}" training module which was assigned to you
+on {{module.assignment_date}}, is due on {{module.due_date}}.<br>
+<br>
+To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
                 },
                 {
                     "type":"textarea",
@@ -114,15 +134,12 @@ ajax.get('/api/modules',function(data) {
                             }
                         ],
                     "value":
-`<h3> Hello {{user.first_name}} {{user.last_name}}<h3>
+`{{user.first_name}} {{user.last_name}}<br>
 <br>
-<p style='font-size:16px;'>Your assignment {{module.name}} has a due date soon:
-    <br>
-    Due date {{module.due_date}}
-    <br>
-    Assignment Link: 
-    <a href='{{link}}'>{{module.name}}</a>
-</p>`
+This is a reminder that the "{{module.name}}" training module which was assigned to you
+on {{module.assignment_date}}, is <b>past due</b> as of {{module.due_date}}.<br>
+<br>
+To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
                 },
                 {
                     "type":"textarea",
@@ -131,30 +148,11 @@ ajax.get('/api/modules',function(data) {
                     "label":"Assignment Complation Template",
                     "template": "{{attributes.templates.completion_notification}}",
                     "value":
-`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
+`{{user.first_name}} {{user.last_name}}<br>
 <br>
-<p style='font-size:16px;'>You completed the {{module.name}} course</p>
+This email serves as confirmation that you have completed the "{{module.name}}" training module.<br>
 <br>
-<p style='font-size:16px;'>Certificate Link: 
-    <a href='{{link}}'>Certificate</a>
-</p>`
-                },
-                {
-                    "type":"textarea",
-                    "name":"assignment",
-                    "id":"completion_notification",
-                    "label":"Assignment Notification Template",
-                    "template": "{{attributes.templates.assignment}}",
-                    "value":
-`<h3> Hello {{user.first_name}} {{user.last_name}}</h3>
-<br>
-<p style='font-size:16px;'>You are assigned to {{module.name}}</p>
-<br>
-<p style='font-size:16px;'>Due Date: {{module.due_date}}</p>
-<br>
-<p style='font-size:16px;'>Access to Assignment: 
-    <a href='{{link}}'>{{module.name}}</a>
-</p>`
+You may view the confirmation certificate here: <a href="{{link}}">Certificate</a>`
                 },
                 {
                     "type":"textarea",
@@ -166,7 +164,7 @@ ajax.get('/api/modules',function(data) {
 `<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
 <b>{{module.name}}</b> module <b>{{module.version_name}}</b><br>
 at<br>
-<b>{{assignment.data_completed}}</b><br>`
+<b>{{assignment.data_completed}}</b>`
                 }
             ]
         },

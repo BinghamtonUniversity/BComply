@@ -30,7 +30,8 @@ class AssignmentNotification extends Mailable
             ],
             'module'=>[
                 'name'=>$user_message['module_name'],
-                'due_date'=>$moduleAssignment->date_due->format('m/d/y')
+                'due_date'=>$moduleAssignment->date_due->format('m/d/y'),
+                'assignment_date'=>$moduleAssignment->date_assigned->format('m/d/y')
             ],
             'link'=>url('/assignment/'.$user_message['link'])
         ]);
@@ -46,18 +47,9 @@ class AssignmentNotification extends Mailable
      */
     public function build()
     {
-        if($this->moduleAssignment->date_due !== null){
-            return $this->view('emails.rawData')
-                ->with(['content'=>$this->content])
-                ->subject('New Course Assignment: '.
-                    $this->user_message['module_name'].' Due Date:'.
-                    $this->moduleAssignment->date_due
-                        ->format('m/d/y'));
-        }
-        else{
-            return $this->view('emails.rawData')
-                ->with(['content'=>$this->content])->subject('Your New BComply Course: '.$this->user_message['module_name']);
-        }
+        return $this->view('emails.rawData')
+            ->with(['content'=>$this->content])
+            ->subject('BComply "'.$this->user_message['module_name'].'" Training Module Assigned');
 
     }
 }

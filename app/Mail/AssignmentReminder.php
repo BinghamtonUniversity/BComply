@@ -31,7 +31,8 @@ class AssignmentReminder extends Mailable
             ],
             'module'=>[
                 'name'=>$user_message['module_name'],
-                'due_date'=>$moduleAssignment->date_due->format('m/d/y')
+                'due_date'=>$moduleAssignment->date_due->format('m/d/y'),
+                'assignment_date'=>$moduleAssignment->date_assigned->format('m/d/y')
             ],
             'link'=>url('/assignment/'.$user_message['link'])
         ]);
@@ -54,16 +55,12 @@ class AssignmentReminder extends Mailable
         if($this->moduleAssignment->date_due > Carbon::now()){
             $this->view('emails.rawData')
                 ->with(['content'=>$this->content])
-                ->subject('Assignment Reminder: '.
-                    $this->user_message['module_name'].' Due Date:'.
-                    $this->moduleAssignment->date_due->format('m/d/y'));
+                ->subject('BComply "'.$this->user_message['module_name'].'" Training Module Reminder');
         }
         else{
             $this->view('emails.rawData')
                 ->with(['content'=>$this->content])
-                ->subject('Assignment Reminder: '.
-                    $this->user_message['module_name'].' Overdue Date:'.
-                    $this->moduleAssignment->date_due->format('m/d/y'));
+                ->subject('BComply "'.$this->user_message['module_name'].'" Training Module PAST DUE');
         }
     }
 }

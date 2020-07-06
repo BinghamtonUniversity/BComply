@@ -9,7 +9,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/',['uses' => 'UserDashboardController@my_assignments']);
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
     Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
-    Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run')->middleware('can:view,module_assignment');
+    Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');
     Route::get('/assignment/{module_assignment}/certificate', 'ModuleAssignmentController@certificate')->middleware('can:certificate_policy,module_assignment');
 
     /* Admin Pages */
@@ -35,6 +35,11 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/tincan/activities/state', 'TinCanController@get_state');
         Route::put('/tincan/activities/state', 'TinCanController@set_state');
         Route::put('/tincan/statements', 'TinCanController@register_statement');
+
+        /* Articulate Tincan Integration */
+        Route::get('/video/state/{assignment}', 'VideoController@get_duration');
+        Route::put('/video/state/{assignment}', 'VideoController@set_duration');
+        Route::put('/video/statements/{assignment}', 'VideoController@register_statement');
 
         /* User Methods */
         Route::get('/users','UserController@get_all_users')->middleware('can:view_in_admin,App\User');

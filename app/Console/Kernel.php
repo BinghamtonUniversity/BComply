@@ -36,32 +36,6 @@ class Kernel extends ConsoleKernel
     {
         // Assignment Reminder Scheduler
         $schedule->call(function(){
-            $default_reminder_text = "
-            <div class='container'>
-                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
-                <br>
-                <p style='font-size:16px;'>Your assignment {{module.name}} has a due date soon:
-                    <br>
-                    Due date {{module.due_date}}
-                    <br>
-                    Assignment Link: 
-                    <a href='{{link}}'>{{module.name}}</a>
-                </p>
-            </div>
-            ";
-            $default_past_due_reminder_text = "
-            <div class='container'>
-                <h3> Hello {{user.first_name}} {{user.last_name}}<h3>
-                <br>
-                <p style='font-size:16px;'>Your assignment {{module.name}} :
-                    <br>
-                    Due date {{module.due_date}}
-                    <br>
-                    Assignment Link: 
-                    <a href='{{link}}'>{{module.name}}</a>
-                </p>
-            </div>";
-
             $modules = Module::all();
             $module_assignments = ModuleAssignment::whereNull('date_completed')->with('user')->get();
 
@@ -71,46 +45,22 @@ class Kernel extends ConsoleKernel
                 $user = $assignment->user()->where('id',$assignment->user_id)->first();
                 if($user->active && $user->send_email_check()){
                     $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
-                    if($differenceInDays>0){
-                        if($module->past_due){
-                            if(in_array($differenceInDays,$module->reminders) || in_array($differenceInDays,$module->past_due_reminders) ){
-                                if($assignment->date_due>Carbon::now()){
-                                    $user_messages =[
-                                        'module_name'=> $module['name'],
-                                        'link' => $assignment['id'],
-                                        'reminder'=>$module->templates->reminder?$module->templates->reminder:$default_reminder_text
-                                    ];
-                                }
-                                else{
-                                    $user_messages =[
-                                        'module_name'=> $module['name'],
-                                        'link' => $assignment['id'],
-                                        'reminder'=>$module->templates->past_due_reminder?$module->templates->past_due_reminder:$default_past_due_reminder_text
-                                    ];
-                                }
-
-                                Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
-                            }
-                        }else{
-                            if(($assignment->date_due>Carbon::now()) && in_array($differenceInDays,$module->reminders)){
-                                $user_messages =[
-                                    'module_name'=> $module['name'],
-                                    'link' => $assignment['id'],
-                                    'reminder'=>$module->templates->reminder?$module->templates->reminder:$default_reminder_text
-                                ];
-                                Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
-                            }
-                        }
+                    $user_message = null;
+                    if($assignment->date_due<=Carbon::now() && $module->past_due && in_array($differenceInDays,$module->past_due_reminders) && $module->templates->past_due_reminder != '') {
+                        $user_message =[
+                            'module_name'=> $module['name'],
+                            'link' => $assignment['id'],
+                            'reminder'=>$module->templates->past_due_reminder
+                        ];
+                    } else if ($assignment->date_due>Carbon::now() && in_array($differenceInDays,$module->reminders) && $module->templates->reminder != '') {
+                        $user_message =[
+                            'module_name'=> $module['name'],
+                            'link' => $assignment['id'],
+                            'reminder'=>$module->templates->reminder
+                        ];
                     }
-                    else{
-                        if($assignment->date_due > Carbon::now()){
-                                $user_messages =[
-                                    'module_name'=> $module['name'],
-                                    'link' => $assignment['id'],
-                                    'reminder'=>$module->templates->reminder?$module->templates->reminder:$default_reminder_text
-                                ];
-                                Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_messages));
-                        }
+                    if (!is_null($user_message)) {
+                        Mail::to($user)->send(new AssignmentReminder($assignment,$user,$user_message));
                     }
                 }
             }

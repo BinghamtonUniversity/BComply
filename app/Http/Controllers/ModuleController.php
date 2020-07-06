@@ -69,8 +69,14 @@ class ModuleController extends Controller
         return 'Success';
     }
     public function get_module_assignments(Request $request,Module $module){
-
-        return ModuleAssignment::where('module_id',$module->id)->with('version')->with('user')->get();
+        return ModuleAssignment::where('module_id',$module->id)
+            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started')
+            ->with(['user'=>function($query){
+                $query->select('id','first_name','last_name');
+            }])
+            ->with(['version'=>function($query){
+                $query->select('id','name');
+            }])->get();
     }
     public function update_module(Request $request,Module $module){
         $module->update($request->all());
