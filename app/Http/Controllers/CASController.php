@@ -14,21 +14,22 @@ class CASController extends Controller {
             }
             cas()->authenticate();
         }
-        $user_attributes = cas()->getAttributes();        
-        $user = User::where('unique_id',$user_attributes['UDC_IDENTIFIER'])->first();
-        if (!is_null($user)) {
-            Auth::login($user,true);
-            if ($request->has('redirect')) {
-                return redirect($request->redirect);
-            } else {
-                return redirect('/');
-            }
-        } else {
-            return view('not_authorized',[
-                'page' => 'error',
-                'bnumber'=> $user_attributes['UDC_IDENTIFIER']
-            ]);
+        $user_attributes = cas()->getAttributes();  
+        $user = User::where('unique_id',$user_attributes['UDC_IDENTIFIER'])
+            ->orWhere('email',$user_attributes['mail'])->first();
+        if (is_null($user)) {
+            $user = new User();
         }
-
+        $user->unique_id = $user_attributes['UDC_IDENTIFIER'];
+        $user->email = $user_attributes['mail'];
+        $user->first_name = $user_attributes['firstname'];
+        $user->last_name = $user_attributes['lastname'];
+        $user->save();
+        Auth::login($user,true);
+        if ($request->has('redirect')) {
+            return redirect($request->redirect);
+        } else {
+            return redirect('/');
+        }
     }
 }
