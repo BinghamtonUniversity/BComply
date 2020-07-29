@@ -90,8 +90,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         var form_fields = {};
         if (module_version_type === 'articulate_tincan') {
             form_fields = [
-                {"type":"output","value":"No Configuration Required for this type","parse":false}
-                // {"type":"text","name":"filename","label":"File Name","value":"story.html","help":"This is the name of the html file"}
+                {"type":"text","name":"filename","label":"Launch URL","value":"index_lms.html","help":"This is the starting filename as specified when publishing the module in Articulate.  It is typically something like 'story_html5.html' or 'index_lms.html'"}
             ]
         } else if (module_version_type === 'youtube') {
             form_fields = [
