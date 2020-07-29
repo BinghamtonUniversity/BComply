@@ -43,14 +43,18 @@ class TinCanController extends Controller
             if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/passed') {
                 if (is_null($assignment->date_completed)) {
                     $assignment->date_completed = now();
-                    $assignment->score = $request->result['score']['scaled'];
+                    if (isset($request->result['score']) && isset($request->result['score']['scaled'])) {
+                        $assignment->score = $request->result['score']['scaled'];
+                    }
                     $assignment->status = 'passed';
                 }
             }
             if ($request->verb['id'] === 'http://adlnet.gov/expapi/verbs/failed') {
                 if (is_null($assignment->date_completed)) {
                     $assignment->date_completed = now();
-                    $assignment->score = $request->result['score']['scaled'];
+                    if (isset($request->result['score']) && isset($request->result['score']['scaled'])) {
+                        $assignment->score = $request->result['score']['scaled'];
+                    }
                     $assignment->status = 'failed';
                 }
             }
