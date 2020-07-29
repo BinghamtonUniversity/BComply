@@ -23,6 +23,7 @@ class AssignmentReminder extends Mailable
      */
     public function __construct(ModuleAssignment $moduleAssignment, User $user, Array $user_message)
     {
+        $due_date = isset($moduleAssignment->date_due)?$moduleAssignment->date_due->format('m/d/y'):'N/A';
         $m = new \Mustache_Engine;
         $this->content = $m->render($user_message['reminder'],[
             'user'=>[
@@ -31,7 +32,7 @@ class AssignmentReminder extends Mailable
             ],
             'module'=>[
                 'name'=>$user_message['module_name'],
-                'due_date'=>$moduleAssignment->date_due->format('m/d/y'),
+                'due_date'=>$due_date,
                 'assignment_date'=>$moduleAssignment->date_assigned->format('m/d/y')
             ],
             'link'=>url('/assignment/'.$user_message['link'])
