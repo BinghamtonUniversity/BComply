@@ -171,6 +171,7 @@ at<br>
         {type:"text", show:false, parse:false, name:"current", label:"Current Version", template:"{{attributes.current_version.name}}"},
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
+        item_template: gform.stencils['table_row'],
         search: false,columns: false,upload:false,download:false,title:'Users',
         entries:[],
         actions:actions,
