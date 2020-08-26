@@ -12,7 +12,7 @@ use App\ModuleAssignment;
 use App\UserPermission;
 use App\ModuleVersion;
 use App\Module;
-
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -112,7 +112,7 @@ class UserController extends Controller
     public function self_assignment(Request $request, Module $module){
                 $assignment = $module->assign_to([
             'user_id'=>Auth::user()->id,
-            'date_due'=>null,
+            'date_due'=>Carbon::now()->addDays(1), // Make due date the next day!
             'assigned_by_user_id'=>Auth::user()->id
         ]);
         if ($assignment === false) {
