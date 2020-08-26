@@ -1,6 +1,6 @@
 <?php
 
-Route::any('/demo', ['uses' => 'DemoController@list']);
+Route::any('/external', ['uses' => 'ExternalController@list']);
 Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
 
