@@ -50,6 +50,11 @@ class UserController extends Controller
         return "1";
     }
 
+    public function login_user(Request $request, User $user) {
+        Auth::login($user,true);
+        return "1";
+    }
+
     public function assign_module(Request $request, User $user, ModuleVersion $module_version) {
         if ($request->has('due_date')) {
             $due_date =$request->due_date;
