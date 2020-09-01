@@ -63,7 +63,8 @@ class ModuleController extends Controller
         return $module_version;
     }
     public function delete_module_version(Request $request,Module $module, ModuleVersion $module_version){
-
+        // Delete all existing assignments for this module
+        ModuleAssignment::where('module_version_id',$module_version->id)->delete();
         $module_version->delete();
         return 'Success';
     }
