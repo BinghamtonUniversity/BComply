@@ -1,6 +1,6 @@
 <?php
 
-Route::any('/demo', ['uses' => 'DemoController@list']);
+Route::any('/external', ['uses' => 'ExternalController@list']);
 Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
 
@@ -54,6 +54,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/users/{user}/assignments','UserController@get_assignments')->middleware('can:manage_users,App\User');
         Route::post('/users/{user}/assignments/{module}','UserController@set_assignment')->middleware('can:assign_module,App\User,module');
         Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:delete_assignment,App\User,module_assignment');
+        Route::post('/login/{user}','UserController@login_user')->middleware('can:manage_users,App\User');
 
         /* Modules Methods */
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');

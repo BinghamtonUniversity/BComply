@@ -25,7 +25,11 @@
                 <hr style="margin:0 0px;">
                 <div class="panel-body">
                         <div class="module-name">{{$assignment->version->name}}</div>
-                        <div class="badge">Due: {{$assignment->date_due->format('m/d/y')}}</div>
+                        @if(isset($assignment->date_due))
+                            <div class="badge">Due: {{$assignment->date_due->format('m/d/y')}}</div>
+                        @else 
+                            <div class="badge">No Due Date</div>
+                        @endif
                 </div>
             </a>
         </div>

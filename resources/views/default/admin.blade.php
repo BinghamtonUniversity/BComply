@@ -127,7 +127,12 @@
                     <div class="alert alert-info">{{$help}}</div>
                 @endif
                 <div id="adminDataGrid"></div>
-{{--                <div id=""></div>--}}
+                <style>
+                div#adminDataGrid > div.well > div {
+                    /* Make All Datagrid Stuff Scrollable Hack */
+                    overflow: scroll !important;
+                }
+                </style>
             </div>
         </div>
       </div>

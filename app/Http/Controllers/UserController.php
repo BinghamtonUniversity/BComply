@@ -12,7 +12,7 @@ use App\ModuleAssignment;
 use App\UserPermission;
 use App\ModuleVersion;
 use App\Module;
-
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -47,6 +47,11 @@ class UserController extends Controller
         GroupMembership::where('user_id',$user->id)->delete();
         UserPermission::where('user_id',$user->id)->delete();
         $user->delete();
+        return "1";
+    }
+
+    public function login_user(Request $request, User $user) {
+        Auth::login($user,true);
         return "1";
     }
 
@@ -112,7 +117,7 @@ class UserController extends Controller
     public function self_assignment(Request $request, Module $module){
                 $assignment = $module->assign_to([
             'user_id'=>Auth::user()->id,
-            'date_due'=>null,
+            'date_due'=>Carbon::now()->addDays(1), // Make due date the next day!
             'assigned_by_user_id'=>Auth::user()->id
         ]);
         if ($assignment === false) {

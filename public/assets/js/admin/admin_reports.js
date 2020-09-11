@@ -1,6 +1,7 @@
 ajax.get('/api/reports',function(data) {
     // debugger
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
+    item_template: gform.stencils['table_row'],
     search: false,columns: false,upload:false,download:false,title:'Reports',
     entries:[],
     actions:actions,

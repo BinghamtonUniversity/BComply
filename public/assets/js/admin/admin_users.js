@@ -145,7 +145,8 @@ new gform(
                 "data":data,
                 "actions":[
                     {"type":"save","label":"Update User","modifiers":"btn btn-primary"},
-                    {"type":"button","label":"Delete User","action":"delete","modifiers":"btn btn-danger"}
+                    {"type":"button","label":"Delete User","action":"delete","modifiers":"btn btn-danger"},
+                    {"type":"button","label":"Login","action":"login","modifiers":"btn btn-warning"}
                 ]}
             ).on('delete',function(form_event) {
                 form_data = form_event.form.get();
@@ -157,6 +158,11 @@ new gform(
             }).on('save',function(form_event) {
                 form_data = form_event.form.get();
                 ajax.put('/api/users/'+form_data.id,form_data,function(data) {});
+            }).on('login',function(form_event) {
+                form_data = form_event.form.get();
+                ajax.post('/api/login/'+form_data.id,{},function(data) {
+                    window.location = '/';
+                });
             });
             // end
             // Edit Permissions

@@ -54,7 +54,6 @@ class ModuleController extends Controller
     public function add_module_version(Request $request,Module $module){
         $module_version = new ModuleVersion($request->all());
         $module_version->module_id = $module->id;
-        $module_version->reference = ['filename'=>'story.html'];
         $module_version->save();
         return $module_version;
     }
@@ -64,7 +63,8 @@ class ModuleController extends Controller
         return $module_version;
     }
     public function delete_module_version(Request $request,Module $module, ModuleVersion $module_version){
-
+        // Delete all existing assignments for this module
+        ModuleAssignment::where('module_version_id',$module_version->id)->delete();
         $module_version->delete();
         return 'Success';
     }
