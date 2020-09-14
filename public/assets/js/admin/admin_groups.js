@@ -96,6 +96,8 @@ ajax.get('/api/groups',function(data) {
                 }
             },function(data){
             });
+        }).on('cancel',function(form_event){
+            form_event.form.trigger('close');
         }).modal()
     });
 });
