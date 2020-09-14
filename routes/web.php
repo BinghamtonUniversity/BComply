@@ -86,6 +86,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/groups/{group}/members','GroupController@get_members')->middleware('can:manage_groups,App\Group');
         Route::post('/groups/{group}/members','GroupController@add_member')->middleware('can:manage_groups,App\Group');
         Route::delete('/groups/{group}/members/{user}','GroupController@delete_member')->middleware('can:manage_groups,App\Group');
+        Route::post('/groups/{group}/users/bulk_add','GroupController@bulk_add_members')->middleware('can:manage_groups,App\Group');
         Route::post('/groups/{group}/users/{user}','GroupController@add_group_membership')->middleware('can:manage_group_membership,App\Group');
         Route::delete('/groups/{group}/users/{user}','GroupController@delete_group_membership')->middleware('can:manage_group_membership,App\Group');
 

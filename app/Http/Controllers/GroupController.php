@@ -53,6 +53,31 @@ class GroupController extends Controller
         $group_membership->save();
         return GroupMembership::where('id',$group_membership->id)->with('user')->first();
     }
+    public function bulk_add_members(Request $request, Group $group){
+        $bnumbers = array_unique(preg_split('/(,|\n| )/',$request->b_numbers,-1, PREG_SPLIT_NO_EMPTY));
+        $group_memberships = GroupMembership::where('group_id',$group->id)->select('group_id','user_id')->get();
+        $users = User::select('id','unique_id')->get();
+        $not_added = [];
+
+        foreach ($bnumbers as $bnumber ) {
+            $user = $users->where('unique_id',$bnumber)->first();
+            if(!is_null($user)) {
+                if($group_memberships->where('user_id',$user->id)->isEmpty()){
+                    $group_membership = new GroupMembership([
+                        'group_id' => $group->id,
+                        'user_id' => $user->id,
+                        'type' => 'internal',
+                    ]);
+                    $group_membership->save();
+                }
+            }else{
+                $not_added[]=$bnumber;
+            }
+
+
+        }
+        return ["b_numbers"=>$not_added];
+    }
 
     public function delete_member(Group $group,User $user)
     {

@@ -8,6 +8,7 @@ ajax.get('/api/groups',function(data) {
         '',
         {"name":"edit","label":"Change Group Name"},
         {"label":"Manage Members","name":"manage_members","min":1,"max":1,"type":"default"},
+        {"label":"Bulk Add Members","name":"bulk_add","min":1,"max":1,"type":"warning"},
         '',
         {"name":"delete","label":"Delete Group"}
     ],
@@ -36,7 +37,46 @@ ajax.get('/api/groups',function(data) {
         });
     }).on("model:manage_members",function(grid_event) {
         window.location = '/admin/groups/'+grid_event.model.attributes.id+'/members';
-    })
+    }).on('model:bulk_add',function(grid_event){
+
+        new gform({
+            "legend":"Bulk Add",
+            "name": "bulk_add",
+            "fields": [
+                {
+                    "type": "textarea",
+                    "label": "BNumbers",
+                    "name": "b_numbers",
+                    "showColumn": true,
+                    "help":"Please enter a list of BNumbers. " +
+                        "You can either use a \",\" (comma) to separate them or enter them in separate lines<br>" +
+                        "Duplicates or existing group members will be ignored."
+                }
+            ]
+        }).on('save',function(form_event){
+            console.log(form_event.form.get())
+            ajax.post('/api/groups/'+grid_event.model.attributes.id+'/users/bulk_add',form_event.form.get(),function(data) {
+                form_event.form.trigger('close');
+                template = `
+                            <div class="alert alert-danger">
+                                <h5>The Following BNumbers were ignored since they do not belong to an existing user:</h5>
+                                <ul>
+                                {{#b_numbers}}
+                                    <li>{{.}}</li>
+                                {{/b_numbers}}
+                                </ul>
+                            </div>
+                            `;
+                $('#adminModal .modal-title').html('Failed BNumbers')
+                $('#adminModal .modal-body').html(gform.m(template,data));
+                $('#adminModal').modal('show')
+                // toastr.error(data);
+
+            },function(data){
+                // form_event.form.trigger('close');
+            });
+        }).modal()
+    });
 });
 
 // Built-In Events:
