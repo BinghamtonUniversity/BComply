@@ -45,35 +45,56 @@ ajax.get('/api/groups',function(data) {
             "fields": [
                 {
                     "type": "textarea",
-                    "label": "BNumbers",
-                    "name": "b_numbers",
+                    "label": "Unique IDs",
+                    "name": "unique_ids",
                     "showColumn": true,
-                    "help":"Please enter a list of BNumbers. " +
+                    "help":"Please enter a list of Unique IDs (BNumbers). " +
                         "You can either use a \",\" (comma) to separate them or enter them in separate lines<br>" +
                         "Duplicates or existing group members will be ignored."
                 }
             ]
         }).on('save',function(form_event){
-            console.log(form_event.form.get())
+            toastr.info('Processing... Please Wait')
+            form_event.form.trigger('close');
             ajax.post('/api/groups/'+grid_event.model.attributes.id+'/users/bulk_add',form_event.form.get(),function(data) {
-                form_event.form.trigger('close');
-                template = `
+                if (data.added.length > 0 || data.ignored.length > 0 || data.skipped.length) {
+                    template = `
+                        {{#skipped.length}}
                             <div class="alert alert-danger">
-                                <h5>The Following BNumbers were ignored since they do not belong to an existing user:</h5>
+                                <h5>The Following IDs were ignored, as these users do not exist within BComply:</h5>
                                 <ul>
-                                {{#b_numbers}}
+                                {{#skipped}}
                                     <li>{{.}}</li>
-                                {{/b_numbers}}
+                                {{/skipped}}
                                 </ul>
                             </div>
-                            `;
-                $('#adminModal .modal-title').html('Failed BNumbers')
-                $('#adminModal .modal-body').html(gform.m(template,data));
-                $('#adminModal').modal('show')
-                // toastr.error(data);
-
+                        {{/skipped.length}}
+                        {{#ignored.length}}
+                            <div class="alert alert-info">
+                                <h5>The Following IDs were skipped, as these users are already a member of this group:</h5>
+                                <ul>
+                                {{#ignored}}
+                                    <li>{{.}}</li>
+                                {{/ignored}}
+                                </ul>
+                            </div>
+                        {{/ignored.length}}
+                        {{#added.length}}
+                            <div class="alert alert-success">
+                                <h5>The Following IDs were sucessfully added:</h5>
+                                <ul>
+                                {{#added}}
+                                    <li>{{.}}</li>
+                                {{/added}}
+                                </ul>
+                            </div>
+                        {{/added.length}}
+                        `;
+                    $('#adminModal .modal-title').html('Additional Information')
+                    $('#adminModal .modal-body').html(gform.m(template,data));
+                    $('#adminModal').modal('show')
+                }
             },function(data){
-                // form_event.form.trigger('close');
             });
         }).modal()
     });

@@ -54,13 +54,15 @@ class GroupController extends Controller
         return GroupMembership::where('id',$group_membership->id)->with('user')->first();
     }
     public function bulk_add_members(Request $request, Group $group){
-        $bnumbers = array_unique(preg_split('/(,|\n| )/',$request->b_numbers,-1, PREG_SPLIT_NO_EMPTY));
+        $unique_ids = array_unique(preg_split('/(,|\n| )/',$request->unique_ids,-1, PREG_SPLIT_NO_EMPTY));
         $group_memberships = GroupMembership::where('group_id',$group->id)->select('group_id','user_id')->get();
         $users = User::select('id','unique_id')->get();
-        $not_added = [];
+        $skipped = [];
+        $ignored = [];
+        $added = [];
 
-        foreach ($bnumbers as $bnumber ) {
-            $user = $users->where('unique_id',$bnumber)->first();
+        foreach ($unique_ids as $unique_id ) {
+            $user = $users->where('unique_id',$unique_id)->first();
             if(!is_null($user)) {
                 if($group_memberships->where('user_id',$user->id)->isEmpty()){
                     $group_membership = new GroupMembership([
@@ -69,14 +71,15 @@ class GroupController extends Controller
                         'type' => 'internal',
                     ]);
                     $group_membership->save();
+                    $added[] = $unique_id;
+                } else {
+                    $ignored[] = $unique_id;
                 }
-            }else{
-                $not_added[]=$bnumber;
+            } else {
+                $skipped[] = $unique_id;
             }
-
-
         }
-        return ["b_numbers"=>$not_added];
+        return ["skipped"=>$skipped,"ignored"=>$ignored,"added"=>$added];
     }
 
     public function delete_member(Group $group,User $user)
