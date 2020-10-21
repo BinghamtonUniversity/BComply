@@ -50,7 +50,7 @@ class AssignmentNotification extends Mailable
     {
         return $this->view('emails.rawData')
             ->with(['content'=>$this->content])
-            ->subject('BComply "'.$this->user_message['module_name'].'" Training Module Assigned');
+            ->subject('Binghamton University BComply Training Module Assignment');
 
     }
 }
