@@ -63,6 +63,10 @@ ajax.get('/api/users',function(data) {
                             "value": "manage_user_permissions"
                         },
                         {
+                            "label": "Impersonate Users",
+                            "value": "impersonate_users"
+                        },
+                        {
                             "label": "Manage Reports",
                             "value": "manage_reports"
                         },

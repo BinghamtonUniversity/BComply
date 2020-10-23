@@ -34,6 +34,11 @@ class UserPolicy
             return true;
         }
     }
+    public function impersonate_users(User $user) {
+        if (in_array('impersonate_users',$user->user_permissions)) {
+            return true;
+        }
+    }
     public function manage_user_permissions(User $user){
         if(in_array('manage_user_permissions',$user->user_permissions)){
             return true;

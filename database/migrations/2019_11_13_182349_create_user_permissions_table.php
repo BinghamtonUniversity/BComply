@@ -20,6 +20,7 @@ class CreateUserPermissionsTable extends Migration
                 'manage_user_permissions',
                 'manage_groups',
                 'manage_users',
+                'impersonate_users',
                 'manage_modules',
                 'assign_modules',
                 'manage_reports',
