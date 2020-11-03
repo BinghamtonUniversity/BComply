@@ -10,4 +10,8 @@ use Illuminate\Http\Request;
 // in your .env file
 
 Route::any('/sync','PublicAPIController@sync');
+Route::get('/cron', function () {
+    $exitCode = Artisan::call('schedule:run');
+    return ['code'=>$exitCode];
+});
 
