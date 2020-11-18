@@ -85,6 +85,10 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
                             {
                                 "label": "Passed",
                                 "value": "passed"
+                            },
+                            {
+                                "label": "Incomplete",
+                                "value": "incomplete"
                             }
                         ]
                     },
