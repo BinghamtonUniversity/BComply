@@ -49,7 +49,7 @@ class ModuleAssignmentObserver
      * @return void
      */
     public function saved(ModuleAssignment $moduleAssignment){
-        if($moduleAssignment->isDirty('date_completed')){
+        if($moduleAssignment->isDirty('date_completed') && $moduleAssignment->status !=='incomplete'){
             $module = Module::where('id','=',$moduleAssignment->module_id)->first();
             // Don't send email if the completion template is blank
             if ($module->templates->completion_notification != '') {

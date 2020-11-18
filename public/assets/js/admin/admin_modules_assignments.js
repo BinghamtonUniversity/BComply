@@ -80,6 +80,10 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                             {
                                 "label": "Passed",
                                 "value": "passed"
+                            },
+                            {
+                                "label": "Incomplete",
+                                "value": "incomplete"
                             }
                         ]
                     },

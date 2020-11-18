@@ -57,6 +57,13 @@ class Module extends Model
                     && is_null($assignment->date_completed)) {
                 return null;
             }
+            //Code below was commented out after meeting with Aaron on 11/18/2020
+//            if(is_null($assignment->date_completed) && $assignment->date_due < Carbon::now()){
+//                $assignment->status = 'incomplete';
+//                $assignment->date_started = now();
+//                $assignment->date_completed = now();
+//                $assignment->save();
+//            }
         }
         $new_assignment = new ModuleAssignment($assignment_arr);
         $new_assignment->module_version_id = $this->module_version_id;

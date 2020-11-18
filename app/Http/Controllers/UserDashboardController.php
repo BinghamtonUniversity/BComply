@@ -26,6 +26,7 @@ class UserDashboardController extends Controller
     public function assignment_history(Request $request){
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->whereNotNull('date_completed')
+            ->where('status','!=','incomplete')
             ->with('version')
             ->with('module')
             ->orderBy('date_completed','desc')->get();
