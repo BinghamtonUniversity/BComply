@@ -9,7 +9,7 @@
                 <hr style="margin:0 0px;">
                 <div class="panel-body">
                         <div class="module-name">{{$assignment->module->name}}</div>
-                        <div class="badge">Corrupt Module</div>
+                        <div class="badge"><i class="fa fa-exclamation-triangle"></i> Corrupt Assignment</div>
                 </div>
             </a>
         </div>
