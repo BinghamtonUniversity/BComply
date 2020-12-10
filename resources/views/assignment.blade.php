@@ -1,6 +1,6 @@
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
     @if(is_null($assignment->version))
-        <div class="panel panel-default past-due">
+        <div class="panel panel-default past-due" style="min-height: 350px;">
             <a class="trigger-help" href="#" data-toggle="popover" data-placement="bottom" title="ERROR!" data-content=
                 "This assignment is corrupt.  Most likely, the module version associated with this assignment has been deleted!">
                 <div class="panel-body" style="padding-top:30px;text-align:center;">
@@ -14,7 +14,7 @@
             </a>
         </div>
     @elseif((\Carbon\Carbon::now()>$assignment->date_due && !$assignment->module->past_due))
-        <div class="panel panel-default past-due">
+        <div class="panel panel-default past-due" style="min-height: 350px;">
             <a class="trigger-help" href="#" data-toggle="popover" data-placement="bottom" title="Notice!" data-content=
                 "This assignment is past due, and cannot be completed after the due date!">
                 <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($assignment->status)}}</div>
@@ -29,7 +29,7 @@
             </a>
         </div>
     @else
-        <div class="panel panel-default">
+        <div class="panel panel-default" style="min-height: 350px;">
             <a class="trigger-help" href="/assignment/{{$assignment->id}}"
                 data-toggle="popover" data-placement="bottom" title="Description" data-content="{{$assignment->module->description}}">
                 <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($assignment->status)}}</div>
