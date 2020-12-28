@@ -8,9 +8,9 @@ ajax.get('/api/reports',function(data) {
     count:20,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"text", name:"name", label:"Report Name"},
+        {type:"text", name:"name", label:"Report Name",required:true},
         {type:"textarea", name:"description", label:"Description"},
-        {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
+        {type:"user", name:"owner_user_id", label:"Owner",required:true, template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
 
     ], data: data
     }).on("model:created",function(grid_event) {
@@ -133,7 +133,8 @@ ajax.get('/api/reports',function(data) {
                                 "label": "Column",
                                 "name": "column",
                                 "columns": "4",
-                                "options":"/api/reports/tables/columns"
+                                "options":"/api/reports/tables/columns",
+                                "required":"show"
                             },
                             {
                                 "type": "select",
@@ -158,6 +159,8 @@ ajax.get('/api/reports',function(data) {
                                 "label": "Value",
                                 "name": "value",
                                 "columns": "4",
+                                show: [{type: "matches",name: "conditional",value: ['=','!=','>','>=','<','<=','contains']}],
+                                "required":"show"
                             }
                         ],
                         "type": "fieldset"
@@ -170,11 +173,13 @@ ajax.get('/api/reports',function(data) {
                 "data": report
             }
         ).modal().on('save',function(form_event) {
-            ajax.put('/api/reports/'+report_id,{'report':form_event.form.get()},function(data) {
-                // grid_event.model.attributes.report = data
-                grid_event.model.update(data);
-                form_event.form.trigger('close');
-            });
+            if(form_event.form.validate()){
+                ajax.put('/api/reports/' + report_id, {'report': form_event.form.get()}, function (data) {
+                    // grid_event.model.attributes.report = data
+                    grid_event.model.update(data);
+                    form_event.form.trigger('close');
+                });
+            }
         }).on('cancel',function(form_event) {
             form_event.form.trigger('close');
         });
