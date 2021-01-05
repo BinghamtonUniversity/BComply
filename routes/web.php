@@ -72,6 +72,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::delete('/modules/{module}/versions/{module_version}','ModuleController@delete_module_version')->middleware('can:manage_module,module');
         Route::get('/modules/{module}/versions/{module_version}/assignments','ModuleController@get_module_version_assignments');
         Route::post('/modules/{module}/versions/{module_version}/upload', 'FileUploadController@upload');//->middleware('can:manage_bulk_assignments, App\BulkAssignment');
+        Route::get('/modules/{module}/versions/{module_version}/exists', 'FileUploadController@exists');//->middleware('can:manage_bulk_assignments, App\BulkAssignment');
         Route::get('/modules/{module}/assignments','ModuleController@get_module_assignments');
         Route::get('/modules/{module}/permissions','ModuleController@get_module_permissions');
         Route::put('/modules/{module}/permissions','ModuleController@set_module_permission')->middleware('can:manage_module,module');

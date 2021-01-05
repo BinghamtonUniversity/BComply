@@ -53,38 +53,23 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         <input type="submit" class="btn btn-primary" value="Upload" name="submit" />
         </form>
         `;
-        $('#adminModal .modal-title').html('Dumb Uploader')
+        $('#adminModal .modal-title').html('Module File Uploader')
         $('#adminModal .modal-body').html(body);
         $('#adminModal').modal('show')
-            // A bunch of upload stuff
             const url = '/api/modules/'+id+'/versions/'+grid_event.model.attributes.id+'/upload'
             const form = document.querySelector('#module_form_upload')
-            // form.setAttribute('action',url)
-
-
             form.addEventListener('submit', e => {
-            e.preventDefault()
-            const files = document.querySelector('[name=zipfile]').files
-            const formData = new FormData()
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i]
-                formData.append('zipfile', file)
-            }
-            fetch(url, {
-                method: 'POST',
-                body: formData,
-            }).
-            then(response => {
-                if(response.status==200){
-                    toastr.success("Success");
-                    $('#adminModal').modal('hide')
-                }
-                else{
-                    toastr.error(response.statusText)
-                }
+                e.preventDefault()
+                ajax.get('/api/modules/'+id+'/versions/'+grid_event.model.attributes.id+'/exists',function(data) {
+                    if (data.exists === true) {
+                        if (confirm("!! WARNING !!\n\nThis file already exists.  \n\nAre you sure you want to overwrite it?  \n\n(Note: This action cannot be undone and all user status data associated with this module will be purged)")) {
+                            upload_file(url+'?overwrite=true')
+                        }
+                    } else {
+                        upload_file(url)
+                    }
+                },function(data) {});
             })
-            })
-            // end upload stuff
     }).on("model:configure",function(grid_event) {
         module_version_id = grid_event.model.attributes.id;
         module_version_type = grid_event.model.attributes.type;
@@ -113,6 +98,28 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         });
     })
 });
+
+var upload_file = function(url) {
+    const files = document.querySelector('[name=zipfile]').files
+    const formData = new FormData()
+    for (let i = 0; i < files.length; i++) {
+        let file = files[i]
+        formData.append('zipfile', file)
+    }
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+    }).
+    then(response => {
+        if(response.status==200){
+            toastr.success("File Uploaded Successfully");
+            $('#adminModal').modal('hide')
+        }
+        else{
+            toastr.error(response.statusText)
+        }
+    })
+}
 
 // Built-In Events:
 //'edit','model:edit','model:edited','model:create','model:created','model:delete','model:deleted'
