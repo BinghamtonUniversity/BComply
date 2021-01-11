@@ -62,7 +62,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
                 e.preventDefault()
                 ajax.get('/api/modules/'+id+'/versions/'+grid_event.model.attributes.id+'/exists',function(data) {
                     if (data.exists === true) {
-                        if (confirm("!! WARNING !!\n\nThis file already exists.  \n\nAre you sure you want to overwrite it?  \n\n(Note: This action cannot be undone and all user status data associated with this module will be purged)")) {
+                        if (confirm("!! WARNING !!\n\nThis file already exists.  \n\nAre you sure you want to overwrite it?  \n\n(Note: This action cannot be undone and 'in-progress' assignments will require users to start over from the beginning)")) {
                             upload_file(url+'?overwrite=true')
                         }
                     } else {
