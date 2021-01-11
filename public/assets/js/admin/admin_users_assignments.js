@@ -8,7 +8,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
         '',
         // {"name":"edit"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
-        {"name":"complete","label":"Mark as Completed","type":"danger"},
+        {"name":"complete","label":"Mark as Completed","min":1,"max":1,"type":"danger"},
         '',
         {"name":"delete","label":"Remove Module Assignment"}
 
@@ -73,6 +73,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
                         "type": "radio",
                         "label": "Status",
                         "name": "status",
+                        "required":"show",
                         "options": [
                             {
                                 "label": "Attended",
@@ -114,6 +115,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
                                 ]
                             }
                         ],
+                        "required":"show",
                         "columns":6
                     },
                     {
@@ -139,6 +141,7 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
                                 ]
                             }
                         ],
+                        "required":"show",
                         "columns":6
                     },
                     {
@@ -151,16 +154,18 @@ ajax.get('/api/users/'+id+'/assignments',function(data) {
                 "data": data
             })
             .modal().on('save', function (form_event) {
-            console.log(form_event.form.get());
-            ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
-                // grid_event.model.attributes.assignment = data;
-                // grid_event.model.draw();
-                grid_event.model.update(data)
-                form_event.form.trigger('close');
-            }, function (err) {
-                grid_event.model.undo();
-                // console.log(data.response)
-            })
+            // console.log(form_event.form.get());
+            if(form_event.form.validate()){
+                ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
+                    // grid_event.model.attributes.assignment = data;
+                    // grid_event.model.draw();
+                    grid_event.model.update(data)
+                    form_event.form.trigger('close');
+                }, function (err) {
+                    grid_event.model.undo();
+                    // console.log(data.response)
+                })
+            }
         }).on('cancel', function (form_event) {
             form_event.form.trigger('close');
         })

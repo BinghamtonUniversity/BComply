@@ -16,7 +16,7 @@ ajax.get('/api/bulk_assignments',function(data) {
         count:20,
         schema:[
             {type:"hidden", name:"id"},
-            {type:"text", name:"name", label:"Assignment Name"},
+            {type:"text", name:"name", label:"Assignment Name",required:true},
             {type:"textarea", name:"description", label:"Description"}
         ], data: data
     })
@@ -105,7 +105,8 @@ ajax.get('/api/bulk_assignments',function(data) {
                         "format": {
                             "label": "{{name}}",
                             "value": "{{id}}"
-                        }
+                        },
+                        "required":true
                     },
                     {
                         type:"select",name:"date_due_format",label:"Due Date Format",options:[
@@ -123,7 +124,7 @@ ajax.get('/api/bulk_assignments',function(data) {
                     {type:"checkbox", name:"later_date", label:"Assign Later?",help:"Use this option if you want assign later with this bulk assignment rule"},
                     {type:"datetime", name:"later_assignment_date", label:"Auto Assign Date",format: {
                             input: "YYYY-MM-DD"
-                        },show: [{type: "matches",name: "later_date",value: true}]
+                        },show: [{type: "matches",name: "later_date",value: true}],required:"show"
                     },
                     {
                         "type": "select",
@@ -192,7 +193,8 @@ ajax.get('/api/bulk_assignments',function(data) {
                                         "label": "Column",
                                         "name": "column",
                                         "columns": "4",
-                                        "options":"/api/bulk_assignments/tables/columns"
+                                        "options":"/api/bulk_assignments/tables/columns",
+                                        "required":"show"
                                     },
                                     {
                                         "type": "select",
@@ -217,7 +219,8 @@ ajax.get('/api/bulk_assignments',function(data) {
                                         "label": "Value",
                                         "name": "value",
                                         "columns": "4",
-                                        show: [{type: "matches",name: "conditional",value: ['=','!=','>','>=','<','<=','contains']}]
+                                        show: [{type: "matches",name: "conditional",value: ['=','!=','>','>=','<','<=','contains']}],
+                                        "required":"show"
                                     }
                                 ],
                                 "type": "fieldset"
@@ -230,12 +233,14 @@ ajax.get('/api/bulk_assignments',function(data) {
                 "data": assignment
             }
         ).modal().on('save',function(form_event) {
-            ajax.put('/api/bulk_assignments/'+assignment_id,{'assignment':form_event.form.get()},function(data) {
-                // grid_event.model.attributes.assignment = data
-                // grid_event.model.draw();
-                grid_event.model.update(data);
-                form_event.form.trigger('close');
-            });
+            if(form_event.form.validate()) {
+                ajax.put('/api/bulk_assignments/' + assignment_id, {'assignment': form_event.form.get()}, function (data) {
+                    // grid_event.model.attributes.assignment = data
+                    // grid_event.model.draw();
+                    grid_event.model.update(data);
+                    form_event.form.trigger('close');
+                });
+            }
         }).on('cancel',function(form_event) {
             form_event.form.trigger('close');
         });

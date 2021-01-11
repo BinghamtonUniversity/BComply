@@ -15,7 +15,7 @@ ajax.get('/api/groups',function(data) {
     count:20,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"text", name:"name", label:"Name"},
+        {type:"text", name:"name", label:"Name",required:true},
     ], data: data
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/groups/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {

@@ -2,10 +2,10 @@ gform.options = {autoFocus:false};
 user_form_attributes = [
     {type:"hidden", name:"id"},
     {type:"checkbox", name:"active", label:"Active", value:true},
-    {type:"text", name:"unique_id", label:"Unique ID"},
+    {type:"text", name:"unique_id", label:"Unique ID", required:true},
     {type:"text", name:"first_name", label:"First Name"},
     {type:"text", name:"last_name", label:"Last Name"},
-    {type:"email", name:"email", label:"Email"},
+    {type:"email", name:"email", label:"Email", required:true},
     {type:"text", name:"payroll_code", label:"Payroll Code"},
     {type:"text", name:"supervisor", label:"Supervisor"},
     {type:"text", name:"department_id", label:"Department ID"},
@@ -102,9 +102,12 @@ $('.user-new').on('click',function() {
             {"type":"save"}
         ]}
     ).modal().on('save',function(form_event) {
-        ajax.post('/api/users',form_event.form.get(),function(data) {
-            form_event.form.trigger('close');
-        });
+        if(form_event.form.validate())
+        {
+            ajax.post('/api/users', form_event.form.get(), function (data) {
+                form_event.form.trigger('close');
+            });
+        }
     });
 })
 
@@ -156,8 +159,12 @@ new gform(
                     });
                 }
             }).on('save',function(form_event) {
-                form_data = form_event.form.get();
-                ajax.put('/api/users/'+form_data.id,form_data,function(data) {});
+                if(form_event.form.validate())
+                {
+                    form_data = form_event.form.get();
+                    ajax.put('/api/users/' + form_data.id, form_data, function (data) {
+                    });
+                }
             }).on('login',function(form_event) {
                 form_data = form_event.form.get();
                 ajax.post('/api/login/'+form_data.id,{},function(data) {

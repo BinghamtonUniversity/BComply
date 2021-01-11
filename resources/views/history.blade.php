@@ -12,24 +12,35 @@
                     @if(count($assignments) > 0)
                             @foreach ($assignments as $assignment)
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="panel panel-default">
-                                <a class="trigger-help" href="/assignment/{{$assignment->id}}"
-                                    data-toggle="popover" data-placement="top" title="Description" data-content="{{$assignment->module->description}}">
-                                    <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($assignment->status)}}</div>
-                                    <div class="panel-body" style="padding-top:30px;text-align:center;">
-                                        <i class="fa fa-{{$assignment->module->icon}} fa-10x"></i>
-                                    </div>
-                                    <hr style="margin:0 0px;">
-                                    <div class="panel-body">
-                                            <div class="module-name">{{$assignment->version->name}}</div>
-                                            <div class="badge">Completed: {{$assignment->date_completed->format('m/d/y')}}</div>
+{{--                                <div >--}}
+                                    <a class="trigger-help" href="/assignment/{{$assignment->id}}"
+                                        data-toggle="popover" data-placement="top" title="Description" data-content="{{$assignment->module->description}}"
+                                    style="height: 350px">
+                                        <div class="panel panel-default">
+                                            <div class="panel-header">
+                                                <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($assignment->status)}}</div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="panel-body" style="padding-top:30px;text-align:center;">
+                                                    <i class="fa fa-{{$assignment->module->icon}} fa-10x"></i>
+                                                </div>
+
+                                                <hr style="margin:0 0px;">
+
+                                                <div class="panel-body" style="height: 110px;overflow: scroll;">
+                                                        <div class="module-name">{{$assignment->version->name}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <div class="badge">Completed: {{$assignment->date_completed->format('m/d/y')}}</div>
                                             <!-- @if(!is_null($assignment->score))<div class="">Score: {{$assignment->score}}</div>@endif -->
-                                            @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))
-                                                <div class="" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate"><i class="fa fa-download"></i> Download Certificate</a></div>
-                                            @endif
-                                    </div>
-                                </a>
-                            </div>
+                                                @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))
+                                                    <div class="" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate"><i class="fa fa-download"></i> Download Certificate</a></div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </a>
+{{--                                </div>--}}
                             </div>
                             @endforeach
                     @else

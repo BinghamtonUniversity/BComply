@@ -6,7 +6,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     actions:[
         {"name":"create","label":"Add Module Assignment"},
         '',
-        {"label":"Mark As Completed","name":"complete","min":1,"type":"danger"},
+        {"label":"Mark As Completed","name":"complete","min":1,"max":1,"type":"danger"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
         '',
         {"name":"delete","label":"Remove Module Assignment"}
@@ -15,7 +15,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     schema:[
         {type:"hidden", name:"id"},
         {type:"text",name:"version", label:"Module Version", parse:false,show:false,template:"{{attributes.version.name}}"},
-        {type:"user", name:"user_id", label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
+        {type:"user", name:"user_id",required:true, label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
         {type:"datetime", name:"date_assigned", label:"Date Assigned",parse:false,show:false,format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }},
@@ -68,6 +68,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                         "type": "radio",
                         "label": "Status",
                         "name": "status",
+                        "required":true,
                         "options": [
                             {
                                 "label": "Attended",
@@ -109,6 +110,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                                 ]
                             }
                         ],
+                        "required":"show",
                         "columns":6
                     },
                     {
@@ -134,6 +136,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                                 ]
                             }
                         ],
+                        "required":"show",
                         "columns":6
                     },
                     {
@@ -146,16 +149,18 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                 "data": data
             })
             .modal().on('save', function (form_event) {
-            console.log(form_event.form.get());
-            ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
-                // grid_event.model.attributes.assignment = data;
-                // grid_event.model.draw();
-                grid_event.model.update(data)
-                form_event.form.trigger('close');
-            }, function (err) {
-                grid_event.model.undo();
-                // console.log(data.response)
-            })
+            // console.log(form_event.form.get());
+            if(form_event.form.validate()){
+                ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
+                    // grid_event.model.attributes.assignment = data;
+                    // grid_event.model.draw();
+                    grid_event.model.update(data)
+                    form_event.form.trigger('close');
+                }, function (err) {
+                    grid_event.model.undo();
+                    // console.log(data.response)
+                })
+            }
         }).on('cancel', function (form_event) {
             form_event.form.trigger('close');
         })

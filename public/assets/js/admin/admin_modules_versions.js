@@ -17,7 +17,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
     schema:[
         {type:"hidden", name:"id"},
         {type:"hidden", name:"module_id", value:id},
-        {type:"text", name:"name", label:"Name"},
+        {type:"text", name:"name", label:"Name",required:true},
         {type:"select", name:"type", label:"Type",options:[
             "articulate_tincan","youtube"
         ]},
@@ -76,11 +76,11 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
         var form_fields = {};
         if (module_version_type === 'articulate_tincan') {
             form_fields = [
-                {"type":"text","name":"filename","label":"Launch URL","value":"index_lms.html","help":"This is the starting filename as specified when publishing the module in Articulate.  It is typically something like 'story_html5.html' or 'index_lms.html'"}
+                {"type":"text","name":"filename","label":"Launch URL","value":"index_lms.html","required":true,"help":"This is the starting filename as specified when publishing the module in Articulate.  It is typically something like 'story_html5.html' or 'index_lms.html'"}
             ]
         } else if (module_version_type === 'youtube') {
             form_fields = [
-                {"type":"text","name":"code","label":"Youtube Code","help":"This is the string of characters at the end of the Youtube URL"},
+                {"type":"text","name":"code","required":true,"label":"Youtube Code","help":"This is the string of characters at the end of the Youtube URL"},
                 {"type":"checkbox","name":"controls","label":"Enable Controls"},
                 {"type":"textarea","name":"instructions","label":"Instructions"}
             ]
@@ -91,10 +91,12 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
             "actions":[{"type":"save"}]
             }
         ).modal().on('save',function(form_event) {
-            ajax.put('/api/modules/'+id+'/versions/'+module_version_id,{"reference":form_event.form.get()},function(data) {
-                grid_event.model.attributes.reference = data.reference;
-                form_event.form.trigger('close');
-            });
+            if(form_event.form.validate()){
+                ajax.put('/api/modules/' + id + '/versions/' + module_version_id, {"reference": form_event.form.get()}, function (data) {
+                    grid_event.model.attributes.reference = data.reference;
+                    form_event.form.trigger('close');
+                });
+            }
         });
     })
 });
