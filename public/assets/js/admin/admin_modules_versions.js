@@ -102,6 +102,7 @@ ajax.get('/api/modules/'+id+'/versions',function(data) {
 });
 
 var upload_file = function(url) {
+    toastr.info('Starting File Upload... Please Be Patient')
     const files = document.querySelector('[name=zipfile]').files
     const formData = new FormData()
     for (let i = 0; i < files.length; i++) {
