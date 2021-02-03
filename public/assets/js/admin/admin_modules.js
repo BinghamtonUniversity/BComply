@@ -66,6 +66,18 @@ ajax.get('/api/modules',function(data) {
                 {
                     "label":"150 Days",
                     "value":150
+                },
+                {
+                    "label":"180 Days",
+                    "value":180
+                },
+                {
+                    "label":"240 Days",
+                    "value":240
+                },
+                {
+                    "label":"300 Days",
+                    "value":300
                 }],
             "show": [
                 {
