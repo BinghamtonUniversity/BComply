@@ -12,6 +12,9 @@ class ModuleAssignment extends Model
     public function user(){
         return $this->belongsTo('App\User','user_id');
     }
+    public function simple_user(){
+        return $this->belongsTo('App\SimpleUser','user_id');
+    }
     public function version(){
         return $this->belongsTo('App\ModuleVersion','module_version_id');
     }

@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\SimpleUser;
 use App\GroupMembership;
 use App\Group;
+use App\ModuleAssignment;
+use App\Module;
 
 class PublicAPIController extends Controller
 {
@@ -122,4 +124,28 @@ class PublicAPIController extends Controller
             return ['exception'=>$e->getMessage(),'line'=>$e->getLine()];
         }
     }
+
+    public function get_user_assignments(Request $request, $unique_id) {
+        $user = SimpleUser::where('unique_id',$unique_id)->first();
+        if (is_null($user)) {
+            return response(['error'=>'The specified user does not exist'], 404)->header('Content-Type', 'application/json');
+        }
+        return ModuleAssignment::where('user_id',$user->id)
+            ->with(['version'=>function($query){
+                $query->select('id','name');
+            }])->with(['module'=>function($query){
+                $query->select('id','name');
+            }])->get();
+    }
+
+    public function get_module_assignments(Request $request, $module_id){
+        return ModuleAssignment::where('module_id',$module_id)
+            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started')
+            ->with(['user'=>function($query){
+                $query->select('id','unique_id','email','first_name','last_name');
+            }])->with(['version'=>function($query){
+                $query->select('id','name');
+            }])->get();
+    }
+
 }
