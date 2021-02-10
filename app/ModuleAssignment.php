@@ -10,9 +10,6 @@ class ModuleAssignment extends Model
     protected $casts = ['current_state' => 'object','date_started'=>'datetime','date_assigned'=>'datetime','date_completed'=>'datetime','date_due'=>'datetime'];
 
     public function user(){
-        return $this->belongsTo('App\User','user_id');
-    }
-    public function simple_user(){
         return $this->belongsTo('App\SimpleUser','user_id');
     }
     public function version(){
