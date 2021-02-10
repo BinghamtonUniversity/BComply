@@ -131,7 +131,7 @@ class PublicAPIController extends Controller
             return response(['error'=>'The specified user does not exist'], 404)->header('Content-Type', 'application/json');
         }
         return ModuleAssignment::where('user_id',$user->id)
-            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started')
+            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
             ->with(['version'=>function($query){
                 $query->select('id','name');
             }])->with(['module'=>function($query){
@@ -141,7 +141,7 @@ class PublicAPIController extends Controller
 
     public function get_module_assignments(Request $request, $module_id){
         $query = ModuleAssignment::where('module_id',$module_id)
-            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started')
+            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
             ->with(['user'=>function($query){
                 $query->select('id','unique_id','email','first_name','last_name');
             }])->with(['version'=>function($query){
