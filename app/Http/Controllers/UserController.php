@@ -50,6 +50,33 @@ class UserController extends Controller
         return "1";
     }
 
+    public function merge_user(Request $request, User $source_user, User $target_user) {
+        $errors = [];
+        try {
+            ModulePermission::where('user_id',$source_user->id)->update(['user_id'=>$target_user->id]);
+        } catch (\Exception $e) { $errors[] = 'Unable to Migrate Module Permissions due to conflict';}
+        try {
+            ModuleAssignment::where('user_id',$source_user->id)->update(['user_id'=>$target_user->id]);
+        } catch (\Exception $e) { $errors[] = 'Unable to Migrate Module Assignments due to conflict';}
+        try {
+            GroupMembership::where('user_id',$source_user->id)->update(['user_id'=>$target_user->id]);
+        } catch (\Exception $e) { $errors[] = 'Unable to Migrate Group Memberships due to conflict';}
+        try {
+            UserPermission::where('user_id',$source_user->id)->update(['user_id'=>$target_user->id]);
+        } catch (\Exception $e) { $errors[] = 'Unable to Migrate User Permissions due to conflict';}
+        if (count($errors)>0) {
+            if ($request->has('delete') && $request->delete == 'true') {
+                $errors[] = 'Refusing to delete source user due to errors';
+            } 
+            return ['success'=>false,'errors'=>$errors];
+        } else {
+            if ($request->has('delete') && $request->delete == 'true') {
+                $source_user->delete();
+            }    
+            return ['success'=>true];
+        }
+    }
+
     public function login_user(Request $request, User $user) {
         Auth::login($user,true);
         return "1";

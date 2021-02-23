@@ -48,6 +48,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::post('/users','UserController@add_user')->middleware('can:manage_users,App\User');
         Route::put('/users/{user}','UserController@update_user')->middleware('can:manage_users,App\User');
         Route::delete('/users/{user}','UserController@delete_user')->middleware('can:manage_users,App\User');
+        Route::put('/users/{source_user}/merge_into/{target_user}','UserController@merge_user')->middleware('can:manage_users,App\User');
         Route::put('/users/{user}/permissions','UserController@set_permissions')->middleware('can:manage_user_permissions,App\User');
         Route::get('/users/{user}/permissions','UserController@get_permissions')->middleware('can:manage_user_permissions,App\User');
         Route::post('/users/assignments/{module}','UserController@self_assignment');

@@ -149,6 +149,7 @@ new gform(
                 "actions":[
                     {"type":"save","label":"Update User","modifiers":"btn btn-primary"},
                     {"type":"button","label":"Delete User","action":"delete","modifiers":"btn btn-danger"},
+                    {"type":"button","label":"Merge Into","action":"merge_user","modifiers":"btn btn-danger"},
                     {"type":"button","label":"Login","action":"login","modifiers":"btn btn-warning"}
                 ]}
             ).on('delete',function(form_event) {
@@ -158,6 +159,42 @@ new gform(
                         $('.user-view').hide();
                     });
                 }
+            }).on('merge_user',function(form_event) {
+                form_data = form_event.form.get();
+                source_user = form_data.id;
+                new gform(
+                    {"fields":[{
+                        "type": "user",
+                        "label": "Target User",
+                        "name": "target_user",
+                        "required":true,          
+                    },{type:"checkbox", name:"delete", label:"Delete Source User", value:false,help:"By checking this box, the `source` user will be irretrievably deleted from BComply."},
+                    {type:"output",parse:false,value:'<div class="alert alert-danger">This action will migrate/transfer all assignments from the source user to the specified target user.  This is a permanent and "undoable" action.</div>'}],
+                    "title":"Merge Into",
+                    "actions":[
+                        {"type":"cancel"},
+                        {"type":"button","label":"Commit Merge","action":"save","modifiers":"btn btn-danger"},
+                    ]}
+                ).modal().on('save',function(merge_form_event) {
+                    var merge_form_data = merge_form_event.form.get();
+                    if(form_event.form.validate() && merge_form_data.target_user !== '')
+                    {
+                        if (confirm("Are you sure you want to merge these users?  This action cannot be undone!")) {
+                            ajax.put('/api/users/'+source_user+'/merge_into/'+merge_form_data.target_user, {delete:merge_form_data.delete}, function (data) {
+                                merge_form_event.form.trigger('close');
+                                if (_.has(data,'errors')) {
+                                    toastr.error('One or more errors occurred.')
+                                    console.log(data.errors);
+                                    window.alert(data.errors.join("\n"))
+                                } else {
+                                    toastr.success('User Merge Successful!');
+                                }
+                            });
+                        }
+                    }
+                }).on('cancel',function(merge_form_event) {
+                    merge_form_event.form.trigger('close');
+                });            
             }).on('save',function(form_event) {
                 if(form_event.form.validate())
                 {
