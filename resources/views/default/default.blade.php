@@ -1,3 +1,4 @@
+<?php if (!isset($page)) {$page = null;} ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

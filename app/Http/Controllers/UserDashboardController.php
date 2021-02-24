@@ -56,4 +56,24 @@ class UserDashboardController extends Controller
         return redirect('my_assignments');
     }
 
+    public function module_redirect(Request $request, Module $module){
+        $assignment = $module->assign_to([
+            'user_id'=>Auth::user()->id,
+            'date_due'=>Carbon::now()->addDays(1), // Make due date the next day!
+            'assigned_by_user_id'=>Auth::user()->id
+        ]);
+        if ($assignment === false) {
+            return abort(404,'The specified module does not have a current version');
+        } else if (is_null($assignment)) {
+            // The user has already been assigned this module, just redict them to their current assignment.
+            $assignment = ModuleAssignment::where('user_id',Auth::user()->id)
+                ->where('module_id',$module->id)
+                ->where('module_version_id',$module->module_version_id)
+                ->first();
+            return redirect('/assignment/'.$assignment->id);
+        } else {
+            return redirect('/assignment/'.$assignment->id);
+        }
+    }
+
 }

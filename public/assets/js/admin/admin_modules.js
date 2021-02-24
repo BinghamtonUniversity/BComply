@@ -235,6 +235,8 @@ at<br>
         window.location = '/admin/modules/'+grid_event.model.attributes.id+'/versions';
     }).on("model:manage_admins",function(grid_event) {
         window.location = '/admin/modules/'+grid_event.model.attributes.id+'/permissions';
+    }).on("model:get_url",function(grid_event) {
+        window.alert(window.location.origin+'/module/'+grid_event.model.attributes.id);
     }).on("model:manage_assignments",function(grid_event) {
         window.location = '/admin/modules/'+grid_event.model.attributes.id+'/assignments/';
     });

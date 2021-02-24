@@ -142,7 +142,7 @@ class UserController extends Controller
     }
 
     public function self_assignment(Request $request, Module $module){
-                $assignment = $module->assign_to([
+        $assignment = $module->assign_to([
             'user_id'=>Auth::user()->id,
             'date_due'=>Carbon::now()->addDays(1), // Make due date the next day!
             'assigned_by_user_id'=>Auth::user()->id
@@ -155,7 +155,6 @@ class UserController extends Controller
             return ModuleAssignment::where('id',$assignment->id)->with('version')->with('user')->first();
         }
     }
-
 
     public function delete_assignment(Request $request, User $user, ModuleAssignment $module_assignment) {
         $module_assignment->delete();

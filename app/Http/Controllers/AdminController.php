@@ -109,6 +109,7 @@ class AdminController extends Controller
                 ["label"=>"Manage Versions","name"=>"manage_versions","min"=>1,"max"=>1,"type"=>"default"],
                 ["label"=>"Admin Permissions","name"=>"manage_admins","min"=>1,"max"=>1,"type"=>"default"],
                 ["label"=>"Manage Assignments","name"=>"manage_assignments","min"=>1,"max"=>1,"type"=>"default"],
+                ["label"=>"URL","name"=>"get_url","min"=>1,"max"=>1,"type"=>"default"],
                 '',
                 $user->can('delete_module','App\Module')?["name"=>"delete","label"=>"Delete Module"]:''
             ],
