@@ -139,15 +139,22 @@ class PublicAPIController extends Controller
             }])->get();
     }
 
-    public function get_module_assignments(Request $request, $module_id){
-        $query = ModuleAssignment::where('module_id',$module_id)
+    public function get_module_assignments(Request $request, Module $module){
+        $query = ModuleAssignment::where('module_id',$module->id)
             ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
             ->with(['user'=>function($query){
                 $query->select('id','unique_id','email','first_name','last_name');
             }])->with(['version'=>function($query){
                 $query->select('id','name');
             }]);
+        if($request->has('current_version') && $request->current_version=='true'){
+            $query->where('module_version_id',$module->module_version_id);
+        }
+        if($request->has('users') && gettype($request->users)==='array'){
+            $query->whereHas('user', function ($query) use($request) {
+                $query->whereIn('unique_id', $request->users);
+            });
+        }
         return $query->paginate(100);
     }
-
 }

@@ -15,5 +15,5 @@ Route::get('/cron', function () {
     return ['code'=>$exitCode];
 });
 Route::get('/users/{unique_id}/assignments','PublicAPIController@get_user_assignments');
-Route::get('/modules/{module_id}/assignments','PublicAPIController@get_module_assignments');
+Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assignments');
 
