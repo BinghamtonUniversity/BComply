@@ -14,6 +14,7 @@ class PublicAPIController extends Controller
     private function sync_users(&$remote_users, &$local_users) {
         $status=['warnings'=>[],'updated'=>[],'added'=>[],'ignored'=>[]];
         foreach($remote_users as $remote_user) {
+            $remote_user['active'] = true; // 4-19-21 Added by TJC to force activation of all synced users
             if (isset($remote_user['unique_id'])) {
                 $local_user = $local_users->firstWhere('unique_id', $remote_user['unique_id']);
                 if (is_null($local_user)) {

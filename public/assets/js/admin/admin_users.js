@@ -14,7 +14,7 @@ user_form_attributes = [
     {type:"text", name:"division", label:"Division Name"},
     {type:"text", name:"negotiation_unit", label:"Negotiation Unit"},
     {type:"text", name:"title", label:"Title"},
-    {type:"text", name:"role_type", label:"role_type"},
+    {type:"text", name:"role_type", label:"Role Type"},
 ];
 
 $('#adminDataGrid').html(`
@@ -26,7 +26,8 @@ $('#adminDataGrid').html(`
         <hr>
         <div class="row">
             <div class="col-sm-12">
-                <div class="btn btn-success user-new">Create New User</div>
+                <div class="btn btn-success user-new">Create New User</div><br><br>
+                <div class="btn btn-warning bulk-inactivate-users">Bulk Inactivate Users</div>
             </div>
         </div>
     </div>
@@ -92,6 +93,54 @@ user_module_assignments_template = `
 {{/pivot_module_assignments}}
 <a href="/admin/users/{{id}}/assignments" class="btn btn-default">Manage Assignments</a>
 `;
+
+// Bulk Inactivate Users
+$('.bulk-inactivate-users').on('click',function() {
+    new gform({
+        "legend":"Bulk Inactivate Users",
+        "name": "bulk_inactivate_users",
+        "fields": [
+            {
+                "type": "textarea",
+                "label": "Unique IDs",
+                "name": "unique_ids",
+                "showColumn": true,
+                "help":"Please enter a list of Unique IDs (BNumbers). " +
+                    "You can either use a \",\" (comma) to separate them or enter them in separate lines"
+            }
+        ]
+    }).on('save',function(form_event){
+        toastr.info('Processing... Please Wait')
+        form_event.form.trigger('close');
+        ajax.post('/api/users/bulk_inactivate',form_event.form.get(),function(data) {
+            // do something
+            template = `
+                {{#count}}
+                    <div class="alert alert-success">
+                        <h5>The Following users were inactivated:</h5>
+                        <ul>
+                        {{#users}}
+                            <li>{{first_name}} {{last_name}}</li>
+                        {{/users}}
+                        </ul>
+                    </div>
+                {{/count}}
+                {{^count}}
+                    <div class="alert alert-danger">
+                        No Users were Inactivated.
+                    </div>
+                {{/count}}
+                `;
+            $('#adminModal .modal-title').html('Inactivation Status')
+            $('#adminModal .modal-body').html(gform.m(template,data));
+            $('#adminModal').modal('show')
+        },function(data){
+            // do nothing
+        });
+    }).on('cancel',function(form_event){
+        form_event.form.trigger('close');
+    }).modal()
+});
 
 // Create New User
 $('.user-new').on('click',function() {

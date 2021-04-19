@@ -46,6 +46,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/users','UserController@get_all_users')->middleware('can:view_in_admin,App\User');
         Route::get('/users/search/{search_string?}','UserController@search');
         Route::get('/users/{user}','UserController@get_user');
+        Route::post('/users/bulk_inactivate','UserController@bulk_inactivate')->middleware('can:manage_users,App\User');
         Route::post('/users','UserController@add_user')->middleware('can:manage_users,App\User');
         Route::put('/users/{user}','UserController@update_user')->middleware('can:manage_users,App\User');
         Route::delete('/users/{user}','UserController@delete_user')->middleware('can:manage_users,App\User');

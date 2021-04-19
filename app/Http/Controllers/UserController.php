@@ -196,4 +196,12 @@ class UserController extends Controller
 
         return $users;
     }
+
+    public function bulk_inactivate(Request $request){
+        $unique_ids = array_unique(preg_split('/(,|\n| )/',$request->unique_ids,-1, PREG_SPLIT_NO_EMPTY));
+        $users = User::select('id','unique_id','first_name','last_name')->whereIn('unique_id',$unique_ids)->get();
+        User::whereIn('unique_id',$unique_ids)->update(['active'=>0]);
+        return ['count'=>count($users),'users'=>$users];
+    }
+
 }
