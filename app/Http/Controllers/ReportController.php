@@ -27,7 +27,7 @@ class ReportController extends Controller
                 return Report::all();
             }
             else {
-                return Report::where('owner_user_id',Auth::user()->id)->get();
+                return Report::where('owner_user_id',Auth::user()->id)->orWhereJsonContains('permissions',Auth::user()->id)->get();
             }
         }
         else{

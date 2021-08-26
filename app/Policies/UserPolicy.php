@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\ModuleAssignment;
+use App\Report;
 use App\User;
 use App\Module;
 use App\ModuleVersion;
@@ -15,9 +16,11 @@ class UserPolicy
     public function view_admin_dashboard(User $user)
     {
         $is_module_owner = is_null(Module::where('owner_user_id',$user->id)->select('id')->first())?false:true;
+        $has_report_run_permission = is_null(Report::whereJsonContains('permissions',$user->id)->select('id')->first())?false:true;
         return (!is_null($user->module_perms()->first())
             || !is_null($user->user_perms()->first()) ||
             $is_module_owner
+            || $has_report_run_permission
         );
 
     }

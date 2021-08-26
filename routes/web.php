@@ -102,7 +102,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::delete('/reports/{report}','ReportController@delete_report')->middleware('can:update_report,report');
         Route::get('/reports/tables', 'ReportController@get_tables')->middleware('can:view_reports, App\Report');
         Route::get('/reports/tables/columns', 'ReportController@get_columns')->middleware('can:view_reports, App\Report');
-        Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:view_reports, App\Report');
+        Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:execute_report,report');
 
         /*Bulk Assignments Methods*/
         Route::get('/bulk_assignments', 'BulkAssignmentController@get_all_bulk_assignments')->middleware('can:manage_bulk_assignments, App\BulkAssignment');

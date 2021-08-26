@@ -21,11 +21,25 @@ class ReportPolicy
 
     public function view_reports(User $user){
         $is_report_owner = is_null(Report::where('owner_user_id',$user->id)->select('id')->first())?false:true;
-        $has_report_perm = is_null(ModulePermission::where('user_id',$user->id)->where('permission','report')->select('id')->first())?false:true;
+//        $has_report_perm = is_null(ModulePermission::where('user_id',$user->id)->where('permission','report')->select('id')->first())?false:true;
+        $has_permission = is_null(Report::whereJsonContains('permissions',$user->id)->select('id')->first())?false:true;
         if(in_array('run_reports',$user->user_permissions)
             || in_array('manage_reports',$user->user_permissions)
             || $is_report_owner
-            || $has_report_perm
+            || $has_permission
+//            || $has_report_perm
+        ){
+            return true;
+        }
+    }
+
+    public function execute_report(User $user,Report $report){
+        $is_report_owner = is_null(Report::where('owner_user_id',$user->id)->where('id',$report->id)->select('id')->first())?false:true;
+        $has_permission = is_null(Report::where('id',$report->id)->whereJsonContains('permissions',$user->id)->select('id')->first())?false:true;
+
+        if(in_array('run_reports',$user->user_permissions)
+            || $is_report_owner
+            || $has_permission
         ){
             return true;
         }

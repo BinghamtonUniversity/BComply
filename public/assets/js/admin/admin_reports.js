@@ -1,5 +1,5 @@
 ajax.get('/api/reports',function(data) {
-    // debugger
+
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     item_template: gform.stencils['table_row'],
     search: false,columns: false,upload:false,download:false,title:'Reports',
@@ -11,6 +11,8 @@ ajax.get('/api/reports',function(data) {
         {type:"text", name:"name", label:"Report Name",required:true},
         {type:"textarea", name:"description", label:"Description"},
         {type:"user", name:"owner_user_id", label:"Owner",required:true, template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
+        {type:"output", label:"",name:"out_txt", format:{value:"<div class='alert alert-info'>Use the fields below to specify additional users who will have read only access to this report</div>"},showColumn:false},
+        {type:"user", name:"permissions", label:"User",required:false, array: {min:0,max:50}, showColumn:false},
 
     ], data: data
     }).on("model:created",function(grid_event) {

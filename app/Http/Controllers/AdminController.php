@@ -169,7 +169,7 @@ class AdminController extends Controller
                 ["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"],
                 ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
                 '',
-                ["name"=>"delete","label"=>"Delete Report"]
+                $user->can('manage_reports','App\Report')?["name"=>"delete","label"=>"Delete Report"]:""
             ],
             'help'=>
                 'Build and Manage Reports'
