@@ -8,6 +8,10 @@ class Group extends Model
 {
     protected $fillable = ['name'];
 
+    protected function serializeDate(\DateTimeInterface $date) {
+        return $date->format('Y-m-d H:i:s');
+    }
+
     /**
      * Handle the user "created" event.
      *

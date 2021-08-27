@@ -16,6 +16,9 @@ class Module extends Model
     protected $appends = ['module_permissions'];
     protected $with = ['permissions'];
 
+    protected function serializeDate(\DateTimeInterface $date) {
+        return $date->format('Y-m-d H:i:s');
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

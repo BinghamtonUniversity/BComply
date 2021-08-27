@@ -13,6 +13,10 @@ class ModuleVersion extends Model
     protected $fillable = ['name','module_id','type','reference'];
     protected $casts = ['reference' => 'object'];
 
+    protected function serializeDate(\DateTimeInterface $date) {
+        return $date->format('Y-m-d H:i:s');
+    }
+
     public function modules(){
         return $this->hasMany(Module::class);
     }

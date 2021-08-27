@@ -10,6 +10,9 @@ class BulkAssignment extends Model
     protected $fillable = ['name','description','assignment'];
     protected $casts = ['assignment' => 'object'];
 
+    protected function serializeDate(\DateTimeInterface $date) {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     /**
      * @return \Illuminate\Database\Query\Builder
