@@ -57,5 +57,11 @@ class ReportPolicy
             return true;
         }
     }
+    // This policy will decide whether a user can see Edit Query/ Edit/ Delete buttons in "Reports" page where "update_report" policy above is enforced
+    public function see_update_buttons (User $user){
+        if ($this->manage_reports($user) || (is_null(Report::where('owner_user_id',$user->id)->first())?false:true)){
+            return true;
+        }
+    }
 
 }

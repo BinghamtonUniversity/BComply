@@ -165,11 +165,11 @@ class AdminController extends Controller
             'actions' => [
                 $user->can('manage_reports','App\Report')?["name"=>"create","label"=>"Create New Report"]:'',
                 '',
-                ["name"=>"edit","label"=>"Edit Description"],
-                ["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"],
+                $user->can('see_update_buttons','App\Report')?["name"=>"edit","label"=>"Edit Description"]:'',
+                $user->can('see_update_buttons','App\Report')?["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"]:'',
                 ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
                 '',
-                $user->can('manage_reports','App\Report')?["name"=>"delete","label"=>"Delete Report"]:""
+                $user->can('see_update_buttons','App\Report')?["name"=>"delete","label"=>"Delete Report"]:""
             ],
             'help'=>
                 'Build and Manage Reports'
