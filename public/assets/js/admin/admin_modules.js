@@ -38,6 +38,30 @@ ajax.get('/api/modules',function(data) {
                 {
                     "label":"60 Days",
                     "value":60
+                },
+                {
+                    "label":"90 Days",
+                    "value":90
+                },
+                {
+                    "label":"120 Days",
+                    "value":120
+                },
+                {
+                    "label":"150 Days",
+                    "value":150
+                },
+                {
+                    "label":"180 Days",
+                    "value":180
+                },
+                {
+                    "label":"240 Days",
+                    "value":240
+                },
+                {
+                    "label":"300 Days",
+                    "value":300
                 }],
         },
         {
