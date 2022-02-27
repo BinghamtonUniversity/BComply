@@ -15,7 +15,8 @@
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
-        "mustache/mustache": "^2.14"
+        "mustache/mustache": "^2.14",
+        "subfission/cas": "dev-master"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -62,6 +63,12 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/nasrulhazim/cas"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }
