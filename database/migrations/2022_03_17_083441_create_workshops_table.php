@@ -14,7 +14,16 @@ class CreateWorkshopsTable extends Migration
     public function up()
     {
         Schema::create('workshops', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->longText('description')->nullable()->default(null);
+            $table->string('icon')->nullable()->default(null);
+            //Owner type?
+            $table->foreign('owner_id')->references('id')->on('users');
+            $table->json('config')->nullable()->default(null);
+            $table->json('files')->nullable()->default(null);
+            $table->unsignedInteger('duration')->default(0);
+            $table->boolean('public')->nullable(false)->default(false);
             $table->timestamps();
         });
     }

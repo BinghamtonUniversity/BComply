@@ -31,6 +31,8 @@ return [
     */
 
     'env' => env('APP_ENV', 'development'),
+    'key' => env('APP_KEY','base64:KIjwUolukaRAYrt2fNJzugtaNolEBTR/pDNx2OIOOuc='),
+    'cipher' => 'AES-256-CBC',
 
     /*
     |--------------------------------------------------------------------------

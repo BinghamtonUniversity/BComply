@@ -14,7 +14,14 @@ class CreateWorkshopOfferingsTable extends Migration
     public function up()
     {
         Schema::create('workshop_offerings', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->foreign('workshop_id')->references('id')->on('workshops');
+            $table->unsignedBigInteger('max_capacity')->default(0);
+            $table->string('locations');
+            //instructor tpye?
+            $table->foreign('instructor_id')->references('id')->on('users');
+            $table->timestamp('workshop_date')->nullable()->default(null);
+            $table->enum('type',['online','in-person'])->default('online');
             $table->timestamps();
         });
     }

@@ -14,7 +14,11 @@ class CreateWorkshopAttendancesTable extends Migration
     public function up()
     {
         Schema::create('workshop_attendances', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->foreign('workshop_offering_id')->references('id')->on('workshop_offerings');
+            $table->foreign('workshop_id')->references('id')->on('workshops');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->enum('status',['assigned','attended','in_progress','passed','failed','completed'])->default('assigned');
             $table->timestamps();
         });
     }
