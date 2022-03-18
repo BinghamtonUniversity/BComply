@@ -118,6 +118,27 @@ class AdminController extends Controller
                 modules, manage administrative permissions for modudles, and manage module versions.'
         ]);
     }
+ /**
+     * Handle the user "created" event.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function workshops(Request $request) {
+        $user = Auth::user();
+        return view('default.admin',['page'=>'workshops','ids'=>[],'title'=>'Manage Workshops',
+            'actions' => [
+                $user->can('create_workshops','App\Workshop')?["name"=>"create","label"=>"Create New Workshop"]:'',
+                '',
+                ["name"=>"edit","label"=>"Update Existing Workshop"],
+                '',
+                $user->can('delete_workshop','App\Workshop')?["name"=>"delete","label"=>"Delete Workshop"]:''
+            ],
+            'help'=>
+                'Use this page to manage workshops within the BComply Application.  You may create new
+                workshops.'
+        ]);
+    }
 
     /**
      * @param Request $request
