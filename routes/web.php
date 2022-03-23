@@ -20,6 +20,10 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/users/{user}/assignments', ['uses'=>'AdminController@user_assignments']);
         Route::get('/groups', ['uses'=>'AdminController@groups']);
         Route::get('/groups/{group}/members', ['uses'=>'AdminController@group_members']);
+        // Workshop start
+        Route::get('/workshops', ['uses'=>'AdminController@workshops']);
+        Route::get('/workshops/{workshop}/offerings', ['uses'=>'AdminController@workshop_offerings']);
+        // Workshop end
         Route::get('/modules', ['uses'=>'AdminController@modules']);
         Route::get('/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
         Route::get('/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);
@@ -58,8 +62,16 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::post('/users/{user}/assignments/{module}','UserController@set_assignment')->middleware('can:assign_module,App\User,module');
         Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:delete_assignment,App\User,module_assignment');
         Route::post('/login/{user}','UserController@login_user')->middleware('can:impersonate_users,App\User');
+        /* Workshop Methods */
+        Route::get('/workshops','WorkshopController@get_all_workshops');//->middleware('can:view_in_admin,App\Workshops');
+        Route::post('/workshops','WorkshopController@add_workshop')->middleware('can:create_modules,App\Module');
+        Route::put('/workshops/{workshop}','WorkshopController@update_workshop');
+        Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop');
+        /* Workshop Offerings Methods */
+        Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings');
 
-        /* Modules Methods */
+
+        /* DEV end */
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');
         Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:view_module,module');
         Route::post('/modules','ModuleController@add_module')->middleware('can:create_modules,App\Module');

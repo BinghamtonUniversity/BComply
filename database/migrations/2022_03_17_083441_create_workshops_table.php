@@ -19,11 +19,13 @@ class CreateWorkshopsTable extends Migration
             $table->longText('description')->nullable()->default(null);
             $table->string('icon')->nullable()->default(null);
             //Owner type?
+            $table->unsignedBigInteger('owner_id')->nullable()->default(null);
             $table->foreign('owner_id')->references('id')->on('users');
             $table->json('config')->nullable()->default(null);
             $table->json('files')->nullable()->default(null);
             $table->unsignedInteger('duration')->default(0);
             $table->boolean('public')->nullable(false)->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -2,9 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 class Workshop extends Model
 {
     //use HasFactory;
@@ -23,5 +24,12 @@ class Workshop extends Model
      */
     public function workshop_offerings(){
         return $this->hasMany(WorkshopOffering::class);
+    }
+
+         /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function workshop_attendace(){
+        return $this->hasMany(WorkshopAttendance::class);
     }
 }

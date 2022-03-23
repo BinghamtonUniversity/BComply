@@ -15,10 +15,13 @@ class CreateWorkshopAttendancesTable extends Migration
     {
         Schema::create('workshop_attendances', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('workshop_offering_id')->nullable()->default(null);
+            $table->unsignedBigInteger('workshop_id')->nullable()->default(null);
+            $table->unsignedBigInteger('user_id')->nullable()->default(null);
             $table->foreign('workshop_offering_id')->references('id')->on('workshop_offerings');
             $table->foreign('workshop_id')->references('id')->on('workshops');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->enum('status',['assigned','attended','in_progress','passed','failed','completed'])->default('assigned');
+            $table->enum('status',['pending','incomplete','passed','failed','completed'])->default('pending');
             $table->timestamps();
         });
     }

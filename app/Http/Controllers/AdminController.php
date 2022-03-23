@@ -6,6 +6,7 @@ use App\BulkAssignment;
 use App\User;
 use App\Group;
 use App\Module;
+use App\Workshop;
 use App\ModuleVersion;
 use App\Report;
 use Illuminate\Support\Facades\Auth;
@@ -115,7 +116,7 @@ class AdminController extends Controller
             ],
             'help'=>
                 'Use this page to manage modules within the BComply Application.  You may create new
-                modules, manage administrative permissions for modudles, and manage module versions.'
+                modules, manage administrative permissions for modules, and manage module versions.'
         ]);
     }
  /**
@@ -128,17 +129,32 @@ class AdminController extends Controller
         $user = Auth::user();
         return view('default.admin',['page'=>'workshops','ids'=>[],'title'=>'Manage Workshops',
             'actions' => [
-                $user->can('create_workshops','App\Workshop')?["name"=>"create","label"=>"Create New Workshop"]:'',
-                '',
+                ["name"=>"create","label"=>"Create New Workshop"],           
                 ["name"=>"edit","label"=>"Update Existing Workshop"],
-                '',
-                $user->can('delete_workshop','App\Workshop')?["name"=>"delete","label"=>"Delete Workshop"]:''
+                ["name"=>"delete","label"=>"Delete Workshop"],
+                ["name"=>"manage_offerings","label"=>"Manage Workshop Offerings","min"=>1,"max"=>1,"type"=>"default"]
             ],
             'help'=>
                 'Use this page to manage workshops within the BComply Application.  You may create new
                 workshops.'
         ]);
     }
+         /**
+     * Handle the user "created" event.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function workshops_offerings(Request $request,Workshop $workshop) {
+        return view('default.admin',['page'=>'workshop_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings','help'=>
+            'Use this page to manage training workshop offerings.  You may add new
+            users, view a status report for currently assigned users, and remove assigned users.'
+        ]);
+    }
+
+    // public function workshops_attendance(Request $request) {
+  
+    // }
 
     /**
      * @param Request $request

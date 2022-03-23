@@ -70,6 +70,10 @@
               @can('view_in_admin','App\Module')
                   <li class="visible-xs-block @if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
               @endcan
+               <!--added workshop-->
+              
+              <li class="visible-xs-block @if($page=="workshops") active @endif"><a href="/admin/workshops"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Workshops</a></li>
+              
               @can('view_reports','App\Report')
                   <li class="visible-xs-block @if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
               @endcan
@@ -96,6 +100,11 @@
             @can('view_in_admin','App\Module')
                 <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Modules</a></li>
             @endcan
+            
+            <!--added workshop-->
+          
+            <li class="@if($page=="workshops") active @endif"><a href="/admin/workshops"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Workshops</a></li>
+        
             @can('view_reports','App\Report')
                 <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
             @endcan

@@ -19,14 +19,20 @@ class WorkshopAttendance extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function owner(){
+    public function attendee(){
         return $this->belongsTo(User::class,'user_id');
     }
 
         /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function workshop_offering(){
+        return $this->belongsTo(WorkshopOffering::class,'workshop_offering_id');
+    }
+           /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function workshop(){
-        return $this->belongsTo(workshop::class,'workshop_id');
+        return $this->belongsTo(Workshop::class,'workshop_id');
     }
 }

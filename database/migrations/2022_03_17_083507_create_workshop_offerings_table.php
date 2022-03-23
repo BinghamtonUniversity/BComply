@@ -15,6 +15,8 @@ class CreateWorkshopOfferingsTable extends Migration
     {
         Schema::create('workshop_offerings', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('workshop_id')->nullable()->default(null);
+            $table->unsignedBigInteger('instructor_id')->nullable()->default(null);
             $table->foreign('workshop_id')->references('id')->on('workshops');
             $table->unsignedBigInteger('max_capacity')->default(0);
             $table->string('locations');
