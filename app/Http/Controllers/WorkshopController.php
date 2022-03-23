@@ -55,9 +55,15 @@ class WorkshopController extends Controller
 
     public function get_workshop_offerings(Request $request,Workshop $workshop){
         return WorkshopOffering::where('workshop_id',$workshop->id)
-            //->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started')
+            ->select('id','workshop_id','instructor_id','max_capacity','locations','workshop_date','type')
             ->with(['user'=>function($query){
                 $query->select('id','first_name','last_name');
             }])->get();
+    }
+    public function add_workshop_offering(Request $request,WorkshopOffering $workshop_offering){
+        $workshop_offering = new WorkshopOffering($request->all());
+        $workshop_offering->save();
+
+        return $workshop_offering->where('id',$workshop_offering->id)->with('owner')->first();
     }
 }

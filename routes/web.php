@@ -69,7 +69,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop');
         /* Workshop Offerings Methods */
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings');
-
+        Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering');
 
         /* DEV end */
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');

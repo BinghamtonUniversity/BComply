@@ -145,7 +145,7 @@ class AdminController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function workshops_offerings(Request $request,Workshop $workshop) {
+    public function workshop_offerings(Request $request,Workshop $workshop) {
         return view('default.admin',['page'=>'workshop_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings','help'=>
             'Use this page to manage training workshop offerings.  You may add new
             users, view a status report for currently assigned users, and remove assigned users.'
