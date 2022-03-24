@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\BulkAssignment; //might need to be deleted
-use App\Report; //might need to be deleted
+
 use Illuminate\Support\Facades\Storage;
 use App\User;
 use App\Workshop;

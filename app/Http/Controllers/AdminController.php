@@ -143,6 +143,7 @@ class AdminController extends Controller
      * Handle the user "created" event.
      *
      * @param Request $request
+     * @param Workshop $workshop
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function workshop_offerings(Request $request,Workshop $workshop) {
@@ -162,6 +163,8 @@ class AdminController extends Controller
      * Handle the user "created" event.
      *
      * @param Request $request
+     * @param Workshop $workshop
+     * @param WorkshopOffering $offering
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering) {

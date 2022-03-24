@@ -24,6 +24,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshops', ['uses'=>'AdminController@workshops']);
         Route::get('/workshops/{workshop}/offerings', ['uses'=>'AdminController@workshop_offerings']);
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
+        Route::get('/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
         // Workshop end
         Route::get('/modules', ['uses'=>'AdminController@modules']);
         Route::get('/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
@@ -66,7 +67,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         
         /* Workshop Methods */
         Route::get('/workshops','WorkshopController@get_all_workshops');//->middleware('can:view_in_admin,App\Workshops');
-        Route::post('/workshops','WorkshopController@add_workshop')->middleware('can:create_modules,App\Module');
+        Route::post('/workshops','WorkshopController@add_workshop');
         Route::put('/workshops/{workshop}','WorkshopController@update_workshop');
         Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop');
 
@@ -79,8 +80,10 @@ Route::group(['middleware'=>['custom.auth']], function () {
 
         /* Workshop Attendance Methods */
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances');
+        Route::get('/offerings/{offering}/attendances','WorkshopOfferingController@get_workshop_attendances');
 
         /* DEV end */
+        
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');
         Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:view_module,module');
         Route::post('/modules','ModuleController@add_module')->middleware('can:create_modules,App\Module');

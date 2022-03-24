@@ -49,7 +49,10 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             grid_event.model.undo();
         });
     }).on("model:manage_attendance",function(grid_event) {
-        window.location = '/admin/workshops/'+id+'/offerings/'+grid_event.model.attributes.id+"/attendance";
+        window.location = '/admin/offerings/'+grid_event.model.attributes.id+"/attendances";
     });
-
+    //TODO might be replaced with above
+    // .on("model:manage_attendance",function(grid_event) {
+    //     window.location = '/admin/workshops/'+id+'/offerings/'+grid_event.model.attributes.id+"/attendances";
+    // });
 });
