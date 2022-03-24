@@ -11,7 +11,7 @@ class Workshop extends Model
     //use HasFactory;
     use SoftDeletes;
     protected $fillable = ['name','description','icon','owner_id','config','files','duration','public'];
-    protected $casts = ['config' => 'object','files'=>'object'];
+    protected $casts = ['config' => 'object','files'=>'array'];
   
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

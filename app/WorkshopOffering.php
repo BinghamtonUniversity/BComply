@@ -27,4 +27,7 @@ class WorkshopOffering extends Model
    public function workshop(){
        return $this->belongsTo(Workshop::class,'workshop_id');
    }
+   public function instructor(){
+    return $this->belongsTo(User::class,'instructor_id');
+}
 }

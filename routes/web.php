@@ -23,6 +23,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         // Workshop start
         Route::get('/workshops', ['uses'=>'AdminController@workshops']);
         Route::get('/workshops/{workshop}/offerings', ['uses'=>'AdminController@workshop_offerings']);
+        Route::get('/workshops/{workshop}/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
         // Workshop end
         Route::get('/modules', ['uses'=>'AdminController@modules']);
         Route::get('/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
@@ -62,14 +63,22 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::post('/users/{user}/assignments/{module}','UserController@set_assignment')->middleware('can:assign_module,App\User,module');
         Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:delete_assignment,App\User,module_assignment');
         Route::post('/login/{user}','UserController@login_user')->middleware('can:impersonate_users,App\User');
+        
         /* Workshop Methods */
         Route::get('/workshops','WorkshopController@get_all_workshops');//->middleware('can:view_in_admin,App\Workshops');
         Route::post('/workshops','WorkshopController@add_workshop')->middleware('can:create_modules,App\Module');
         Route::put('/workshops/{workshop}','WorkshopController@update_workshop');
         Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop');
+
         /* Workshop Offerings Methods */
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings');
         Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering');
+        //TODO update workshop offerings  
+        // Todo uncomment -> Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering');
+        Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering');
+
+        /* Workshop Attendance Methods */
+        Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances');
 
         /* DEV end */
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');

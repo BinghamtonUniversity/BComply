@@ -9,30 +9,6 @@ ajax.get('/api/workshops',function(data) {
         {type:"textarea", name:"description", label:"Description Name"},
         {type:"user", name:"owner_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}", "required":true},
         {type:"textarea", name:"congif",label:"Config"},
-//         {
-//             "name": "templates",
-//             "type": "fieldset",
-//             "editable":true,
-//             "label": "Email Templates",
-//             "fields": [
-            
-//                 {
-//                     "type":"textarea",
-//                     "name":"assignment",
-//                     "id":"assignment",
-//                     "label":"Assignment Notification Template",
-//                     "template": "{{attributes.templates.assignment}}",
-//                     "value":
-// `{{user.first_name}} {{user.last_name}}<br>
-// <br>
-// This email serves as notification that you have been assigned the "{{module.name}}" training module, 
-// which is required to be completed by {{module.due_date}}.<br>
-// <br>
-// To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
-//                 },
-               
-//             ]
-//         },
       
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',

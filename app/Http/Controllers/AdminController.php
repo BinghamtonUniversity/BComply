@@ -146,16 +146,37 @@ class AdminController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function workshop_offerings(Request $request,Workshop $workshop) {
-        return view('default.admin',['page'=>'workshop_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings','help'=>
+        return view('default.admin',['page'=>'workshop_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings',          
+        'actions' => [
+            ["name"=>"create","label"=>"Create New Workshop Offering"],           
+            ["name"=>"edit","label"=>"Update Existing Workshop Offering"],
+            ["name"=>"delete","label"=>"Delete Workshop Offering"],
+            ["name"=>"manage_attendance","label"=>"Manage Workshop Offerings Attendance","min"=>1,"max"=>1,"type"=>"default"]
+        ],'help'=>
             'Use this page to manage training workshop offerings.  You may add new
             users, view a status report for currently assigned users, and remove assigned users.'
         ]);
     }
 
-    // public function workshops_attendance(Request $request) {
-  
-    // }
-
+         /**
+     * Handle the user "created" event.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering) {
+        //TODO
+        return view('default.admin',['page'=>'workshop_attendances','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings',          
+        'actions' => [
+            ["name"=>"create","label"=>"Create New Workshop Offering"],           
+            ["name"=>"edit","label"=>"Update Existing Workshop Offering"],
+            ["name"=>"delete","label"=>"Delete Workshop Offering"],
+            ["name"=>"manage_attendance","label"=>"Manage Workshop Offerings Attendance","min"=>1,"max"=>1,"type"=>"default"]
+        ],'help'=>
+            'Use this page to manage training workshop offerings.  You may add new
+            users, view a status report for currently assigned users, and remove assigned users.'
+        ]);
+    }
     /**
      * @param Request $request
      * @param Module $module
