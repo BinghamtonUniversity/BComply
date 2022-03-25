@@ -39,6 +39,14 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             grid_event.model.undo();
            
         });
+    }).on("model:edited",function(grid_event) {
+        ajax.put('/api/workshops/'+id+'/offerings/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
+            grid_event.model.update(data)
+            // grid_event.model.update(data);
+            // grid_event.model.draw();
+        },function(data) {
+            grid_event.model.undo();
+        });
     }).on("model:created",function(grid_event) {
         ajax.post('/api/workshops/'+id+'/offerings',grid_event.model.attributes,function(data) {
            // debugger;
@@ -48,11 +56,12 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         },function(data) {
             grid_event.model.undo();
         });
-    }).on("model:manage_attendance",function(grid_event) {
-        window.location = '/admin/offerings/'+grid_event.model.attributes.id+"/attendances";
-    });
-    //TODO might be replaced with above
+    })
     // .on("model:manage_attendance",function(grid_event) {
-    //     window.location = '/admin/workshops/'+id+'/offerings/'+grid_event.model.attributes.id+"/attendances";
+    //     window.location = '/admin/offerings/'+grid_event.model.attributes.id+"/attendances";
     // });
+    //TODO might be replaced with above
+    .on("model:manage_attendance",function(grid_event) {
+        window.location = '/admin/workshops/'+id+'/offerings/'+grid_event.model.attributes.id+"/attendances";
+    });
 });

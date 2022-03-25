@@ -7,6 +7,8 @@ use App\User;
 use App\Group;
 use App\Module;
 use App\Workshop;
+use App\WorkshopOffering;
+use App\WorkshopAttendance;
 use App\ModuleVersion;
 use App\Report;
 use Illuminate\Support\Facades\Auth;
@@ -147,7 +149,7 @@ class AdminController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function workshop_offerings(Request $request,Workshop $workshop) {
-        return view('default.admin',['page'=>'workshop_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings',          
+        return view('default.admin',['page'=>'workshops_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings',          
         'actions' => [
             ["name"=>"create","label"=>"Create New Workshop Offering"],           
             ["name"=>"edit","label"=>"Update Existing Workshop Offering"],
@@ -167,19 +169,35 @@ class AdminController extends Controller
      * @param WorkshopOffering $offering
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering) {
+    public function workshop_attendances(Request $request,WorkshopOffering $offering) {
         //TODO
-        return view('default.admin',['page'=>'workshop_attendances','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings',          
+        return view('default.admin',['page'=>'workshops_offerings_attendances','ids'=>[$offering->id],'title'=>$offering->name.' Offerings',          
         'actions' => [
-            ["name"=>"create","label"=>"Create New Workshop Offering"],           
-            ["name"=>"edit","label"=>"Update Existing Workshop Offering"],
-            ["name"=>"delete","label"=>"Delete Workshop Offering"],
-            ["name"=>"manage_attendance","label"=>"Manage Workshop Offerings Attendance","min"=>1,"max"=>1,"type"=>"default"]
+            ["name"=>"create","label"=>"Create New Workshop Attendance"],           
+            ["name"=>"edit","label"=>"Update Existing Workshop Attendance"],
+            ["name"=>"delete","label"=>"Delete Workshop Attendance"],
         ],'help'=>
-            'Use this page to manage training workshop offerings.  You may add new
-            users, view a status report for currently assigned users, and remove assigned users.'
+            'Use this page to manage training workshop attendances.'
         ]);
     }
+             /**
+     * Handle the user "created" event.
+    * @param Request $request
+    * @param Workshop $workshop
+    * @param WorkshopOffering $offering
+    * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+    */
+   public function workshop_offering_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering) {
+       //TODO
+       return view('default.admin',['page'=>'workshops_offerings_attendances','ids'=>[$workshop->id,$offering->id],'title'=>$workshop->name.' Attendances',          
+       'actions' => [
+           ["name"=>"create","label"=>"Create New Workshop Attendance"],           
+           ["name"=>"edit","label"=>"Update Existing Workshop Attendance"],
+           ["name"=>"delete","label"=>"Delete Workshop Attendance"],
+       ],'help'=>
+           'Use this page to manage training workshop attendances.'
+       ]);
+   }
     /**
      * @param Request $request
      * @param Module $module

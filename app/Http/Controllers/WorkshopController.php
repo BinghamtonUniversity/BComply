@@ -65,6 +65,12 @@ class WorkshopController extends Controller
 
         return $workshop_offering->where('id',$workshop_offering->id)->with('instructor')->first();
     }
+    public function update_workshop_offering(Request $request,Workshop $workshop,WorkshopOffering $offering){
+        $offering->update($request->all());
+        $offering->save();
+
+        return $offering->where('id',$offering->id)->with('instructor')->first();
+    }
     public function delete_workshop_offering(Request $request,Workshop $workshop,WorkshopOffering $offering){
       
        
@@ -73,10 +79,27 @@ class WorkshopController extends Controller
         return $offering->id;
     }
     public function get_workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering){
-        return WorkshopOffering::where('workshop_id',$workshop->id)->where('workshop_offering_id',$offering->id)
+        return WorkshopAttendance::where('workshop_id',$workshop->id)->where('workshop_offering_id',$offering->id)
             ->select('id','workshop_id','workshop_offering_id','user_id','status')
             ->with(['attendee'=>function($query){
                 $query->select('id','first_name','last_name');
             }])->get();
     }
+    public function add_workshop_attendances(Request $request){
+        $attendance = new WorkshopAttendance($request->all());
+        $attendance->save();
+
+        return $attendance->where('id',$attendance->id)->with('attendee')->first();
+    }
+    public function update_workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering,WorkshopAttendance $attendance){
+        $attendance->update($request->all());
+        $attendance->save();
+
+        return $attendance->where('id',$attendance->id)->with('attendee')->first();
+    }
+    public function delete_workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering,WorkshopAttendance $attendance){
+      
+       $attendance->delete();
+       return $attendance->id;
+   }
 }

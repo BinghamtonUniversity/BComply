@@ -23,7 +23,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         // Workshop start
         Route::get('/workshops', ['uses'=>'AdminController@workshops']);
         Route::get('/workshops/{workshop}/offerings', ['uses'=>'AdminController@workshop_offerings']);
-        Route::get('/workshops/{workshop}/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
+        Route::get('/workshops/{workshop}/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_offering_attendances']);
         Route::get('/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
         // Workshop end
         Route::get('/modules', ['uses'=>'AdminController@modules']);
@@ -75,11 +75,15 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings');
         Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering');
         //TODO update workshop offerings  
-        // Todo uncomment -> Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering');
+        Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering');
         Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering');
 
         /* Workshop Attendance Methods */
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances');
+        Route::post('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@add_workshop_attendances');
+        Route::put('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@update_workshop_attendances');
+        Route::delete('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@delete_workshop_attendances');
+        //Todo delete below if above works
         Route::get('/offerings/{offering}/attendances','WorkshopOfferingController@get_workshop_attendances');
 
         /* DEV end */
