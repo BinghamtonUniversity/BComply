@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.0.2",
         "barryvdh/laravel-dompdf": "^1.0",
+        "eluceo/ical": "^2.5",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.14.1",
