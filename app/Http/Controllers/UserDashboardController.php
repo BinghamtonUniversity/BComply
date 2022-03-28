@@ -133,6 +133,7 @@ class UserDashboardController extends Controller
         $calendar = new Calendar($events);
         $componentFactory = new CalendarFactory();
         $calendarComponent = $componentFactory->createCalendar($calendar);
+        
         echo $calendarComponent;
        dd($calendarComponent);
         return view('calendar',['page'=>'calendar','events'=>$events,'user'=>Auth::user()]);
