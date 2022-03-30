@@ -43,7 +43,7 @@ class WorkshopOfferingController extends Controller
          $attendance->workshop_id =$workshop->id;
          $attendance->workshop_offering_id =$offering->id;
          $attendance->save();
-         return 'Success';
+         return redirect('/workshops/'.$workshop->id.'/offerings/'.$offering->id);
         //  return view('offering',[
         //     'user'=>Auth::user(),
         //     'offering' => $offering,

@@ -43,8 +43,48 @@
 {{--                                </div>--}}
                             </div>
                             @endforeach
+                            
+                    @elseif(count($attendances) > 0)     
+                 
+                    @foreach ($attendances as $attendance)
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                            
+                            <a class="trigger-help" href="#"
+                                data-toggle="popover" data-placement="top" title="Description" data-content="{{$attendance->workshop->description}}"
+                            style="height: 350px">
+                                <div class="panel panel-default">
+                                    <div class="panel-header">
+                                        <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($attendance->status)}}</div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="panel-body" style="padding-top:30px;text-align:center;">
+                                            <i class="fa fa-{{$attendance->workshop->icon}} fa-10x"></i>
+                                        </div>
+
+                                        <hr style="margin:0 0px;">
+
+                                        <div class="panel-body" style="height: 110px;overflow: scroll;">
+                                                <div class="module-name">{{$attendance->workshop->name}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <div class="badge">Location: {{$attendance->workshop_offering->locations}}</div>
+                                        <div class="badge">Type: {{$attendance->workshop_offering->type}}</div>
+                                        <div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div>
+                                        <div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div>
+                                        {{-- <div class="badge">Location: {{$attendance->date_completed->format('m/d/y')}}</div> --}}
+                                    {{-- <!-- @if(!is_null($assignment->score))<div class="">Score: {{$assignment->score}}</div>@endif --> --}}
+                                        {{-- @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))
+                                            <div class="" id="certificate"><a href="/assignment/{{$assignment->id}}/certificate"><i class="fa fa-download"></i> Download Certificate</a></div>
+                                        @endif --}}
+                                    </div>
+                                </div>
+                            </a>
+
+                    </div>
+                    @endforeach
                     @else
-                    /////////////////////////////
+                 
                     <div class="col-sm-12">
                         <div class="alert alert-warning" style="text-align:center;align-content:center;margin:auto">
                             <h4 style="margin-top:0px;">You do not have any assignments in your history!</h4>

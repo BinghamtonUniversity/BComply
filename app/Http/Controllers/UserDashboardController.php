@@ -43,7 +43,17 @@ class UserDashboardController extends Controller
         $workshop_attendances = WorkshopAttendance::where('user_id',Auth::user()->id)->get();
         $workshops = array();
         foreach($workshop_attendances as $index => $workshop_attendance) {
-            
+            $minutes_to_add =  $workshop_attendance->workshop->duration;
+            $s =$workshop_attendance->workshop_offering->workshop_date;
+           // $time =  getDate(strtotime($workshop_attendance->workshop_offering->workshop_date));
+           $date = strtotime($s);
+           $new_date =date('d/M/Y H:i:s', $date);
+            dd($new_date);
+            $new_date->add(new DateInterval('PT' . $minutes_to_add . 'M'));
+          
+            if((time()-(60*60*24)) < strtotime($time)){
+                dd('im little');
+            }
             $tmps = Workshop::where('id',$workshop_attendance->workshop_id)->get();
             foreach($tmps as $index => $tmp) {
                 if (is_null($tmp->icon) || $tmp->icon=='') {$tmps[$index]->icon='book-open';}
@@ -64,8 +74,9 @@ class UserDashboardController extends Controller
             ->orderBy('date_completed','desc')->get();
         foreach($assignments as $index => $assignment) {
             if (is_null($assignment->module->icon) || $assignment->module->icon=='') {$assignments[$index]->module->icon='book-open';}
-        }    
-        return view('history',['page'=>'history','assignments'=>$assignments,'user'=>Auth::user()]);
+        } 
+        $attendances = WorkshopAttendance::where('user_id',Auth::user()->id)->with('workshop')->with('workshop_offering')->get();
+        return view('history',['page'=>'history','assignments'=>$assignments,'attendances'=>$attendances,'user'=>Auth::user()]);
     }
 
     public function shop_courses(Request $request, Module $module){
