@@ -7,8 +7,12 @@ Route::get('/logout','UserDashboardController@logout');
 Route::group(['middleware'=>['custom.auth']], function () {
     /* User Pages */
     Route::get('/',['uses' => 'UserDashboardController@my_assignments']);
+
     Route::get('/workshops',['uses' => 'UserDashboardController@my_workshops']);
+    Route::get('/workshops/{workshop}/offerings/{offering}',['uses' => 'WorkshopOfferingController@run']);
+    Route::get('/workshops/{workshop}/offerings/{offering}/assign',['uses' => 'WorkshopOfferingController@assign']);
     Route::get('/calendar',['uses' => 'UserDashboardController@create_calendar']);
+
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
     Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
     Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');

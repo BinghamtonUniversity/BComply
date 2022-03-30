@@ -12,8 +12,12 @@ use App\Workshop;
 use App\WorkshopOffering;
 use App\WorkshopAttendance;
 //todo new librarys
+use DateInterval;
+use DateTimeImmutable;
 use Eluceo\iCal\Domain\Entity\Event;
 use Eluceo\iCal\Domain\ValueObject\Date;
+use Eluceo\iCal\Domain\ValueObject\DateTime;
+use Eluceo\iCal\Domain\ValueObject\TimeSpan;
 use Eluceo\iCal\Domain\ValueObject\SingleDay;
 use Eluceo\iCal\Domain\ValueObject\Organizer;
 use Eluceo\iCal\Domain\ValueObject\Uri;
@@ -105,38 +109,42 @@ class UserDashboardController extends Controller
     }
     public function create_calendar(Request $request){
         $events = array();
-        $workshop_offerings =WorkshopOffering::select('id','workshop_id','instructor_id','max_capacity','locations','workshop_date','type')
-        ->with(['instructor'=>function($query){
-            $query->select('id','first_name','last_name');
-        }])->get();
-        foreach($workshop_offerings as $index => $workshop_offering){
+        $workshops = Workshop::where('public',true)->with('owner')->get();
+        foreach($workshops as $index => $workshop){
 
 
-            $workshop = Workshop::where('id',$workshop_offering->workshop_id)->with('owner')->get();
-         
-            $organizer = new Organizer(
-                new EmailAddress('test@example.org'),
-                $workshop[0]->owner_id,
-                new Uri('ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)'),
-                new EmailAddress('sender@example.com')
-            );
-            $location = new Location($workshop_offering->locations);
-            $event = (new Event())
-            ->setSummary($workshop[0]->name)
-            ->setDescription($workshop_offering->locations)
-            ->setOrganizer($organizer)
-            ->setLocation($location)
-            ->setOccurrence(new SingleDay(new Date()));
-            
-             array_push($events,$event);
+            $workshop_offerings =WorkshopOffering::select('id','workshop_id','instructor_id','max_capacity','locations','workshop_date','type')
+            ->where('workshop_id',$workshop->id)
+                ->with('instructor')->get();
+            foreach($workshop_offerings as $index => $workshop_offering){
+                $instructor_name =$workshop_offering->instructor->first_name . ' '.  $workshop_offering->instructor->last_name;
+                $description = $workshop->description .' To Sign Up Please click following link: http://bcomplydev.local:8000/workshops/1/offerings/4';
+                $organizer = new Organizer(
+                    new EmailAddress( $workshop_offering->instructor->email),
+                    $instructor_name,
+                    new Uri('ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)'),
+                    new EmailAddress('sender@example.com')
+                );
+                $location = new Location($workshop_offering->locations);
+
+                $event = (new Event())
+                ->setSummary($workshop->name)
+                ->setDescription($description)
+                ->setOrganizer($organizer)
+                ->setLocation($location)
+                ->setOccurrence(new SingleDay( new Date(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_offering->workshop_date), true)));
+               
+                 array_push($events,$event);
+            } 
         }
         $calendar = new Calendar($events);
         $componentFactory = new CalendarFactory();
         $calendarComponent = $componentFactory->createCalendar($calendar);
-        
-        echo $calendarComponent;
-       dd($calendarComponent);
-        return view('calendar',['page'=>'calendar','events'=>$events,'user'=>Auth::user()]);
+    //    dd($calendar);
+       return response($calendarComponent)
+            ->header('Content-Type', 'text/calendar; charset=utf-8')
+            ->header('Content-Disposition', 'attachment; filename="cal.ics"');
+        // return view('calendar',['page'=>'calendar','events'=>$events,'user'=>Auth::user()]);
     }
     
 }

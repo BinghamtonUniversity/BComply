@@ -17,6 +17,7 @@
   <link href="/assets/css/BComply.css" rel="stylesheet">
   <link href="/assets/css/toastr.min.css" rel="stylesheet">
   <link href="/assets/css/font-awesome.min.css" rel="stylesheet">
+  <link href="/assets/css/workshop.css" rel="stylesheet">
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
   <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
   <!--<script src="../../assets/js/ie-emulation-modes-warning.js"></script>-->
