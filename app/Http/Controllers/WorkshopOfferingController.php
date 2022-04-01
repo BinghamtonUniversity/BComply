@@ -27,18 +27,28 @@ class WorkshopOfferingController extends Controller
          ->where('user_id',Auth::user()->id)
          ->where('workshop_offering_id',$offering_id)
           ->first();  
+        $seats_remaining = $workshop_offering->max_capacity  -$workshop_offering->workshop_attendance->count();
+        $is_past = false;
+      // dd('Time:   '.time().'   ----Workshop date : '.strtotime($workshop_offering->workshop_date));
+        if(time() >= strtotime($workshop_offering->workshop_date)){
+        
+                $is_past= true;
+        }   
+            
         return view('offering',[
             'user'=>Auth::user(),
             'offering' => $workshop_offering,
             'workshop'=>$workshop,
             'attendance' =>$workshop_attendance,
+            'seats_remaining'=>$seats_remaining,
+            'is_past'=>$is_past,
             'page'=>"offering"
         ]);
     }
     public function assign(Request $request,Workshop $workshop,WorkshopOffering $offering){
        
          $attendance = new WorkshopAttendance();
-         $attendance->status = 'pending';
+         $attendance->attendance = 'registered';
          $attendance->user_id = Auth::user()->id;
          $attendance->workshop_id =$workshop->id;
          $attendance->workshop_offering_id =$offering->id;
@@ -52,7 +62,24 @@ class WorkshopOfferingController extends Controller
         //     'page'=>"offering"
         // ]);
         
-    }  
+    }
+    public function cancelRegistration(Request $request,Workshop $workshop,WorkshopOffering $offering){
+ 
+        $attendance= WorkshopAttendance::Where('workshop_id',$workshop->id)
+        ->where('user_id',Auth::user()->id)
+        ->where('workshop_offering_id',$offering->id)
+         ->delete();  
+        
+        return redirect('/workshops/'.$workshop->id.'/offerings/'.$offering->id);
+       //  return view('offering',[
+       //     'user'=>Auth::user(),
+       //     'offering' => $offering,
+       //     'workshop'=>$workshop,
+       //     'attendance' =>$attendance,
+       //     'page'=>"offering"
+       // ]);
+       
+   }    
 
     public function get_workshop_attendances(Request $request,WorkshopOffering $offering){
        

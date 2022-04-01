@@ -48,10 +48,16 @@
                  
                     @foreach ($attendances as $attendance)
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                            
-                            <a class="trigger-help" href="#"
-                                data-toggle="popover" data-placement="top" title="Description" data-content="{{$attendance->workshop->description}}"
+                         
+                            @if($attendance->workshop->public)
+                                <a class="trigger-help" href="#"
+                                data-toggle="popover" data-placement="top" title="" data-content="Public"
                             style="height: 350px">
+                            @else
+                                <a class="trigger-help" href="#"
+                                data-toggle="popover" data-placement="top" title="" data-content="Private"
+                            style="height: 350px">
+                            @endif
                                 <div class="panel panel-default">
                                     <div class="panel-header">
                                         <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($attendance->status)}}</div>
@@ -65,13 +71,16 @@
 
                                         <div class="panel-body" style="height: 110px;overflow: scroll;">
                                                 <div class="module-name">{{$attendance->workshop->name}}</div>
+                                                <div class="workshop-description">{{$attendance->workshop->description}}</div>
                                         </div>
                                     </div>
                                     <div class="panel-footer">
-                                        <div class="badge">Location: {{$attendance->workshop_offering->locations}}</div>
-                                        <div class="badge">Type: {{$attendance->workshop_offering->type}}</div>
-                                        <div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div>
-                                        <div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div>
+                                       <ul>
+                                            <li><div class="badge">Location: {{$attendance->workshop_offering->locations}}</div></li>
+                                            <li><div class="badge">Type: {{$attendance->workshop_offering->type}}</div></li>
+                                            <li><div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div></li>
+                                            <li><div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div></li>
+                                        </ul>
                                         {{-- <div class="badge">Location: {{$attendance->date_completed->format('m/d/y')}}</div> --}}
                                     {{-- <!-- @if(!is_null($assignment->score))<div class="">Score: {{$assignment->score}}</div>@endif --> --}}
                                         {{-- @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))

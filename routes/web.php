@@ -11,6 +11,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/workshops',['uses' => 'UserDashboardController@my_workshops']);
     Route::get('/workshops/{workshop}/offerings/{offering}',['uses' => 'WorkshopOfferingController@run']);
     Route::get('/workshops/{workshop}/offerings/{offering}/assign',['uses' => 'WorkshopOfferingController@assign']);
+    Route::get('/workshops/{workshop}/offerings/{offering}/cancelRegistration',['uses' => 'WorkshopOfferingController@cancelRegistration']);
     Route::get('/calendar',['uses' => 'UserDashboardController@create_calendar']);
 
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);

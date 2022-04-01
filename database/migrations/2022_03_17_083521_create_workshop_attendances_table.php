@@ -21,7 +21,8 @@ class CreateWorkshopAttendancesTable extends Migration
             $table->foreign('workshop_offering_id')->references('id')->on('workshop_offerings');
             $table->foreign('workshop_id')->references('id')->on('workshops');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->enum('status',['pending','incomplete','passed','failed','completed'])->default('pending');
+            $table->enum('attendance',['registered','attended','unattended'])->default('registered');
+            $table->enum('status',['not applicable','uncompleted','completed'])->default(null);
             $table->timestamps();
         });
     }

@@ -3,8 +3,11 @@ ajax.get('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances',function(d
         {type:"hidden", name:"workshop_id",label:"Workshop ID",value:ids[0]},
         {type:"hidden", name:"workshop_offering_id",label:"Workshop Offering ID",value:ids[1]},
         {type:"user", name:"user_id",required:true, label:"Attendee", template:"{{attributes.attendee.first_name}} {{attributes.attendee.last_name}}"},
+        {type:"select", name:"attendance", label:"Attendance",options:[
+            'registered', 'attended', 'unattended'
+         ]},
         {type:"select", name:"status", label:"Status",options:[
-            'pending','incomplete','passed','failed'
+           'not applicable', 'uncompleted', 'completed'
         ]},
       
     ];
@@ -18,8 +21,11 @@ ajax.get('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances',function(d
          {type:"hidden", name:"workshop_id",label:"Workshop ID",value:ids[0]},
         {type:"hidden", name:"workshop_offering_id",label:"Workshop Offering ID",value:ids[1]},
         {type:"user", name:"user_id",required:true, label:"Attendee", template:"{{attributes.attendee.first_name}} {{attributes.attendee.last_name}}"},
+        {type:"select", name:"attendance", label:"Attendance",options:[
+            'registered', 'attended', 'unattended'
+         ]},
         {type:"select", name:"status", label:"Status",options:[
-            'pending','incomplete','passed','failed'
+            'not applicable', 'uncompleted', 'completed'
         ]},
 
     ], data: data

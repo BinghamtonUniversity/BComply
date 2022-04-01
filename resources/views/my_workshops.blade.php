@@ -8,10 +8,10 @@
             <li class="breadcrumb-item"><a href="/">My Current Workshops</a></li>
         </ol>
     </nav>
-    @if(count($workshops)>0)
+    @if(count($attendances)>0)
         <div class="row">
-            @foreach ($workshops as $workshop)
-                @include('workshop', ['workshop' => $workshop])
+            @foreach ($attendances as $attendance)
+                @include('workshop', ['workshop' => $attendance])
             @endforeach
         </div>
     @else

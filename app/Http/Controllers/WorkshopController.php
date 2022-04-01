@@ -80,7 +80,7 @@ class WorkshopController extends Controller
     }
     public function get_workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering){
         return WorkshopAttendance::where('workshop_id',$workshop->id)->where('workshop_offering_id',$offering->id)
-            ->select('id','workshop_id','workshop_offering_id','user_id','status')
+            ->select('id','workshop_id','workshop_offering_id','user_id','status','attendance')
             ->with(['attendee'=>function($query){
                 $query->select('id','first_name','last_name');
             }])->get();

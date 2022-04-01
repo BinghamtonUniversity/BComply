@@ -10,7 +10,7 @@ class WorkshopAttendance extends Model
     //use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['workshop_offering_id','workshop_id','user_id','status'];
+    protected $fillable = ['workshop_offering_id','workshop_id','user_id','status','attendance'];
    
 
     protected function serializeDate(\DateTimeInterface $date) {

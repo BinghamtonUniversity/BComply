@@ -41,28 +41,21 @@ class UserDashboardController extends Controller
 
     public function my_workshops(Request $request) {
         $workshop_attendances = WorkshopAttendance::where('user_id',Auth::user()->id)->get();
-        $workshops = array();
+        $attendances = array();
         foreach($workshop_attendances as $index => $workshop_attendance) {
             $minutes_to_add =  $workshop_attendance->workshop->duration;
             $s =$workshop_attendance->workshop_offering->workshop_date;
            // $time =  getDate(strtotime($workshop_attendance->workshop_offering->workshop_date));
-           $date = strtotime($s);
-           $new_date =date('d/M/Y H:i:s', $date);
-            dd($new_date);
-            $new_date->add(new DateInterval('PT' . $minutes_to_add . 'M'));
-          
-            if((time()-(60*60*24)) < strtotime($time)){
-                dd('im little');
-            }
-            $tmps = Workshop::where('id',$workshop_attendance->workshop_id)->get();
-            foreach($tmps as $index => $tmp) {
-                if (is_null($tmp->icon) || $tmp->icon=='') {$tmps[$index]->icon='book-open';}
-                array_push($workshops, $tmp);        
-            }
-              
+
+           $date = date('Y-m-d H:i:s', strtotime( $s. '+'.$minutes_to_add.' minutes'));
+            // dd(   "Old Date".$s ."New Date :".$date);         
+            if((time()) <= strtotime($date)){
+           
+                    array_push($attendances, $workshop_attendance); 
+            }              
         }
 
-        return view('my_workshops',['page'=>'my_workshops','workshops'=>$workshops,'user'=>Auth::user()]);
+        return view('my_workshops',['page'=>'my_workshops','attendances'=>$attendances,'user'=>Auth::user()]);
     }
 
     public function assignment_history(Request $request){
@@ -74,8 +67,23 @@ class UserDashboardController extends Controller
             ->orderBy('date_completed','desc')->get();
         foreach($assignments as $index => $assignment) {
             if (is_null($assignment->module->icon) || $assignment->module->icon=='') {$assignments[$index]->module->icon='book-open';}
-        } 
-        $attendances = WorkshopAttendance::where('user_id',Auth::user()->id)->with('workshop')->with('workshop_offering')->get();
+        }
+        $attendances = array(); 
+        $attendances_db = WorkshopAttendance::where('user_id',Auth::user()->id)->with('workshop')->with('workshop_offering')->get();
+        foreach($attendances_db as $index => $attendance) {
+            $minutes_to_add =  $attendance->workshop->duration;
+            $s =$attendance->workshop_offering->workshop_date;
+        
+
+           $date = date('Y-m-d H:i:s', strtotime( $s. '+'.$minutes_to_add.' minutes'));
+            //  dd( "Today:  ".time()-(60*60*24).  "---Old Date: ".$s ."----New Date :". strtotime($date)); 
+            //dd(date('Y-m-d H:i:s',time()))   ;     
+             if((time()) > strtotime($date)){
+               
+                    array_push($attendances, $attendance);        
+                
+            }    
+        }
         return view('history',['page'=>'history','assignments'=>$assignments,'attendances'=>$attendances,'user'=>Auth::user()]);
     }
 
@@ -133,17 +141,22 @@ class UserDashboardController extends Controller
                 $organizer = new Organizer(
                     new EmailAddress( $workshop_offering->instructor->email),
                     $instructor_name,
-                    new Uri('ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)'),
-                    new EmailAddress('sender@example.com')
                 );
                 $location = new Location($workshop_offering->locations);
-
+                $minutes_to_add =  $workshop_offering->workshop->duration;
+                $workshop_end_time = date('Y-m-d H:i:s', strtotime( $workshop_offering->workshop_date. '+'.$minutes_to_add.' minutes'));
                 $event = (new Event())
                 ->setSummary($workshop->name)
                 ->setDescription($description)
                 ->setOrganizer($organizer)
                 ->setLocation($location)
-                ->setOccurrence(new SingleDay( new Date(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_offering->workshop_date), true)));
+                ->setOccurrence(
+                    // new SingleDay( new Date(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_offering->workshop_date), true))
+                    new TimeSpan(
+                        new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_offering->workshop_date), true),
+                        new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_end_time), true)
+                    )
+                );
                
                  array_push($events,$event);
             } 

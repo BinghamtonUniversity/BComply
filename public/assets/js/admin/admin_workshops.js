@@ -3,7 +3,10 @@ ajax.get('/api/workshops',function(data) {
     create_fields = [
         {type:"hidden", name:"id"},
         {type:"checkbox", name:"public", label:"Public?","columns":6},
-        {type:"number", name:"duration", label:"Duration (In Minutes)","columns":6},
+        {type:"select", name:"duration", label:"Duration","columns":6,options:[
+           '0:15','0:30','0:45','1:00','1:15','1:30','1:45','2:00','2:15','2:30','2:45','3:00','3:15','3:30','3:45','4:00'
+        ]},
+        //{type:"number", name:"duration", label:"Duration (In Minutes)","columns":6},
         {type:"text", name:"name", label:"Name", columns:8, "required":true},
         {type:"text", name:"icon", label:"Icon", columns:4},
         {type:"textarea", name:"description", label:"Description Name"},
@@ -27,6 +30,9 @@ ajax.get('/api/workshops',function(data) {
             {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
         ],data: data
     }).on("model:edited",function(grid_event) {
+        const duration_formatted = grid_event.model.attributes.duration.split(':');
+        const hourToMin = parseInt(duration_formatted[0])*60 + parseInt(duration_formatted[1]);
+        grid_event.model.attributes.duration = hourToMin;
         ajax.put('/api/workshops/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
             // grid_event.model.update(data);
@@ -35,6 +41,11 @@ ajax.get('/api/workshops',function(data) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
+        
+        const duration_formatted = grid_event.model.attributes.duration.split(':');
+        const hourToMin = parseInt(duration_formatted[0])*60 + parseInt(duration_formatted[1]);
+        grid_event.model.attributes.duration = hourToMin;
+        
         ajax.post('/api/workshops',grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
             // grid_event.model.attributes = data;
