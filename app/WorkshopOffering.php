@@ -10,7 +10,7 @@ class WorkshopOffering extends Model
    // use HasFactory;
    use SoftDeletes;
 
-   protected $fillable = ['workshop_id','max_capacity','locations','instructor_id','workshop_date','type','is_multi_day'];
+   protected $fillable = ['workshop_id','max_capacity','locations','instructor_id','workshop_date','type','is_multi_day','multi_days','notification','reminders','certificate','completion'];
    protected $casts = ['multi_days' => 'object','notification' => 'object','reminders' => 'object','certificate' => 'object','completion' => 'object',];
    protected function serializeDate(\DateTimeInterface $date) {
        return $date->format('Y-m-d H:i:s');

@@ -132,33 +132,56 @@ class UserDashboardController extends Controller
         foreach($workshops as $index => $workshop){
 
 
-            $workshop_offerings =WorkshopOffering::select('id','workshop_id','instructor_id','max_capacity','locations','workshop_date','type')
-            ->where('workshop_id',$workshop->id)
-                ->with('instructor')->get();
+            $workshop_offerings =WorkshopOffering::where('workshop_id',$workshop->id)->with('instructor')->get();
             foreach($workshop_offerings as $index => $workshop_offering){
                 $instructor_name =$workshop_offering->instructor->first_name . ' '.  $workshop_offering->instructor->last_name;
-                $description = $workshop->description .' To Sign Up Please click following link: http://bcomplydev.local:8000/workshops/1/offerings/4';
+                $description = $workshop->description .' To Sign Up Please click following link: http://bcomplydev.local:8000/workshops/'. $workshop_offering->workshop->id .'/offerings/'.$workshop_offering->id;
                 $organizer = new Organizer(
                     new EmailAddress( $workshop_offering->instructor->email),
                     $instructor_name,
                 );
                 $location = new Location($workshop_offering->locations);
                 $minutes_to_add =  $workshop_offering->workshop->duration;
-                $workshop_end_time = date('Y-m-d H:i:s', strtotime( $workshop_offering->workshop_date. '+'.$minutes_to_add.' minutes'));
-                $event = (new Event())
-                ->setSummary($workshop->name)
-                ->setDescription($description)
-                ->setOrganizer($organizer)
-                ->setLocation($location)
-                ->setOccurrence(
-                    // new SingleDay( new Date(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_offering->workshop_date), true))
-                    new TimeSpan(
+                $occurence;
+           
+                if($workshop_offering->is_multi_day){
+                    $counter = 1;
+                    foreach($workshop_offering->multi_days as $day){
+                        $workshop_end_time = date('Y-m-d H:i:s', strtotime( $day. '+'.$minutes_to_add.' minutes'));
+                        $occurence =new TimeSpan(
+                            new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $day), true),
+                            new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_end_time), true)
+                        );
+                                       
+                        $event = (new Event())
+                        ->setSummary($workshop->name. ' Day '. $counter)
+                        ->setDescription($description)
+                        ->setOrganizer($organizer)
+                        ->setLocation($location)
+                        ->setOccurrence($occurence);
+                    
+                        array_push($events,$event);
+                        $counter = $counter+1;
+                    }
+                }
+                else{
+               
+                    $workshop_end_time = date('Y-m-d H:i:s', strtotime( $workshop_offering->workshop_date. '+'.$minutes_to_add.' minutes'));
+                    $occurence =new TimeSpan(
                         new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_offering->workshop_date), true),
                         new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_end_time), true)
-                    )
-                );
-               
-                 array_push($events,$event);
+                    );
+                                   
+                    $event = (new Event())
+                    ->setSummary($workshop->name)
+                    ->setDescription($description)
+                    ->setOrganizer($organizer)
+                    ->setLocation($location)
+                    ->setOccurrence($occurence);
+                
+                    array_push($events,$event);
+                }
+
             } 
         }
         $calendar = new Calendar($events);

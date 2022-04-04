@@ -5,13 +5,51 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
         {type:"number",name:"max_capacity",label:"Max Capacity"},
         {type:"text",name:"locations",label:"Locations"},
-        {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        }},
+      
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
         ]},
         {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
+        {type:"datetime",name:"workshop_date",label:"Workshop Date",required:true, format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        }, "show": [
+            {
+                "name": "is_multi_day",
+                "type": "matches",
+                "value": [
+                    false
+                ]
+            }
+        ],
+         
+    },
+       
+        {type:"datetime",name:"multi_days",label:"Workshop Dates",required:true,format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        }, "show": [
+            {
+                "name": "is_multi_day",
+                "type": "matches",
+                "value": [
+                    true
+                ]
+            }
+        ],
+        "array": 50  },
+        {
+            "type":"textarea",
+            "name":"notification",
+            "id":"notification",
+            "label":"Workshop Notification Template",
+            "template": "{{attributes.notification}}",
+            "value":
+`{{user.first_name}} {{user.last_name}}<br>
+<br>
+This email serves as notification that you have been assigned the "{{workshop.name}}" training workshop, 
+which is required to be completed by {{workshop.due_date}}.<br>
+<br>
+To complete this training, please utilize the following link: <a href="{{link}}">{{workshop.name}}</a>.`
+        },
 //         {
 //             "name": "templates",
 //             "type": "fieldset",
@@ -27,24 +65,24 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
 //                 },
 //                 {
 //                     "type":"textarea",
-//                     "name":"assignment",
-//                     "id":"assignment",
-//                     "label":"Assignment Notification Template",
-//                     "template": "{{attributes.templates.assignment}}",
+//                     "name":"notification",
+//                     "id":"notification",
+//                     "label":"Workshop Notification Template",
+//                     "template": "{{attributes.notification}}",
 //                     "value":
 // `{{user.first_name}} {{user.last_name}}<br>
 // <br>
-// This email serves as notification that you have been assigned the "{{module.name}}" training module, 
+// This email serves as notification that you have been assigned the "{{offering.workshop.name}}" training workshop, 
 // which is required to be completed by {{module.due_date}}.<br>
 // <br>
-// To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
+// To complete this training, please utilize the following link: <a href="{{link}}">{{offering.workshop.name}}</a>.`
 //                 },
 //                 {
 //                     "type":"textarea",
-//                     "name":"reminder",
-//                     "id":"reminder",
-//                     "label":"Assignment Reminder Template",
-//                     "template": "{{attributes.templates.reminder}}",
+//                     "name":"reminders",
+//                     "id":"reminders",
+//                     "label":"Workshop Offering Reminder Template",
+//                     "template": "{{attributes.reminders}}",
 //                     "value":
 // `{{user.first_name}} {{user.last_name}}<br>
 // <br>
@@ -53,35 +91,13 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
 // <br>
 // To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
 //                 },
+
 //                 {
 //                     "type":"textarea",
-//                     "name":"past_due_reminder",
-//                     "id":"past_due_reminder",
-//                     "label":"Assignment Past Due Reminder Template",
-//                     "template": "{{attributes.templates.past_due_reminder}}",
-//                     "show": [
-//                             {
-//                                 "name": "past_due",
-//                                 "type": "matches",
-//                                 "value": [
-//                                     true
-//                                 ]
-//                             }
-//                         ],
-//                     "value":
-// `{{user.first_name}} {{user.last_name}}<br>
-// <br>
-// This is a reminder that the "{{module.name}}" training module which was assigned to you
-// on {{module.assignment_date}}, is <b>past due</b> as of {{module.due_date}}.<br>
-// <br>
-// To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
-//                 },
-//                 {
-//                     "type":"textarea",
-//                     "name":"completion_notification",
-//                     "id":"completion_notification",
+//                     "name":"completion",
+//                     "id":"completion",
 //                     "label":"Assignment Complation Template",
-//                     "template": "{{attributes.templates.completion_notification}}",
+//                     "template": "{{attributes.completion}}",
 //                     "value":
 // `{{user.first_name}} {{user.last_name}}<br>
 // <br>
@@ -94,7 +110,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
 //                     "name":"certificate",
 //                     "id":"certificate",
 //                     "label":"Completion Certificate Template",
-//                     "template": "{{attributes.templates.certificate}}",
+//                     "template": "{{attributes.certificate}}",
 //                     "value":
 // `<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
 // <b>{{module.name}}</b> module <b>{{module.version_name}}</b><br>
@@ -109,7 +125,8 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
     item_template: gform.stencils['table_row'],
     search: false,columns: false,upload:false,download:false,title:'Instructors',
     entries:[],
-    actions:actions,create:{fields:create_fields},
+    actions:actions,
+    create:{fields:create_fields},
     edit:{fields:create_fields},
     count:20,
     schema:[
@@ -119,13 +136,17 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
         {type:"number",name:"max_capacity",label:"Max Capacity"},
         {type:"text",name:"locations",label:"Locations"},
-        {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        }},
+       
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
         ]},
         {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
+        {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        }},
+        {type:"datetime",name:"multi_days",label:"Workshop Dates",format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        }},
 
     ], data: data
     }).on("model:deleted",function(grid_event) {
@@ -134,6 +155,13 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
            
         });
     }).on("model:edited",function(grid_event) {
+        if(grid_event.model.attributes.is_multi_day){
+           
+            grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
+            var myJsonString =  grid_event.model.attributes.multi_days;
+            grid_event.model.attributes.multi_days =myJsonString;
+ 
+        }
         ajax.put('/api/workshops/'+id+'/offerings/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
             // grid_event.model.update(data);
@@ -142,6 +170,14 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             grid_event.model.undo();
         });
     }).on("model:created",function(grid_event) {
+        if(grid_event.model.attributes.is_multi_day){
+            // Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
+            //todo
+            grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
+            var myJsonString =  grid_event.model.attributes.multi_days;
+            grid_event.model.attributes.multi_days =myJsonString;
+        
+        }
         ajax.post('/api/workshops/'+id+'/offerings',grid_event.model.attributes,function(data) {
            // debugger;
             grid_event.model.update(data)

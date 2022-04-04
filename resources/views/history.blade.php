@@ -60,7 +60,12 @@
                             @endif
                                 <div class="panel panel-default">
                                     <div class="panel-header">
-                                        <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($attendance->status)}}</div>
+                                        <div class="pull-right bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($attendance->attendance)}}</div>
+                                        @if($attendance->status != 'not applicable')
+                                            <div class="pull-left bg-primary" style="padding: 0 5px;">{{Str::snakeToTitle($attendance->status)}}</div>
+                                     
+                                        @endif
+                                       
                                     </div>
                                     <div class="panel-body">
                                         <div class="panel-body" style="padding-top:30px;text-align:center;">
@@ -79,7 +84,14 @@
                                             <li><div class="badge">Location: {{$attendance->workshop_offering->locations}}</div></li>
                                             <li><div class="badge">Type: {{$attendance->workshop_offering->type}}</div></li>
                                             <li><div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div></li>
+                                         
+                                            @if($attendance->workshop_offering->is_multi_day)
+                                            @foreach($attendance->workshop_offering->multi_days as $day)
+                                                <li><div class="badge">Date: {{$day}}</div></li>
+                                            @endforeach  
+                                        @else
                                             <li><div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div></li>
+                                        @endif
                                         </ul>
                                         {{-- <div class="badge">Location: {{$attendance->date_completed->format('m/d/y')}}</div> --}}
                                     {{-- <!-- @if(!is_null($assignment->score))<div class="">Score: {{$assignment->score}}</div>@endif --> --}}

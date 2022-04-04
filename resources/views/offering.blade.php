@@ -105,15 +105,33 @@
                         
                             <tfoot>
                                 @if($is_past)
-                                    <tr>
-                                    <td colspan="2" class="text-danger">Date</td>
-                                    <td class="text-end text-danger">{{$offering->workshop_date}}</td>
-                                    </tr>
+                                      @if($offering->is_multi_day)
+                                        @foreach($offering->multi_days as $day)
+                                            <tr>
+                                            <td colspan="2" class="text-danger">Day {{array_search($day, $offering->multi_days ) + 1 }} Date</td>
+                                            <td class="text-end text-danger">{{$day}}</td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                        <td colspan="2" class="text-danger">Date</td>
+                                        <td class="text-end text-danger">{{$offering->workshop_date}}</td>
+                                        </tr>
+                                    @endif
                                 @else
-                                    <tr>
-                                    <td colspan="2">Date</td>
-                                    <td class="text-end">{{$offering->workshop_date}}</td>
-                                    </tr>
+                                    @if($offering->is_multi_day)
+                                        @foreach($offering->multi_days as $day)
+                                            <tr>
+                                            <td colspan="2">Day {{array_search($day, $offering->multi_days ) + 1 }} Date</td>
+                                            <td class="text-end">{{$day}}</td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                        <td colspan="2">Date</td>
+                                        <td class="text-end">{{$offering->workshop_date}}</td>
+                                        </tr>
+                                    @endif
                                 @endif
 
                             <tr>

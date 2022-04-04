@@ -5,7 +5,7 @@
 @section('content')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">My Current Assignments</a></li>
+            <li class="breadcrumb-item"><a href="/">My Current Modules</a></li>
         </ol>
     </nav>
     @if(count($assignments)>0)

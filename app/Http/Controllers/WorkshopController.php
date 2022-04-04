@@ -54,7 +54,6 @@ class WorkshopController extends Controller
 
     public function get_workshop_offerings(Request $request,Workshop $workshop){
         return WorkshopOffering::where('workshop_id',$workshop->id)
-            ->select('id','workshop_id','instructor_id','max_capacity','locations','workshop_date','type')
             ->with(['instructor'=>function($query){
                 $query->select('id','first_name','last_name');
             }])->get();
@@ -80,7 +79,6 @@ class WorkshopController extends Controller
     }
     public function get_workshop_attendances(Request $request,Workshop $workshop,WorkshopOffering $offering){
         return WorkshopAttendance::where('workshop_id',$workshop->id)->where('workshop_offering_id',$offering->id)
-            ->select('id','workshop_id','workshop_offering_id','user_id','status','attendance')
             ->with(['attendee'=>function($query){
                 $query->select('id','first_name','last_name');
             }])->get();

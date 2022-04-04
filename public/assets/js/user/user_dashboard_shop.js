@@ -4,7 +4,7 @@ ajax.get('/api/module_versions/public',function(data) {
         search: false,columns: false,upload:false,download:false,title:'Assignment',
         entries:[],
         actions:[
-            {"name":"save","label":"Add To Your Assignments"},
+            {"name":"save","label":"Add To Your Modules"},
         ],
         count:20,
         schema:[

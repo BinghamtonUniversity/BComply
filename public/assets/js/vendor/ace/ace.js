@@ -12483,7 +12483,7 @@ exports.commands = [{
     scrollIntoView: "cursor",
     multiSelectAction: "forEachLine"
 }, {
-    name: "duplicateSelection",
+    name: "Selection",
     bindKey: bindKey("Ctrl-Shift-D", "Command-Shift-D"),
     exec: function(editor) { editor.duplicateSelection(); },
     scrollIntoView: "cursor",
