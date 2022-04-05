@@ -133,8 +133,9 @@ class AdminController extends Controller
             'actions' => [
                 ["name"=>"create","label"=>"Create New Workshop"],           
                 ["name"=>"edit","label"=>"Update Existing Workshop"],
+                ["name"=>"upload_file","label"=>"Upload Files","min"=>1,"max"=>1,"type"=>"default"],
+                ["name"=>"manage_offerings","label"=>"Manage Workshop Offerings","min"=>1,"max"=>1,"type"=>"default"],
                 ["name"=>"delete","label"=>"Delete Workshop"],
-                ["name"=>"manage_offerings","label"=>"Manage Workshop Offerings","min"=>1,"max"=>1,"type"=>"default"]
             ],
             'help'=>
                 'Use this page to manage workshops within the BComply Application.  You may create new
@@ -152,9 +153,9 @@ class AdminController extends Controller
         return view('default.admin',['page'=>'workshops_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings',          
         'actions' => [
             ["name"=>"create","label"=>"Create New Workshop Offering"],           
-            ["name"=>"edit","label"=>"Update Existing Workshop Offering"],
+            ["name"=>"edit","label"=>"Update Existing Workshop Offering"], 
+            ["name"=>"manage_attendance","label"=>"Manage Workshop Offerings Attendance","min"=>1,"max"=>1,"type"=>"default"],
             ["name"=>"delete","label"=>"Delete Workshop Offering"],
-            ["name"=>"manage_attendance","label"=>"Manage Workshop Offerings Attendance","min"=>1,"max"=>1,"type"=>"default"]
         ],'help'=>
             'Use this page to manage training workshop offerings.  You may add new
             users, view a status report for currently assigned users, and remove assigned users.'

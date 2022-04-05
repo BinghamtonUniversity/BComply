@@ -36,89 +36,6 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             }
         ],
         "array": 50  },
-        {
-            "type":"textarea",
-            "name":"notification",
-            "id":"notification",
-            "label":"Workshop Notification Template",
-            "template": "{{attributes.notification}}",
-            "value":
-`{{user.first_name}} {{user.last_name}}<br>
-<br>
-This email serves as notification that you have been assigned the "{{workshop.name}}" training workshop, 
-which is required to be completed by {{workshop.due_date}}.<br>
-<br>
-To complete this training, please utilize the following link: <a href="{{link}}">{{workshop.name}}</a>.`
-        },
-//         {
-//             "name": "templates",
-//             "type": "fieldset",
-//             "editable":true,
-//             "label": "Email Templates",
-//             "fields": [
-//                 {
-//                     "type":"output",
-//                     "name":"info_text",
-//                     "label":false,
-//                     "value":"<div class='alert alert-info'>Note: You may optionally leave templates blank to prevent triggering automated emails</div>",
-//                     "parse":false,
-//                 },
-//                 {
-//                     "type":"textarea",
-//                     "name":"notification",
-//                     "id":"notification",
-//                     "label":"Workshop Notification Template",
-//                     "template": "{{attributes.notification}}",
-//                     "value":
-// `{{user.first_name}} {{user.last_name}}<br>
-// <br>
-// This email serves as notification that you have been assigned the "{{offering.workshop.name}}" training workshop, 
-// which is required to be completed by {{module.due_date}}.<br>
-// <br>
-// To complete this training, please utilize the following link: <a href="{{link}}">{{offering.workshop.name}}</a>.`
-//                 },
-//                 {
-//                     "type":"textarea",
-//                     "name":"reminders",
-//                     "id":"reminders",
-//                     "label":"Workshop Offering Reminder Template",
-//                     "template": "{{attributes.reminders}}",
-//                     "value":
-// `{{user.first_name}} {{user.last_name}}<br>
-// <br>
-// This is a reminder that the "{{module.name}}" training module which was assigned to you
-// on {{module.assignment_date}}, is due on {{module.due_date}}.<br>
-// <br>
-// To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
-//                 },
-
-//                 {
-//                     "type":"textarea",
-//                     "name":"completion",
-//                     "id":"completion",
-//                     "label":"Assignment Complation Template",
-//                     "template": "{{attributes.completion}}",
-//                     "value":
-// `{{user.first_name}} {{user.last_name}}<br>
-// <br>
-// This email serves as confirmation that you have completed the "{{module.name}}" training module.<br>
-// <br>
-// You may view the confirmation certificate here: <a href="{{link}}">Certificate</a>`
-//                 },
-//                 {
-//                     "type":"textarea",
-//                     "name":"certificate",
-//                     "id":"certificate",
-//                     "label":"Completion Certificate Template",
-//                     "template": "{{attributes.certificate}}",
-//                     "value":
-// `<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
-// <b>{{module.name}}</b> module <b>{{module.version_name}}</b><br>
-// at<br>
-// <b>{{assignment.date_completed}}</b>`
-//                 }
-//             ]
-//         },
       
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
@@ -171,8 +88,7 @@ To complete this training, please utilize the following link: <a href="{{link}}"
         });
     }).on("model:created",function(grid_event) {
         if(grid_event.model.attributes.is_multi_day){
-            // Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
-            //todo
+            
             grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
             var myJsonString =  grid_event.model.attributes.multi_days;
             grid_event.model.attributes.multi_days =myJsonString;

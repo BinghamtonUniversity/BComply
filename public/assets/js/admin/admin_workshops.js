@@ -11,7 +11,74 @@ ajax.get('/api/workshops',function(data) {
         {type:"text", name:"icon", label:"Icon", columns:4},
         {type:"textarea", name:"description", label:"Description Name"},
         {type:"user", name:"owner_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}", "required":true},
-        {type:"textarea", name:"congif",label:"Config"},
+        {
+            "name": "config",
+            "type": "fieldset",
+            "editable":true,
+            "label": "Config",
+            "fields": [
+                {
+                    "type":"output",
+                    "name":"info_text",
+                    "label":false,
+                    "value":"<div class='alert alert-info'>Note: You may optionally leave templates blank to prevent triggering automated emails</div>",
+                    "parse":false,
+                },
+                {
+                    "type":"textarea",
+                    "name":"notification",
+                    "id":"notification",
+                    "label":"Workshop Notification Template",
+                    "template": "{{attributes.config.notification}}",
+                    "value":
+                        `{{user.first_name}} {{user.last_name}}<br>
+                        <br>
+                        This email serves as notification that you have been assigned the "{{workshop.name}}" training workshop. 
+                        This workshop starts on "{{workshop.workshop_date}}"<br>
+                        <br>
+                        To complete this training, please utilize the following link: <a href="{{link}}">{{workshop.name}}</a>.`
+                },
+                {
+                    "type":"textarea",
+                    "name":"reminders",
+                    "id":"reminders",
+                    "label":"Workshop Reminder Template",
+                    "template": "{{attributes.config.reminders}}",
+                    "value":
+                        `{{user.first_name}} {{user.last_name}}<br>
+                        <br>
+                        This is a reminder that the "{{workshop.name}}" training module which was assigned to you.<br>
+                        <br>
+                        To complete this training, please utilize the following link: <a href="{{link}}">{{workshop.name}}</a>.`
+                },
+
+                {
+                    "type":"textarea",
+                    "name":"certificate",
+                    "id":"certificate",
+                    "label":"Workshop Certificate Template",
+                    "template": "{{attributes.config.completion}}",
+                    "value":
+                        `{{user.first_name}} {{user.last_name}}<br>
+                        <br>
+                        This email serves as confirmation that you have completed the "{{workshop.name}}" training workshop.<br>
+                        <br>
+                        You may view the confirmation certificate here: <a href="{{link}}">Certificate</a>`
+                },
+                {
+                    "type":"textarea",
+                    "name":"completion",
+                    "id":"completion",
+                    "label":"Workshop Completion Template",
+                    "template": "{{attributes.config.certificate}}",
+                    "value":
+                        `<h3>{{user.first_name}} {{user.last_name}}</h3> has completed<br>
+                        <b>{{workshop.name}}</b> workshop <br>
+                        at<br>
+                        `
+                }
+            ]
+        },
       
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
@@ -54,7 +121,39 @@ ajax.get('/api/workshops',function(data) {
             grid_event.model.undo();
             grid_event.model.draw();
         });
-    }).on("model:deleted",function(grid_event) {
+    })
+    .on("model:upload_file",function(grid_event) {
+        // debugger;
+        body = `
+        <form id="workshop_file_upload" method="post" enctype="multipart/form-data">
+        <p>File Name</p>
+        <input id="file_name" type="text" name="file_name" required="true">
+        </br>
+        <input type="file" name="zipfile" />
+        </br>
+        <input type="submit" class="btn btn-primary" value="Upload" name="submit" />
+        </form>
+        `;
+        $('#adminModal .modal-title').html('Workshop File Uploader')
+        $('#adminModal .modal-body').html(body);
+        $('#adminModal').modal('show')
+            const url = '/api/workshops/'+grid_event.model.attributes.id+'/'+$file_name+'/upload'
+            const form = document.querySelector('#workshop_file_upload')
+            form.addEventListener('submit', e => {
+                e.preventDefault()
+                dd('im here');
+                ajax.get('/api/workshops/'+grid_event.model.attributes.id+'/'+$file_name+'/exists',function(data) {
+                    if (data.exists === true) {
+                        if (confirm("!! WARNING !!\n\nThis file already exists.  \n\nAre you sure you want to overwrite it?  \n\n(Note: This action cannot be undone and 'in-progress' workshops will require users to start over from the beginning)")) {
+                            upload_file(url+'?overwrite=true')
+                        }
+                    } else {
+                        upload_file(url)
+                    }
+                },function(data) {});
+            })
+    })
+    .on("model:deleted",function(grid_event) {
         ajax.delete('/api/workshops/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
             grid_event.model.undo();
             grid_event.model.draw();
@@ -63,3 +162,26 @@ ajax.get('/api/workshops',function(data) {
         window.location = '/admin/workshops/'+grid_event.model.attributes.id+'/offerings/';
     });
 });
+var upload_file = function(url) {
+    toastr.info('Starting File Upload... Please Be Patient')
+    const file =document.querySelector('[name=zipfile]');
+    const files = document.querySelector('[name=zipfile]').files
+    const formData = new FormData()
+    for (let i = 0; i < files.length; i++) {
+        let file = files[i]
+        formData.append('zipfile', file)
+    }
+    fetch(url, {
+        method: 'POST',
+        body: file,
+    }).
+    then(response => {
+        if(response.status==200){
+            toastr.success("File Uploaded Successfully");
+            $('#adminModal').modal('hide')
+        }
+        else{
+            toastr.error(response.statusText)
+        }
+    })
+}

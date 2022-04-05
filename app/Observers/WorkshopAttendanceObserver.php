@@ -24,22 +24,28 @@ class WorkshopAttendanceObserver
      */
     public function created(WorkshopAttendance $attendance)
     {
-        dd('created');
+      
         $offering = WorkshopOffering::where('id',$attendance->workshop_offering_id)->first();
         $workshop = Workshop::where('id',$attendance->workshop_id)->first();
-
+      
         // Don't send email if the assignment template is blank
-        if ($offering->notification != '') {
+        if ($workshop->config != '') {
+          
             $user = User::where('id',$attendance->user_id)->first();
-            if($user->active && $user->send_email_check()){
+
+            // if($user->active && $user->send_email_check()){
+                if($user->active ){
                 $user_messages =[
-                    'workshop'=>$workshop,
-                    'offering' =>$offering
+                    'workshop_name'=>$workshop->name,
+                    'offering_date' =>$offering->workshop_date,
+                    'notification'=> $workshop->config->notification
                 ];
+               
                 try {
+                   
                     Mail::to($user)->send(new WorkshopNotification($attendance,$user,$user_messages));
                 } catch (\Exception $e) {
-                    // keep going
+                    dd($e);
                 }
             }
         }

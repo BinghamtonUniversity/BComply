@@ -5,9 +5,12 @@ namespace App\Providers;
 
 use App\GroupMembership;
 use App\ModuleAssignment;
+use App\WorkshopAttendance;
+use App\Observers\WorkshopAttendanceObserver;
 use App\Observers\GroupMembershipObserver;
 use App\Observers\ModuleAssignmentObserver;
 use App\Observers\UserObserver;
+
 use App\Observers\SimpleUserObserver;
 use App\User;
 use App\SimpleUser;
@@ -36,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         SimpleUser::observe(SimpleUserObserver::class);
         GroupMembership::observe(GroupMembershipObserver::class);
         ModuleAssignment::observe(ModuleAssignmentObserver::class);
+        WorkshopAttendance::observe(WorkshopAttendanceObserver::class);
         \Str::macro('snakeToTitle', function($value) {
             return \Str::title(str_replace('_', ' ', $value));
         });

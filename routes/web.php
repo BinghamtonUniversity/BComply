@@ -78,10 +78,13 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::put('/workshops/{workshop}','WorkshopController@update_workshop');
         Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop');
 
+        /* Workshop File Methods */
+        Route::post('/workshops/{workshop}/{file_name}/upload', 'FileUploadController@workshop_file_upload');
+        Route::get('/workshops/{workshop}/{file_name}/exists', 'FileUploadController@workshop_file_exists');
+        
         /* Workshop Offerings Methods */
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings');
         Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering');
-        //TODO update workshop offerings  
         Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering');
         Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering');
 
