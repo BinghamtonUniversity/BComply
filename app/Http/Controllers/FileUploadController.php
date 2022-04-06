@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Module;
 use App\ModuleVersion;
 use App\ModuleAssignment;
+use App\Workshop;
+use App\WorkshopAttendance;
+use App\WorkshopOffering;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
@@ -64,8 +67,12 @@ class FileUploadController extends Controller
     //Workshop Upload 
 
     private function get_absolute_workshop_path($workshop,$file_name) {
-        dd('get_absolute_workshop_path');
-        return config('filesystems.disks.local.root').'/public/workshops/'.$workshop->id.'/'.$file_name;
+   
+        return config('filesystems.disks.local.root').'/public/workshops/'.$workshop->id.'/files/'.$file_name;
+    }
+    private function get_upload_workshop_path($workshop) {
+   
+        return config('filesystems.disks.local.root').'/public/workshops/'.$workshop->id.'/files/';
     }
     public function workshop_file_exists(Workshop $workshop,String $file_name, Request $request)
     {
@@ -77,29 +84,58 @@ class FileUploadController extends Controller
     }
     public function workshop_file_upload(Workshop $workshop,String $file_name, Request $request)
     {
+        $files = array();
+        if($workshop->files){
+            foreach($workshop->files as $file){
+                array_push($files,$file);
+            }
+        }
+
         if (file_exists($this->get_absolute_workshop_path($workshop,$file_name))) {
             if ($request->has('overwrite') && $request->get('overwrite') === 'true') {
-                $this->recursive_delete($this->get_absolute_workshop_path($workshop,$file_name));
-                //ModuleAssignment::where('module_version_id','=',$moduleVersion->id)->update(['current_state' => null]);
+                unlink($this->get_absolute_workshop_path($workshop,$file_name));
             } else {
                 return response(['error'=>'File Exists'],409);
             }
-        } 
-        Storage::disk('public/workshops/'.$workshop->id.'/'.$file_name)->put($request->file('zipfile'), $file_name);
-        echo 'ok';
-        // if($request->file('zipfile')->getClientOriginalExtension()==='zip'){
-        //     $zip = new ZipArchive();
-        //     $res = $zip->open($request->file('zipfile'));
-        //     if ($res === TRUE) {
-        //         $zip->extractTo($this->get_absolute_path($module,$moduleVersion));
-        //         $zip->close();
-        //         echo 'ok';
+        }
+        else{
+            array_push($files,$file_name);
+            Workshop::where('id',$workshop->id)->update(['files'=>$files]);
+        }
+        $request->file->move($this->get_upload_workshop_path($workshop), $file_name);
+        
+
+    }
+    public function delete_workshop_file(Workshop $workshop,String $file_name, Request $request)
+    {
+        $files = array();
+        if($workshop->files){
+            foreach($workshop->files as $file){
+                if($file !=$file_name){
+                    array_push($files,$file);
+                }
+                
+            }
+        }
+        Workshop::where('id',$workshop->id)->update(['files'=>$files]);
+        unlink($this->get_absolute_workshop_path($workshop,$file_name));
+    }
+    public function update_workshop_file(Workshop $workshop, $file_name, Request $request)
+    {
+        $json =  @json_encode($file_name);
+        print "<script>console.log($json->name);</script>";
+        // $name = $file_name->name;
+        // echo $name;
+        // $files = array();
+        // if($workshop->files){
+        //     foreach($workshop->files as $file){
+        //         if($file !=$file_name){
+        //             array_push($files,$file);
+        //         }
+                
         //     }
-        // } else {
-        //     return response(['error'=>'Must Upload Zip File for TinCan Modules'],415);
         // }
-       // }
-
-
+        // Workshop::where('id',$workshop->id)->update(['files'=>$files]);
+        // unlink($this->get_absolute_workshop_path($workshop,$file_name));
     }
 }

@@ -1,5 +1,6 @@
 ajax.get('/api/workshops',function(data) {
     //debugger;
+
     create_fields = [
         {type:"hidden", name:"id"},
         {type:"checkbox", name:"public", label:"Public?","columns":6},
@@ -95,6 +96,7 @@ ajax.get('/api/workshops',function(data) {
             {type:"text", name:"name", label:"Name"},
             {type:"textarea", name:"description", label:"Description Name"},
             {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
+            {type:"text", name:"files", label:"Files"},
         ],data: data
     }).on("model:edited",function(grid_event) {
         const duration_formatted = grid_event.model.attributes.duration.split(':');
@@ -126,10 +128,9 @@ ajax.get('/api/workshops',function(data) {
         // debugger;
         body = `
         <form id="workshop_file_upload" method="post" enctype="multipart/form-data">
-        <p>File Name</p>
-        <input id="file_name" type="text" name="file_name" required="true">
+      
         </br>
-        <input type="file" name="zipfile" />
+        <input type="file" name="file" id="file"/>
         </br>
         <input type="submit" class="btn btn-primary" value="Upload" name="submit" />
         </form>
@@ -137,12 +138,15 @@ ajax.get('/api/workshops',function(data) {
         $('#adminModal .modal-title').html('Workshop File Uploader')
         $('#adminModal .modal-body').html(body);
         $('#adminModal').modal('show')
-            const url = '/api/workshops/'+grid_event.model.attributes.id+'/'+$file_name+'/upload'
+
             const form = document.querySelector('#workshop_file_upload')
+            
             form.addEventListener('submit', e => {
+                const fake_path = document.getElementById('file').value
+                const filename =fake_path.split("\\").pop();
+                const url = '/api/workshops/'+grid_event.model.attributes.id+'/files/'+filename+'/upload'
                 e.preventDefault()
-                dd('im here');
-                ajax.get('/api/workshops/'+grid_event.model.attributes.id+'/'+$file_name+'/exists',function(data) {
+                ajax.get('/api/workshops/'+grid_event.model.attributes.id+'/files/'+filename+'/exists',function(data) {
                     if (data.exists === true) {
                         if (confirm("!! WARNING !!\n\nThis file already exists.  \n\nAre you sure you want to overwrite it?  \n\n(Note: This action cannot be undone and 'in-progress' workshops will require users to start over from the beginning)")) {
                             upload_file(url+'?overwrite=true')
@@ -150,7 +154,12 @@ ajax.get('/api/workshops',function(data) {
                     } else {
                         upload_file(url)
                     }
-                },function(data) {});
+                    //todo file name doesnt appear on the screen after uploading the file.
+                    grid_event.model.update(data);
+                },function(data) {     
+                    grid_event.model.undo();
+                    grid_event.model.draw();
+                });
             })
     })
     .on("model:deleted",function(grid_event) {
@@ -160,20 +169,22 @@ ajax.get('/api/workshops',function(data) {
         });
     }).on("model:manage_offerings",function(grid_event) {
         window.location = '/admin/workshops/'+grid_event.model.attributes.id+'/offerings/';
+    }).on("model:manage_files",function(grid_event) {
+        window.location = '/admin/workshops/'+grid_event.model.attributes.id+'/files/';
     });
 });
 var upload_file = function(url) {
+    
     toastr.info('Starting File Upload... Please Be Patient')
-    const file =document.querySelector('[name=zipfile]');
-    const files = document.querySelector('[name=zipfile]').files
+    const files = document.querySelector('[name=file]').files
     const formData = new FormData()
     for (let i = 0; i < files.length; i++) {
         let file = files[i]
-        formData.append('zipfile', file)
+        formData.append('file', file)
     }
     fetch(url, {
         method: 'POST',
-        body: file,
+        body: formData,
     }).
     then(response => {
         if(response.status==200){

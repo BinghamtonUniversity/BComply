@@ -134,12 +134,35 @@ class AdminController extends Controller
                 ["name"=>"create","label"=>"Create New Workshop"],           
                 ["name"=>"edit","label"=>"Update Existing Workshop"],
                 ["name"=>"upload_file","label"=>"Upload Files","min"=>1,"max"=>1,"type"=>"default"],
+                ["name"=>"manage_files","label"=>"Manage Files","min"=>1,"max"=>1,"type"=>"default"],
                 ["name"=>"manage_offerings","label"=>"Manage Workshop Offerings","min"=>1,"max"=>1,"type"=>"default"],
                 ["name"=>"delete","label"=>"Delete Workshop"],
             ],
             'help'=>
                 'Use this page to manage workshops within the BComply Application.  You may create new
                 workshops.'
+        ]);
+    }
+     /**
+     * Handle the user "created" event.
+     *
+     * @param Request $request
+     * @param Workshop $workshop
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function workshop_files(Request $request,Workshop $workshop) {
+        $user = Auth::user();
+
+        return view('default.admin',['page'=>'workshops_files','ids'=>[$workshop->id],'title'=>'Manage Files',
+            'actions' => [
+                ["name"=>"upload_file","label"=>"Upload / Change File","type"=>"success"], 
+                ["name"=>"edit","label"=>"Change File Name"],
+                ["name"=>"delete","label"=>"Delete File"],
+         
+            ],
+            'help'=>
+                'Use this page to manage workshop files within the BComply Application.  You may upload new
+                file, change the existing file, or delete the file.'
         ]);
     }
          /**

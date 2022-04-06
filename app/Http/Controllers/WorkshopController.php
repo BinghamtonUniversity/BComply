@@ -100,4 +100,12 @@ class WorkshopController extends Controller
        $attendance->delete();
        return $attendance->id;
    }
+   public function get_workshop_files(Request $request,Workshop $workshop){
+    $files = array();
+    foreach($workshop->files as $file){
+        $obj = (object) array('name' => $file);
+        array_push($files,$obj);
+    }
+    return  $files;
+    }
 }
