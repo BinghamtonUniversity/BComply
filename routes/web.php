@@ -13,7 +13,6 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/workshops/{workshop}/offerings/{offering}/assign',['uses' => 'WorkshopOfferingController@assign'])->middleware('can:register,App\WorkshopOffering,offering');
     Route::get('/workshops/{workshop}/offerings/{offering}/cancelRegistration',['uses' => 'WorkshopOfferingController@cancelRegistration'])->middleware('can:cancel_registration,App\WorkshopOffering,offering');
     Route::get('/calendar',['uses' => 'UserDashboardController@create_calendar']);
-
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
     Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
     Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');
@@ -29,6 +28,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/groups/{group}/members', ['uses'=>'AdminController@group_members']);
         // Workshop start
         Route::get('/workshops', ['uses'=>'AdminController@workshops']);
+        Route::get('/workshops/{workshop}/files', ['uses'=>'AdminController@workshop_files']);
         Route::get('/workshops/{workshop}/offerings', ['uses'=>'AdminController@workshop_offerings']);
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_offering_attendances']);
         Route::get('/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
@@ -79,9 +79,11 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop');
 
         /* Workshop File Methods */
-        Route::post('/workshops/{workshop}/{file_name}/upload', 'FileUploadController@workshop_file_upload');
-        Route::get('/workshops/{workshop}/{file_name}/exists', 'FileUploadController@workshop_file_exists');
-        
+        Route::get('/workshops/{workshop}/files', 'WorkshopController@get_workshop_files');
+        Route::delete('/workshops/{workshop}/files/{file_name}', 'FileUploadController@delete_workshop_file');
+        Route::put('/workshops/{workshop}/files/{file_name}', 'FileUploadController@update_workshop_file');
+        Route::post('/workshops/{workshop}/files/{file_name}/upload', 'FileUploadController@workshop_file_upload');
+        Route::get('/workshops/{workshop}/files/{file_name}/exists', 'FileUploadController@workshop_file_exists');
         /* Workshop Offerings Methods */
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings');
         Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering');
