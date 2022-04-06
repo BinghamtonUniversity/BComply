@@ -120,22 +120,25 @@ class FileUploadController extends Controller
         Workshop::where('id',$workshop->id)->update(['files'=>$files]);
         unlink($this->get_absolute_workshop_path($workshop,$file_name));
     }
-    public function update_workshop_file(Workshop $workshop, $file_name, Request $request)
+    public function update_workshop_file(Workshop $workshop, String $file_id,String $new_file_name, Request $request)
     {
-        $json =  @json_encode($file_name);
-        print "<script>console.log($json->name);</script>";
-        // $name = $file_name->name;
-        // echo $name;
-        // $files = array();
-        // if($workshop->files){
-        //     foreach($workshop->files as $file){
-        //         if($file !=$file_name){
-        //             array_push($files,$file);
-        //         }
-                
-        //     }
-        // }
-        // Workshop::where('id',$workshop->id)->update(['files'=>$files]);
-        // unlink($this->get_absolute_workshop_path($workshop,$file_name));
+        $files = array();
+        $counter = 0;
+        $old_file_name;
+        if($workshop->files){
+            foreach($workshop->files as $file){
+                    if($counter == $file_id){
+                        $old_file_name = $file;
+                        array_push($files,$new_file_name); 
+                    }
+                    else{
+                        array_push($files,$file); 
+                    }
+                    
+                    $counter ++;          
+            }
+        }
+        Workshop::where('id',$workshop->id)->update(['files'=>$files]);
+        rename($this->get_absolute_workshop_path($workshop,$old_file_name), $this->get_absolute_workshop_path($workshop,$new_file_name));
     }
 }

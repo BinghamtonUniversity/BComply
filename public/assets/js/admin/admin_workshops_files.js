@@ -23,7 +23,7 @@ ajax.get('/api/workshops/'+id+'/files',function(data) {
            
         });
     }).on("model:edited",function(grid_event) {
-        ajax.put('/api/workshops/'+id+'/files/'+grid_event.model.attributes,grid_event.model.attributes,function(data) {
+        ajax.put('/api/workshops/'+id+'/files/'+grid_event.model.attributes.id+'/'+grid_event.model.attributes.name,grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
 
         },function(data) {

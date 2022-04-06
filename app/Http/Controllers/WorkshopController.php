@@ -102,8 +102,10 @@ class WorkshopController extends Controller
    }
    public function get_workshop_files(Request $request,Workshop $workshop){
     $files = array();
+    $counter = 0;
     foreach($workshop->files as $file){
-        $obj = (object) array('name' => $file);
+        $obj = (object) array('id'=>$counter,'name' => $file);
+        $counter ++;
         array_push($files,$obj);
     }
     return  $files;
