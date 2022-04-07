@@ -155,7 +155,7 @@ class AdminController extends Controller
 
         return view('default.admin',['page'=>'workshops_files','ids'=>[$workshop->id],'title'=>'Manage Files',
             'actions' => [
-                ["name"=>"upload_file","label"=>"Upload / Change File","type"=>"success"], 
+                ["name"=>"upload_file","label"=>"Upload / Change File","type"=>"success","min"=>0], 
                 ["name"=>"edit","label"=>"Change File Name"],
                 ["name"=>"delete","label"=>"Delete File"],
          

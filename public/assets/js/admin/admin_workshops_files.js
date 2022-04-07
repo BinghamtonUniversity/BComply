@@ -30,7 +30,7 @@ ajax.get('/api/workshops/'+id+'/files',function(data) {
             grid_event.model.undo();
         });
     })
-    .on("model:upload_file",function(grid_event) {
+    .on("upload_file",function(grid_event) {
         console.log("upload_file");
         body = `
         <form id="workshop_file_upload" method="post" enctype="multipart/form-data">

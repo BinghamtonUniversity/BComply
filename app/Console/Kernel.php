@@ -34,6 +34,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
+        //Workshop Reminder Scheduler
+
+
+
         // Assignment Reminder Scheduler
         $schedule->call(function(){
             $modules = Module::all();
