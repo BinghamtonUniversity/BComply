@@ -23,6 +23,7 @@ class CreateWorkshopAttendancesTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->enum('attendance',['registered','attended','unattended'])->default('registered');
             $table->enum('status',['not applicable','uncompleted','completed'])->default(null);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
