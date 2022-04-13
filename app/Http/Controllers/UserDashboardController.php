@@ -45,13 +45,10 @@ class UserDashboardController extends Controller
         foreach($workshop_attendances as $index => $workshop_attendance) {
             $minutes_to_add =  $workshop_attendance->workshop->duration;
             $s =$workshop_attendance->workshop_offering->workshop_date;
-           // $time =  getDate(strtotime($workshop_attendance->workshop_offering->workshop_date));
-
-           $date = date('Y-m-d H:i:s', strtotime( $s. '+'.$minutes_to_add.' minutes'));
-            // dd(   "Old Date".$s ."New Date :".$date);         
-            if((time()) <= strtotime($date)){
            
-                    array_push($attendances, $workshop_attendance); 
+           $date = date('Y-m-d H:i:s', strtotime( $s. '+'.$minutes_to_add.' minutes'));       
+            if((time()) <= strtotime($date)){
+                array_push($attendances, $workshop_attendance); 
             }              
         }
 
@@ -126,6 +123,7 @@ class UserDashboardController extends Controller
             return redirect('/assignment/'.$assignment->id);
         }
     }
+    //todo will be moved to admin site
     public function create_calendar(Request $request){
         $events = array();
         $workshops = Workshop::where('public',true)->with('owner')->get();

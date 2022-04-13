@@ -23,7 +23,8 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         ],
          
     },
-       
+
+        //Todo this area leads an length error???
         {type:"datetime",name:"multi_days",label:"Workshop Dates",required:true,format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }, "show": [

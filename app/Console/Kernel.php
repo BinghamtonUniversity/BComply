@@ -8,6 +8,9 @@ use App\Mail\AssignmentReminder;
 use App\Module;
 use App\ModuleAssignment;
 use App\User;
+use App\Workshop;
+use App\WorkshopOffering;
+use App\WorkshopAttendance;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -25,7 +28,11 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
     ];
-
+    //Todo List
+    // Email notifications for when a user has registered up for a workshop "DONE"
+    // Email notifications for when a user has un-registered for a workshop 
+    // Email notifications prior to the start of the workshop (the workshop is tomorrow!) "DONE" ?
+    // Email notifications when the person has completed the worksop
     /**
      * Define the application's command schedule.
      *
@@ -36,6 +43,29 @@ class Kernel extends ConsoleKernel
     {
 
         //Workshop Reminder Scheduler
+        $schedule->call(function(){
+            $workshopAttendances = WorkshopAttendance::where('attendance','registered')->with('attendee')->with('workshop_offering')->with('workshop')->get();   
+            foreach($workshopAttendances as $attendance){
+                try{
+                    $differenceInDays = $attendance->workshop_offering->workshop_date->diffInDays(Carbon::now());
+                    if($differenceInDays == 1){
+                        $user = $attendance->attendee;
+                        if ($user->active && $user->send_email_check()) {
+                            $user_message = [
+                                'workshop_name'=>$attendance->workshop->name,
+                                'offering_date' =>$attendance->workshop_offering->workshop_date,
+                                'reminder'=> $attendance->workshop->config->reminder
+                            ];
+                            Mail::to($user)->send(new WorkshopReminder($assignment, $user, $user_message));
+                        }
+                    }
+                }
+                catch(\Exception $exception){
+                    //Keep going
+                }
+            }
+
+        })->name('workshop_reminder_task')->dailyAt(config('app.workshop_reminder_task'))->timezone('America/New_York')->onOneServer();
 
 
 

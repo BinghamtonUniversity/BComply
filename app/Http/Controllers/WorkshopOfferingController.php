@@ -67,8 +67,10 @@ class WorkshopOfferingController extends Controller
  
         $attendance= WorkshopAttendance::Where('workshop_id',$workshop->id)
         ->where('user_id',Auth::user()->id)
-        ->where('workshop_offering_id',$offering->id)
-         ->delete();  
+        ->where('workshop_offering_id',$offering->id)->delete();
+
+
+          
         
         return redirect('/workshops/'.$workshop->id.'/offerings/'.$offering->id);
        //  return view('offering',[

@@ -41,10 +41,10 @@ ajax.get('/api/workshops',function(data) {
                 },
                 {
                     "type":"textarea",
-                    "name":"reminders",
-                    "id":"reminders",
+                    "name":"reminder",
+                    "id":"reminder",
                     "label":"Workshop Reminder Template",
-                    "template": "{{attributes.config.reminders}}",
+                    "template": "{{attributes.config.reminder}}",
                     "value":
                         `{{user.first_name}} {{user.last_name}}<br>
                         <br>
