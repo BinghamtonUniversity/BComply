@@ -56,7 +56,7 @@ class Kernel extends ConsoleKernel
                                 'offering_date' =>$attendance->workshop_offering->workshop_date,
                                 'reminder'=> $attendance->workshop->config->reminder
                             ];
-                            Mail::to($user)->send(new WorkshopReminder($assignment, $user, $user_message));
+                            Mail::to($user)->send(new WorkshopReminder($attendance, $user, $user_message));
                         }
                     }
                 }
