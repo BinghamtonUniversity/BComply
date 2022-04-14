@@ -56,10 +56,10 @@ class WorkshopAttendanceObserver
      * @param WorkshopAttendance $attendance
      * @return void
      */
-    public function saved(WorkshopAttendance $attendance)
+    public function deleted(WorkshopAttendance $attendance)
     {
         echo('im here');
-        if($attendance->deleted_at != NULL){
+        // if($attendance->deleted_at != NULL){
             $offering = WorkshopOffering::where('id',$attendance->workshop_offering_id)->first();
             $workshop = Workshop::where('id',$attendance->workshop_id)->first();
         
@@ -73,7 +73,7 @@ class WorkshopAttendanceObserver
                     $user_messages =[
                         'workshop_name'=>$workshop->name,
                         'offering_date' =>$offering->workshop_date,
-                        'notification'=> $workshop->config->certificate
+                        'notification'=> $workshop->config->unregister
                     ];
                 
                     try {
@@ -84,7 +84,7 @@ class WorkshopAttendanceObserver
                     }
                 }
             }
-        }
+       // }
         
     }
 

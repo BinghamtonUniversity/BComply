@@ -52,6 +52,19 @@ ajax.get('/api/workshops',function(data) {
                         <br>
                         To complete this training, please utilize the following link: <a href="{{link}}">{{workshop.name}}</a>.`
                 },
+                {
+                    "type":"textarea",
+                    "name":"unregister",
+                    "id":"unregister",
+                    "label":"Workshop Unregister Template",
+                    "template": "{{attributes.config.unregister}}",
+                    "value":
+                        `{{user.first_name}} {{user.last_name}}<br>
+                        <br>
+                        You have been unregistered / removed from "{{workshop.name}}" training workshop.<br>
+                        <br>
+                       `
+                },
 
                 {
                     "type":"textarea",
