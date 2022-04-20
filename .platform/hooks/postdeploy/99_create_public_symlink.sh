@@ -13,9 +13,9 @@ cat /dev/null > $DOTENV_FILE
 while read -rd $'' line
 do
     echo "$line" >> $DOTENV_FILE
-done < <(jq -r <<< $ENVIRONMENT_JSON \
-         'to_entries|map("\(.key)=\"\(.value)\"\u0000")[]')
+done < <(jq -r <<< $ENVIRONMENT_JSON 'to_entries|map("\(.key)=\"\(.value)\"\u0000")[]')
 
 FILE_STORAGE_PATH=$(/opt/elasticbeanstalk/bin/get-config environment | jq -r '.FILE_STORAGE_PATH')
 mkdir -p $FILE_STORAGE_PATH/public/modules
+mkdir -p $FILE_STORAGE_PATH/public/workshops
 ln -sf $FILE_STORAGE_PATH/public /var/app/current/public/storage
