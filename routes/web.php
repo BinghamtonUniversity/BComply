@@ -73,7 +73,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::post('/login/{user}','UserController@login_user')->middleware('can:impersonate_users,App\User');
         
         /* Workshop Methods */
-        Route::get('/workshops','WorkshopController@get_all_workshops')->middleware('can:manage_all_workshops,App\Workshop');
+        Route::get('/workshops','WorkshopController@get_all_workshops')->middleware('can:view_in_admin,App\Workshop');
         Route::post('/workshops','WorkshopController@add_workshop')->middleware('can:manage_all_workshops,App\Workshop');
         Route::put('/workshops/{workshop}','WorkshopController@update_workshop')->middleware('can:manage_all_workshops,App\Workshop');
         Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop')->middleware('can:manage_all_workshops,App\Workshop');
@@ -86,7 +86,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshops/{workshop}/files/{file_name}/exists', 'FileUploadController@workshop_file_exists')->middleware('can:manage_workshops,App\Workshop,workshop');
         /* Workshop Offerings Methods */
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings')->middleware('can:manage_workshops,App\Workshop,workshop');
-        Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
+        Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering')->middleware('can:create_workshop_offering,App\WorkshopOffering,workshop');
         Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
         Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
 

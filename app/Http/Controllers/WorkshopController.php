@@ -30,6 +30,7 @@ class WorkshopController extends Controller
     }
     public function add_workshop(Request $request){
         $workshop = new Workshop($request->all());
+      
         $workshop->save();
 
         return $workshop->where('id',$workshop->id)->with('owner')->first();
@@ -60,6 +61,11 @@ class WorkshopController extends Controller
     }
     public function add_workshop_offering(Request $request){
         $workshop_offering = new WorkshopOffering($request->all());
+
+        //handle null array possibility
+        if($workshop_offering->multi_days == NULL){
+            $workshop_offering->multi_days=[];
+        }
         $workshop_offering->save();
 
         return $workshop_offering->where('id',$workshop_offering->id)->with('instructor')->first();

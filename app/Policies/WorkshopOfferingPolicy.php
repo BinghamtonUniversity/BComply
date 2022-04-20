@@ -48,5 +48,11 @@ class WorkshopOfferingPolicy
             return true;
         }
     }
+    public function create_workshop_offering(User $user, String $workshop_id){
+        $workshop = Workshop::where('id',$workshop_id)->first();
+        if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
+            return true;
+        }
+    }
 
 }

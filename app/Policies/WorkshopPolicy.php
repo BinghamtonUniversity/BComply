@@ -23,7 +23,6 @@ class WorkshopPolicy
 
         if(in_array('manage_workshops',$user->user_permissions)
         || $is_module_owner
-        || !is_null($user->module_perms()->first())
          ){
             return true;
         }
@@ -42,6 +41,7 @@ class WorkshopPolicy
             return true;
         }
     }
+ 
 
     public function manage_workshops(User $user, Workshop $workshop)
     {
