@@ -54,8 +54,9 @@ class WorkshopPolicy
         //     return true;
         // }
     }
-    public function assign_workshops(User $user, Workshop $workshop)
+    public function assign_workshops(User $user, String $workshop_id)
     {
+        $workshop = Workshop::where('id',$workshop_id)->first();
         if(in_array('assign_workshops',$user->user_permissions)|| $workshop->owner_id === $user->id) {
             return true;
         }
