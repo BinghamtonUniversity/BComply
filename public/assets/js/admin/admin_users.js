@@ -302,6 +302,14 @@ new gform(
                             {
                                 "label": "Manage Bulk Assignments",
                                 "value": "manage_bulk_assignments"
+                            },
+                            {
+                                "label": "Manage Workshops",
+                                "value": "manage_workshops"
+                            },
+                            {
+                                "label": "Assign Workshops",
+                                "value": "assign_workshops"
                             }
                         ]
                     }    

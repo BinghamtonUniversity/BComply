@@ -11,7 +11,7 @@ class WorkshopOffering extends Model
    use SoftDeletes;
 
    protected $fillable = ['workshop_id','max_capacity','locations','instructor_id','workshop_date','type','is_multi_day','multi_days'];
-   protected $casts = ['multi_days' => 'object'];
+   protected $casts = ['multi_days' => 'array'];
    protected function serializeDate(\DateTimeInterface $date) {
        return $date->format('Y-m-d H:i:s');
    }

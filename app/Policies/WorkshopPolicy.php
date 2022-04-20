@@ -43,17 +43,20 @@ class WorkshopPolicy
         }
     }
 
-    //To update and assign
     public function manage_workshops(User $user, Workshop $workshop)
     {
-        if(in_array('manage_workshops',$user->user_permissions)) {
+        if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
             return true;
         }
-        if ($workshop->owner_id === $user->id) {
-            return true;
-        }
-        if (property_exists($user->workshop_permissions,$workshop->id) &&
-            in_array('manage',$user->workshop_permissions->{$workshop->id})){
+      
+        // if (property_exists($user->workshop_permissions,$workshop->id) &&
+        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
+        //     return true;
+        // }
+    }
+    public function assign_workshops(User $user, Workshop $workshop)
+    {
+        if(in_array('assign_workshops',$user->user_permissions)|| $workshop->owner_id === $user->id) {
             return true;
         }
     }
