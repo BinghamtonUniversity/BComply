@@ -24,7 +24,7 @@
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 50%; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */
@@ -173,7 +173,7 @@
                         @else
                             @if($attendance)
                             <button  type="button" id="myBtn" class="btn btn-danger">Cancel Registration</button>
-                            <div id="cancelModal" class="modal">
+                            <div id="cancelModal" class="modal ">
                                 <!-- Modal content -->
                                 <div class="modal-content">
                                     <span class="close">&times;</span>
