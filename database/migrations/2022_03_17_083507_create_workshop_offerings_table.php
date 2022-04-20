@@ -25,7 +25,7 @@ class CreateWorkshopOfferingsTable extends Migration
             $table->timestamp('workshop_date')->nullable()->default(null);
             $table->enum('type',['online','in-person'])->default('online');
             $table->boolean('is_multi_day')->nullable(false)->default(false);
-            $table->json('multi_days')->nullable(false)->default('[]');
+            $table->json('multi_days')->nullable(true)->default(null);
             $table->softDeletes();
             $table->timestamps();
         });
