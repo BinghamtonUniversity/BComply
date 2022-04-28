@@ -109,7 +109,7 @@
                                         @foreach($offering->multi_days as $day)
                                             <tr>
                                             <td colspan="2" class="text-danger">Day {{array_search($day, $offering->multi_days ) + 1 }} Date</td>
-                                            <td class="text-end text-danger">{{$day}}</td>
+                                            <td class="text-end text-danger">{{date('m/d/Y h:i A', strtotime($day))}}</td>
                                             </tr>
                                         @endforeach
                                     @else
@@ -123,7 +123,8 @@
                                         @foreach($offering->multi_days as $day)
                                             <tr>
                                             <td colspan="2">Day {{array_search($day, $offering->multi_days ) + 1 }} Date</td>
-                                            <td class="text-end">{{$day}}</td>
+                                            <td class="text-end">{{ date('m/d/Y h:i A', strtotime($day))}}</td>
+                                           
                                             </tr>
                                         @endforeach
                                     @else

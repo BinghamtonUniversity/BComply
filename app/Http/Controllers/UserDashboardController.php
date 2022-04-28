@@ -152,7 +152,7 @@ class UserDashboardController extends Controller
                         );
                                        
                         $event = (new Event())
-                        ->setSummary($workshop->name. ' Day '. $counter)
+                        ->setSummary($workshop->name. ' Day '. $counter . ' ('. $workshop_offering->type. ')')
                         ->setDescription($description)
                         ->setOrganizer($organizer)
                         ->setLocation($location)
@@ -171,7 +171,7 @@ class UserDashboardController extends Controller
                     );
                                    
                     $event = (new Event())
-                    ->setSummary($workshop->name)
+                    ->setSummary($workshop->name . ' ('. $workshop_offering->type. ')')
                     ->setDescription($description)
                     ->setOrganizer($organizer)
                     ->setLocation($location)
