@@ -9,12 +9,34 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
         ]},
-        {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
+        {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6,"show":[
+            {
+                "name": "is_recurring",
+                "type": "matches",
+                "value": [
+                    false
+                ]
+            }
+        ]},
+        {type:"checkbox", name:"is_recurring", label:"Recurring","columns":6,"show":[ {
+            "name": "is_multi_day",
+            "type": "matches",
+            "value": [
+                false
+            ]
+        }]},
         {type:"datetime",name:"workshop_date",label:"Workshop Date",required:true, format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }, "show": [
             {
                 "name": "is_multi_day",
+                "type": "matches",
+                "value": [
+                    false
+                ]
+            },
+            {
+                "name": "is_recurring",
                 "type": "matches",
                 "value": [
                     false
@@ -36,6 +58,81 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             }
         ],
         "array": 50  },
+        {type:"select",name:"recurrence",label:"Reccurence",options:[
+            'Daily','Weekly','Monthly','Yearly'
+        ] ,required:true, "show": [
+            {
+                "name": "is_recurring",
+                "type": "matches",
+                "value": [
+                    true
+                ]
+            }
+        ],
+        },
+        //todo duplicate for week month year
+        {type:"select",name:"repeat",label:"Repeat every",options:[
+            '1','2','3','4'
+        ] ,required:true, "show": [
+            {
+                "name": "recurrence",
+                "type": "matches",
+                "value": [
+                    "Daily"
+                ]
+            },
+            {
+                "name": "is_recurring",
+                "type": "matches",
+                "value": [
+                    true
+                ]
+            }
+        ],
+        },
+        {type:"select",name:"repeat",label:"Repeat every",options:[
+            'Monday','Thuesday','Wednesday','Thursday','Friday','Saturday','Sunday'
+        ] ,required:true, "show": [
+            {
+                "name": "recurrence",
+                "type": "matches",
+                "value": [
+                    "Weekly"
+                ]
+            },
+            {
+                "name": "is_recurring",
+                "type": "matches",
+                "value": [
+                    true
+                ]
+            }
+        ],
+        },
+        {type:"datetime",name:"start_date",label:"Start Date",required:true, format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        },"show": [
+            {
+                "name": "is_recurring",
+                "type": "matches",
+                "value": [
+                    true
+                ]
+            }
+        ],
+        },
+        {type:"datetime",name:"end_date",label:"End Date",required:true, format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        },"show": [
+            {
+                "name": "is_recurring",
+                "type": "matches",
+                "value": [
+                    true
+                ]
+            }
+        ],
+        },
       
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
