@@ -39,8 +39,20 @@
                         @else
                             <li><div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div></li>
                         @endif
+                      
+                        
+                    </ul>
+                    @if(count($attendance->workshop->files)!=0)
+                    <p>Files</p>
+                    <ul>
+                        <!-- todo create download link --> 
+                        @foreach($attendance->workshop->files as $file)
+                        <li><a href=""> {{$file}}</div></li>
+                            @endforeach  
                     </ul>
                 
+                    @endif
+                  
                 </div>
             </div>
         </a>
