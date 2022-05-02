@@ -46,10 +46,6 @@ class WorkshopController extends Controller
         WorkshopOffering::where('workshop_id',$workshop->id)->delete();
         WorkshopAttendance::where('workshop_id',$workshop->id)->delete();
         $workshop->delete();
-        //Delete bulk assignment
-        //Delete module assingments
-        //Module version
-        //Set current version to null -> We are already deleting the module with all of its versions, why assigning the current version to null?
         return 'Success';
     }
 
@@ -60,12 +56,96 @@ class WorkshopController extends Controller
             }])->get();
     }
     public function add_workshop_offering(Request $request){
+     
         $workshop_offering = new WorkshopOffering($request->all());
 
-        //handle null array possibility
+        //handle null array
         if($workshop_offering->multi_days == NULL){
             $workshop_offering->multi_days=[];
         }
+           // handle if offering is recurring
+        if($request->is_recurring == true){
+            $days = array();
+            $daysOfMonth =array();
+            $flag = 0;
+            $first_week = [1,2,3,4,5,6,7];
+            $second_week = [8,9,10,11,12,13,14];
+            $third_week = [15,16,17,18,19,20,21];
+            $fourth_week = [22,23,24,25,26,27,28];
+            $fifth_week = [29,30,31];
+            $start_date =  date('Y-m-d H:i:s', strtotime($request->recurring_start_date ));
+            $end_date =  date('Y-m-d H:i:s', strtotime($request->recurring_end_date ));
+            if(in_array(0,$request->repeat_every_placement)){
+                array_push( $daysOfMonth,...$first_week);
+            }
+            if(in_array(1,$request->repeat_every_placement)){
+                array_push( $daysOfMonth,...$second_week);
+            }
+            if(in_array(2,$request->repeat_every_placement)){
+                array_push( $daysOfMonth,...$third_week);
+            }
+            if(in_array(3,$request->repeat_every_placement)){
+                array_push( $daysOfMonth,...$fourth_week);
+            }
+            if(in_array(4,$request->repeat_every_placement)){
+                array_push( $daysOfMonth,...$fifth_week);
+            }
+           
+            while($start_date <= $end_date){
+                
+                $dayofmonth = date('d', strtotime($start_date));
+                $dayofweek = date('w', strtotime($start_date));
+                if(in_array($dayofmonth ,$daysOfMonth) && in_array($dayofweek,$request->repeat_every_on)){
+                        if($flag ==0){
+                            $workshop_offering->workshop_date =$start_date;
+                            $flag=1;
+                        }
+                        array_push(  $days,$start_date);
+                    
+                }
+               
+                $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
+            }
+            
+
+            // if($request->recurrence=='Daily'){
+            //     while($start_date <= $end_date){
+            //         //todo implement the logic after discussion
+            //         // $dayofweek = date('w', strtotime($start_date));
+            //         // if(in_array($dayofweek,$request->repeat_every_weekly)){
+            //         //     array_push(  $days,$start_date);
+            //         // }
+            //         // $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
+            //     }
+
+            //     dd( $days);
+            // }
+            // if($request->recurrence=='Weekly'){
+            //     while($start_date <= $end_date){
+            //         $dayofweek = date('w', strtotime($start_date));
+            //         if(in_array($dayofweek,$request->repeat_every_weekly)){
+            //             array_push(  $days,$start_date);
+            //         }
+            //         $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
+            //     }
+
+            //     dd( $days);
+            // }
+            // if($request->recurrence=='Monthly'){
+            //     while($start_date <= $end_date){
+            //         $dayofmonth = date('d', strtotime($start_date));
+            //         if(in_array($dayofmonth,$request->repeat_every_monthly)){
+            //             array_push( $days,$start_date);
+            //         }
+            //         $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
+            //     }
+
+            //     dd( $days);
+            // }
+         $workshop_offering->multi_days = $days;
+        }
+        
+        
         $workshop_offering->save();
 
         return $workshop_offering->where('id',$workshop_offering->id)->with('instructor')->first();
@@ -77,9 +157,7 @@ class WorkshopController extends Controller
         return $offering->where('id',$offering->id)->with('instructor')->first();
     }
     public function delete_workshop_offering(Request $request,Workshop $workshop,WorkshopOffering $offering){
-      
-       
-         //WorkshopOffering::where('workshop_offering_id',$workshop_offering->id)->delete();
+
         $offering->delete();
         return $offering->id;
     }
