@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 
 class WorkshopReportController extends Controller
 {
-    private $tables = ['users','modules','module_versions','module_assignments','groups'];
+    private $tables = ['users','workshops','groups'];
     public function __construct() {}
 
     public function get_all_reports(Request $request) {
@@ -66,6 +66,7 @@ class WorkshopReportController extends Controller
                 if (!in_array($column,['id','created_at','updated_at'])) {
                     $columns[] = $table.'.'.$column;
                 }
+                
             }
         }
         return $columns;

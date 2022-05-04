@@ -134,7 +134,7 @@ ajax.get('/api/workshop_reports',function(data) {
                                 "label": "Column",
                                 "name": "column",
                                 "columns": "4",
-                                "options":"/api/reports/tables/columns",
+                                "options":"/api/workshop_reports/tables/columns",
                                 "required":"show"
                             },
                             {
@@ -175,7 +175,7 @@ ajax.get('/api/workshop_reports',function(data) {
             }
         ).modal().on('save',function(form_event) {
             if(form_event.form.validate()){
-                ajax.put('/api/reports/' + report_id, {'report': form_event.form.get()}, function (data) {
+                ajax.put('/api/workshop_reports/' + report_id, {'report': form_event.form.get()}, function (data) {
                     // grid_event.model.attributes.report = data
                     grid_event.model.update(data);
                     form_event.form.trigger('close');

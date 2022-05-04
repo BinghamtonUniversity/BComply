@@ -104,10 +104,11 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshop_reports/{workshop_report}','WorkshopReportController@get_report');
         Route::put('/workshop_reports/{workshop_report}','WorkshopReportController@update_report');
         Route::delete('/workshop_reports/{workshop_report}','WorkshopReportController@delete_report');
-
+        Route::get('/workshop_reports/tables/columns', 'WorkshopReportController@get_columns');
+        Route::get('/workshop_reports/tables', 'WorkshopReportController@get_tables');
         //todo methods are below will be added
-        // Route::get('/reports/tables', 'ReportController@get_tables')->middleware('can:view_reports, App\Report');
-        // Route::get('/reports/tables/columns', 'ReportController@get_columns')->middleware('can:view_reports, App\Report');
+        
+        
         // Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:execute_report,report');
 
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');
