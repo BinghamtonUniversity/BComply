@@ -26,13 +26,14 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/users/{user}/assignments', ['uses'=>'AdminController@user_assignments']);
         Route::get('/groups', ['uses'=>'AdminController@groups']);
         Route::get('/groups/{group}/members', ['uses'=>'AdminController@group_members']);
-        // Workshop start
+        // Workshop Admin Methods --- START
         Route::get('/workshops', ['uses'=>'AdminController@workshops']);
         Route::get('/workshops/{workshop}/files', ['uses'=>'AdminController@workshop_files']);
         Route::get('/workshops/{workshop}/offerings', ['uses'=>'AdminController@workshop_offerings']);
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_offering_attendances']);
         Route::get('/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
-        // Workshop end
+        Route::get('/workshop_reports', ['uses'=>'AdminController@workshop_reports']);
+        // Workshop  Admin Methods --- END
         Route::get('/modules', ['uses'=>'AdminController@modules']);
         Route::get('/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
         Route::get('/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);
@@ -95,10 +96,20 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::post('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@add_workshop_attendances')->middleware('can:assign_workshops,App\Workshop,workshop');
         Route::put('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@update_workshop_attendances')->middleware('can:assign_workshops,App\Workshop,workshop');
         Route::delete('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@delete_workshop_attendances')->middleware('can:delete_workshop,App\Workshop');
+    
+        /* Workshop Report Methods */
+        //todo middleware (policies) will be added
+        Route::get('/workshop_reports','WorkshopReportController@get_all_reports');
+        Route::post('/workshop_reports','WorkshopReportController@add_report');
+        Route::get('/workshop_reports/{workshop_report}','WorkshopReportController@get_report');
+        Route::put('/workshop_reports/{workshop_report}','WorkshopReportController@update_report');
+        Route::delete('/workshop_reports/{workshop_report}','WorkshopReportController@delete_report');
 
+        //todo methods are below will be added
+        // Route::get('/reports/tables', 'ReportController@get_tables')->middleware('can:view_reports, App\Report');
+        // Route::get('/reports/tables/columns', 'ReportController@get_columns')->middleware('can:view_reports, App\Report');
+        // Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:execute_report,report');
 
-        /* DEV end */
-        
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');
         Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:view_module,module');
         Route::post('/modules','ModuleController@add_module')->middleware('can:create_modules,App\Module');
@@ -142,6 +153,8 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/reports/tables', 'ReportController@get_tables')->middleware('can:view_reports, App\Report');
         Route::get('/reports/tables/columns', 'ReportController@get_columns')->middleware('can:view_reports, App\Report');
         Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:execute_report,report');
+
+
 
         /*Bulk Assignments Methods*/
         Route::get('/bulk_assignments', 'BulkAssignmentController@get_all_bulk_assignments')->middleware('can:manage_bulk_assignments, App\BulkAssignment');

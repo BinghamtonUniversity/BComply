@@ -11,6 +11,7 @@ use App\WorkshopOffering;
 use App\WorkshopAttendance;
 use App\ModuleVersion;
 use App\Report;
+use App\WorkshopReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
@@ -280,6 +281,7 @@ class AdminController extends Controller
     }
 
     /**
+    
      * @param Request $request
      * @param Report $report
      * @param Module $module
@@ -287,6 +289,46 @@ class AdminController extends Controller
      */
     public function run_report(Request $request, Report $report, Module $module) {
         return view('default.admin',['page'=>'reports_execute','ids'=>[$report->id],'title'=>$report->name,'help'=>$report->description
+        ]);
+    }
+
+        /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function workshop_reports(Request $request) {
+        $user = Auth::user();
+        return view('default.admin',['page'=>'workshop_reports','ids'=>[],'title'=>'Workshop Reports',
+        'actions' => [
+            ["name"=>"create","label"=>"Create New Workshop Report"],           
+            ["name"=>"edit","label"=>"Update Existing Workshop Report"],
+            ["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"],
+            ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
+            '',
+            ["name"=>"delete","label"=>"Delete Workshop Report"],
+        ],
+            'help'=>
+                'Build and Manage Workshop Reports'
+        ]);
+          // 'actions' => [
+            //     $user->can('manage_reports','App\Report')?["name"=>"create","label"=>"Create New Report"]:'',
+            //     '',
+            //     $user->can('see_update_buttons','App\Report')?["name"=>"edit","label"=>"Edit Description"]:'',
+            //     $user->can('see_update_buttons','App\Report')?["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"]:'',
+            //     ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
+            //     '',
+            //     $user->can('see_update_buttons','App\Report')?["name"=>"delete","label"=>"Delete Report"]:""
+            // ],
+    }
+
+       /**
+     * @param Request $request
+     * @param WorkshopReport $workshop_report
+     * @param Workshop $workshop
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function run_workshop_report(Request $request, WorkshopReport $workshop_report, Workshop $workshop) {
+        return view('default.admin',['page'=>'workshop_reports_execute','ids'=>[$report->id],'title'=>$report->name,'help'=>$report->description
         ]);
     }
 
