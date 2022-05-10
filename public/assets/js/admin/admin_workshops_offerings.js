@@ -3,8 +3,8 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"hidden", name:"workshop_id",label:"Workshop ID",value:id},
         
         {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
-        {type:"number",name:"max_capacity",label:"Max Capacity"},
-        {type:"text",name:"locations",label:"Locations"},
+        {type:"number",name:"max_capacity",required:true,label:"Max Capacity"},
+        {type:"text",name:"locations",required:true,label:"Locations"},
       
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
@@ -64,8 +64,8 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"hidden", name:"workshop_id",label:"Workshop ID",value:id},
         
         {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
-        {type:"number",name:"max_capacity",label:"Max Capacity"},
-        {type:"text",name:"locations",label:"Locations"},
+        {type:"number",name:"max_capacity",required:true,label:"Max Capacity"},
+        {type:"text",name:"locations",required:true,label:"Locations"},
        
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
@@ -131,8 +131,8 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                     {type:"hidden", name:"workshop_id",label:"Workshop ID",value:id},
         
                     {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
-                    {type:"number",name:"max_capacity",label:"Max Capacity"},
-                    {type:"text",name:"locations",label:"Locations"},
+                    {type:"number",name:"max_capacity",required:true,label:"Max Capacity"},
+                    {type:"text",name:"locations",required:true,label:"Locations"},
                   
                     {type:"select", name:"type", label:"Workshop Type",options:[
                         'online','in-person'
@@ -143,6 +143,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                         "type":"radio",
                         "name":"repeat_every_placement",
                         "label":"Repeat every",
+                        "required":true,
                         "multiple":true,
                         "columns":3,
                         "options":[
@@ -174,6 +175,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                         "name":"repeat_every_on",
                         "label":"On",
                         "multiple":true,
+                        "required":true,
                         "columns":3,
                         "options":[
                             {
@@ -202,7 +204,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                     //todo
                     {type:"datetime",name:"recurring_start_date",label:"Start Date",required:true, format: {
                         input: "YYYY-MM-DD HH:mm:ss"
-                    },"show": [
+                    },"required":true,"show": [
                         {
                             "name": "is_recurring",
                             "type": "matches",
@@ -214,7 +216,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                     },
                     {type:"datetime",name:"recurring_end_date",label:"End Date",required:true, format: {
                         input: "YYYY-MM-DD HH:mm:ss"
-                    },"show": [
+                    },"required":true,"show": [
                         {
                             "name": "is_recurring",
                             "type": "matches",
