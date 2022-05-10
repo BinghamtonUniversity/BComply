@@ -232,14 +232,13 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             }
         ).modal().on('save',function(form_event) {
             if(form_event.form.validate()){
-                // 'report': form_event.form.get()
-                //  '/api/workshops/'+id+'/offerings',grid_event.model.attributes
+              
                 
                 ajax.post('/api/workshops/'+id+'/recurring_offerings', form_event.form, function (data) {
-                    // grid_event.model.attributes.report = data
+              
                     console.log(data);
                     data.forEach(element => {
-                        //todo
+                        //todo Ask Tim about updating Grid with multiple records
                        // grid_event.model.attributes = element;
                         //grid_event.model.update(element);
                       

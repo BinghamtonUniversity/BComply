@@ -112,7 +112,7 @@ class WorkshopController extends Controller
             
            
         return WorkshopOffering::where('id','>=',$first_id )->with('instructor')->get();
-        //return redirect('/workshops/'.$workshop.'/offerings/');
+        
         
     }
 
