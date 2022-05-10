@@ -180,6 +180,8 @@ class AdminController extends Controller
             ["name"=>"edit","label"=>"Update Existing Workshop Offering"], 
             ["name"=>"manage_attendance","label"=>"Manage Workshop Offerings Attendance","min"=>1,"max"=>1,"type"=>"default"],
             ["name"=>"delete","label"=>"Delete Workshop Offering"],
+            '',
+            ["name"=>"create_recurring","label"=>"Create Recurring Workshop Offering","type"=>"warning"],
         ],'help'=>
             'Use this page to manage training workshop offerings.  You may add new
             users, view a status report for currently assigned users, and remove assigned users.'
@@ -306,6 +308,7 @@ class AdminController extends Controller
             ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
             '',
             ["name"=>"delete","label"=>"Delete Workshop Report"],
+      
         ],
             'help'=>
                 'Build and Manage Workshop Reports'

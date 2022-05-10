@@ -90,7 +90,8 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering')->middleware('can:create_workshop_offering,App\WorkshopOffering,workshop');
         Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
         Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
-
+        //todo
+        Route::post('/workshops/{workshop}/recurring_offerings','WorkshopController@add_recurring_workshop_offering')->middleware('can:create_workshop_offering,App\WorkshopOffering,workshop');
         /* Workshop Attendance Methods */
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances')->middleware('can:manage_workshops,App\Workshop,workshop');
         Route::post('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@add_workshop_attendances')->middleware('can:assign_workshops,App\Workshop,workshop');

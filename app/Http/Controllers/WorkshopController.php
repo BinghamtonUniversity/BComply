@@ -55,19 +55,9 @@ class WorkshopController extends Controller
                 $query->select('id','first_name','last_name');
             }])->get();
     }
-    public function add_workshop_offering(Request $request){
-     
-        $workshop_offering = new WorkshopOffering($request->all());
-
-        //handle null array
-        if($workshop_offering->multi_days == NULL){
-            $workshop_offering->multi_days=[];
-        }
-           // handle if offering is recurring
-        if($request->is_recurring == true){
-            $days = array();
+    public function add_recurring_workshop_offering(Request $request, Workshop $workshop){
+            $workshop_offering = new WorkshopOffering($request->all());
             $daysOfMonth =array();
-            $flag = 0;
             $first_week = [1,2,3,4,5,6,7];
             $second_week = [8,9,10,11,12,13,14];
             $third_week = [15,16,17,18,19,20,21];
@@ -90,17 +80,30 @@ class WorkshopController extends Controller
             if(in_array(4,$request->repeat_every_placement)){
                 array_push( $daysOfMonth,...$fifth_week);
             }
-           
+            $flag = 0;
+            $first_id;
             while($start_date <= $end_date){
                 
                 $dayofmonth = date('d', strtotime($start_date));
                 $dayofweek = date('w', strtotime($start_date));
                 if(in_array($dayofmonth ,$daysOfMonth) && in_array($dayofweek,$request->repeat_every_on)){
-                        if($flag ==0){
-                            $workshop_offering->workshop_date =$start_date;
-                            $flag=1;
+                        
+                       
+                         $new_offering =   WorkshopOffering::create( [
+                                'workshop_id' => $workshop_offering->workshop_id,
+                                'instructor_id' => $workshop_offering->instructor_id,
+                                'max_capacity' => $workshop_offering->max_capacity,
+                                'locations' => $workshop_offering->locations,
+                                'workshop_date' => $start_date,
+                                'type' => $workshop_offering->type,
+                                'is_multi_day' =>false,
+                                'multi_days' => [],
+                            ]);
+                        if ($flag ==0){
+                            $first_id = $new_offering->id;
                         }
-                        array_push(  $days,$start_date);
+                        $flag = 1;
+
                     
                 }
                
@@ -108,44 +111,20 @@ class WorkshopController extends Controller
             }
             
 
-            // if($request->recurrence=='Daily'){
-            //     while($start_date <= $end_date){
-            //         //todo implement the logic after discussion
-            //         // $dayofweek = date('w', strtotime($start_date));
-            //         // if(in_array($dayofweek,$request->repeat_every_weekly)){
-            //         //     array_push(  $days,$start_date);
-            //         // }
-            //         // $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
-            //     }
+        return WorkshopOffering::where('id','>=',$first_id )->with('instructor')->first();
+        //return redirect('/workshops/'.$workshop.'/offerings/');
+        
+    }
 
-            //     dd( $days);
-            // }
-            // if($request->recurrence=='Weekly'){
-            //     while($start_date <= $end_date){
-            //         $dayofweek = date('w', strtotime($start_date));
-            //         if(in_array($dayofweek,$request->repeat_every_weekly)){
-            //             array_push(  $days,$start_date);
-            //         }
-            //         $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
-            //     }
+    public function add_workshop_offering(Request $request){
+     
+        $workshop_offering = new WorkshopOffering($request->all());
 
-            //     dd( $days);
-            // }
-            // if($request->recurrence=='Monthly'){
-            //     while($start_date <= $end_date){
-            //         $dayofmonth = date('d', strtotime($start_date));
-            //         if(in_array($dayofmonth,$request->repeat_every_monthly)){
-            //             array_push( $days,$start_date);
-            //         }
-            //         $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
-            //     }
-
-            //     dd( $days);
-            // }
-         $workshop_offering->multi_days = $days;
+        //handle null array
+        if($workshop_offering->multi_days == NULL){
+            $workshop_offering->multi_days=[];
         }
-        
-        
+      
         $workshop_offering->save();
 
         return $workshop_offering->where('id',$workshop_offering->id)->with('instructor')->first();

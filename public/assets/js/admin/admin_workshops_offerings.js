@@ -18,13 +18,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                 ]
             }
         ]},
-        {type:"checkbox", name:"is_recurring", label:"Recurring","columns":12,"show":[ {
-            "name": "is_multi_day",
-            "type": "matches",
-            "value": [
-                false
-            ]
-        }]},
+
         {type:"datetime",name:"workshop_date",label:"Workshop Date",required:true, format: {
             input: "YYYY-MM-DD HH:mm:ss"
         }, "show": [
@@ -35,13 +29,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                     false
                 ]
             },
-            {
-                "name": "is_recurring",
-                "type": "matches",
-                "value": [
-                    false
-                ]
-            }
+           
         ],
          
     },
@@ -58,259 +46,9 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             }
         ],
         "array": 50  },
-        // {type:"select",name:"recurrence",label:"Reccurence",options:[
-        //     'Daily','Weekly','Monthly'
-        // ] ,required:true, "show": [
-        //     {
-        //         "name": "is_recurring",
-        //         "type": "matches",
-        //         "value": [
-        //             true
-        //         ]
-        //     }
-        // ],
-        // },
-        //todo duplicate for week month year
-        // {type:"select",name:"repeat",label:"Repeat every",options:[
-        //     '1','2','3','4','5','6','7'
-        // ] ,required:true, "show": [
-        //     {
-        //         "name": "recurrence",
-        //         "type": "matches",
-        //         "value": [
-        //             "Daily"
-        //         ]
-        //     },
-        //     {
-        //         "name": "is_recurring",
-        //         "type": "matches",
-        //         "value": [
-        //             true
-        //         ]
-        //     }
-        // ],
-        // },
-        // {
-        //     "type":"radio",
-        //     "name":"repeat_every_weekly",
-        //     "label":"Repeat every",
-        //     "multiple":true,
-        //     "columns":6,
-        //     "options":[
-        //         {
-        //             "label":"Sunday",
-        //             "value":0
-        //         },
-        //         {
-        //             "label":"Monday",
-        //             "value":1
-        //         },
-        //         {
-        //             "label":"Tuesday",
-        //             "value":2
-        //         },
-        //         {
-        //             "label":"Wednesday",
-        //             "value":3
-        //         },
-        //         {
-        //             "label":"Thursday",
-        //             "value":4
-        //         },
-        //         {
-        //             "label":"Friday",
-        //             "value":5
-        //         },
-        //         {
-        //             "label":"Saturday",
-        //             "value":6
-        //         }],
-        //     "show": [
-        //         {
-        //             "name": "recurrence",
-        //             "type": "matches",
-        //             "value": [
-        //                 "Weekly"
-        //             ]
-        //         },
-        //         {
-        //             "name": "is_recurring",
-        //             "type": "matches",
-        //             "value": [
-        //                 true
-        //             ]
-        //         }
-        //     ],
-        // },
-        // {
-        //     "type":"radio",
-        //     "name":"repeat_every_monthly",
-        //     "label":"Repeat every",
-        //     "multiple":true,
-        //     "columns":3,
-        //     "options":[
-        //         {
-        //             "label":"1st",
-        //             "value":0
-        //         },
-        //         {
-        //             "label":"2nd",
-        //             "value":1
-        //         },
-        //         {
-        //             "label":"3rd",
-        //             "value":2
-        //         },
-        //         {
-        //             "label":"4th",
-        //             "value":3
-        //         },
-        //         {
-        //             "label":"5th",
-        //             "value":4
-        //         },
-        //         {
-        //             "label":"6th",
-        //             "value":5
-        //         },
-        //         {
-        //             "label":"7th",
-        //             "value":6
-        //         },
-        //         {
-        //             "label":"8th",
-        //             "value":7
-        //         },
-        //         {
-        //             "label":"9th",
-        //             "value":8
-        //         },
-        //         {
-        //             "label":"10th",
-        //             "value":9
-        //         }],
-        //     "show": [
-        //         {
-        //             "name": "recurrence",
-        //             "type": "matches",
-        //             "value": [
-        //                 "Monthly"
-        //             ]
-        //         },
-        //         {
-        //             "name": "is_recurring",
-        //             "type": "matches",
-        //             "value": [
-        //                 true
-        //             ]
-        //         }
-        //     ],
-        // },
-
-        //todo 
-        {
-            "type":"radio",
-            "name":"repeat_every_placement",
-            "label":"Repeat every",
-            "multiple":true,
-            "columns":3,
-            "options":[
-                {
-                    "label":"1st",
-                    "value":0
-                },
-                {
-                    "label":"2nd",
-                    "value":1
-                },
-                {
-                    "label":"3rd",
-                    "value":2
-                },
-                {
-                    "label":"4th",
-                    "value":3
-                },
-                {
-                    "label":"5th",
-                    "value":4
-                }
-                ],
-            "show": [
-               
-                {
-                    "name": "is_recurring",
-                    "type": "matches",
-                    "value": [
-                        true
-                    ]
-                }
-            ],
-        },
-        {
-            "type":"radio",
-            "name":"repeat_every_on",
-            "label":"On",
-            "multiple":true,
-            "columns":3,
-            "options":[
-                {
-                    "label":"Monday",
-                    "value":1
-                },
-                {
-                    "label":"Tuesday",
-                    "value":2
-                },
-                {
-                    "label":"Wednesday",
-                    "value":3
-                },
-                {
-                    "label":"Thursday",
-                    "value":4
-                },
-                {
-                    "label":"Friday",
-                    "value":5
-                }
-                ],
-            "show": [
-               
-                {
-                    "name": "is_recurring",
-                    "type": "matches",
-                    "value": [
-                        true
-                    ]
-                }
-            ],
-        },
-        //todo
-        {type:"datetime",name:"recurring_start_date",label:"Start Date",required:true, format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        },"show": [
-            {
-                "name": "is_recurring",
-                "type": "matches",
-                "value": [
-                    true
-                ]
-            }
-        ],
-        },
-        {type:"datetime",name:"recurring_end_date",label:"End Date",required:true, format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        },"show": [
-            {
-                "name": "is_recurring",
-                "type": "matches",
-                "value": [
-                    true
-                ]
-            }
-        ],
-        },
+    
+     
+     
       
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
@@ -384,5 +122,125 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
     //TODO might be replaced with above
     .on("model:manage_attendance",function(grid_event) {
         window.location = '/admin/workshops/'+id+'/offerings/'+grid_event.model.attributes.id+"/attendances";
+    }).on("create_recurring",function(grid_event) {
+       
+        new gform(
+            {
+                "legend" : "Create Recurring Workshop",
+                "fields": [
+                    {type:"hidden", name:"workshop_id",label:"Workshop ID",value:id},
+        
+                    {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
+                    {type:"number",name:"max_capacity",label:"Max Capacity"},
+                    {type:"text",name:"locations",label:"Locations"},
+                  
+                    {type:"select", name:"type", label:"Workshop Type",options:[
+                        'online','in-person'
+                    ]},
+                  
+  
+                    {
+                        "type":"radio",
+                        "name":"repeat_every_placement",
+                        "label":"Repeat every",
+                        "multiple":true,
+                        "columns":3,
+                        "options":[
+                            {
+                                "label":"1st",
+                                "value":0
+                            },
+                            {
+                                "label":"2nd",
+                                "value":1
+                            },
+                            {
+                                "label":"3rd",
+                                "value":2
+                            },
+                            {
+                                "label":"4th",
+                                "value":3
+                            },
+                            {
+                                "label":"5th",
+                                "value":4
+                            }
+                            ],
+                        
+                    },
+                    {
+                        "type":"radio",
+                        "name":"repeat_every_on",
+                        "label":"On",
+                        "multiple":true,
+                        "columns":3,
+                        "options":[
+                            {
+                                "label":"Monday",
+                                "value":1
+                            },
+                            {
+                                "label":"Tuesday",
+                                "value":2
+                            },
+                            {
+                                "label":"Wednesday",
+                                "value":3
+                            },
+                            {
+                                "label":"Thursday",
+                                "value":4
+                            },
+                            {
+                                "label":"Friday",
+                                "value":5
+                            }
+                            ],
+                      
+                    },
+                    //todo
+                    {type:"datetime",name:"recurring_start_date",label:"Start Date",required:true, format: {
+                        input: "YYYY-MM-DD HH:mm:ss"
+                    },"show": [
+                        {
+                            "name": "is_recurring",
+                            "type": "matches",
+                            "value": [
+                                true
+                            ]
+                        }
+                    ],
+                    },
+                    {type:"datetime",name:"recurring_end_date",label:"End Date",required:true, format: {
+                        input: "YYYY-MM-DD HH:mm:ss"
+                    },"show": [
+                        {
+                            "name": "is_recurring",
+                            "type": "matches",
+                            "value": [
+                                true
+                            ]
+                        }
+                    ],
+                    },
+                        
+                ],
+          
+            }
+        ).modal().on('save',function(form_event) {
+            if(form_event.form.validate()){
+                // 'report': form_event.form.get()
+                //  '/api/workshops/'+id+'/offerings',grid_event.model.attributes
+                
+                ajax.post('/api/workshops/'+id+'/recurring_offerings', form_event.form, function (data) {
+                    // grid_event.model.attributes.report = data
+                    
+                    form_event.form.trigger('close');
+                });
+            }
+        }).on('cancel',function(form_event) {
+            form_event.form.trigger('close');
+        });
     });
 });
