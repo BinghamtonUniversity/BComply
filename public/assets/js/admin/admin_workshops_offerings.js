@@ -235,7 +235,13 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                 
                 ajax.post('/api/workshops/'+id+'/recurring_offerings', form_event.form, function (data) {
                     // grid_event.model.attributes.report = data
-                    
+                    console.log(data);
+                    data.forEach(element => {
+                        //todo
+                       // grid_event.model.attributes = element;
+                        //grid_event.model.update(element);
+                      
+                    });
                     form_event.form.trigger('close');
                 });
             }

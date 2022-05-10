@@ -110,8 +110,8 @@ class WorkshopController extends Controller
                 $start_date= date('Y-m-d H:i:s', strtotime($start_date . " + 1 day"));
             }
             
-
-        return WorkshopOffering::where('id','>=',$first_id )->with('instructor')->first();
+           
+        return WorkshopOffering::where('id','>=',$first_id )->with('instructor')->get();
         //return redirect('/workshops/'.$workshop.'/offerings/');
         
     }
