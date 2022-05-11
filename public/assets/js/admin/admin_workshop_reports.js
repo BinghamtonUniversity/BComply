@@ -33,7 +33,7 @@ ajax.get('/api/workshop_reports',function(data) {
             grid_event.model.undo();
         });
     }).on("model:run_report",function(grid_event) {
-        // window.location = '/admin/reports/'+grid_event.model.attributes.id+'/run';
+        window.location = '/admin/workshop_reports/'+grid_event.model.attributes.id+'/run';
     }).on("model:configure_query",function(grid_event) {
         report_id = grid_event.model.attributes.id;
         report = grid_event.model.attributes.report || {};
@@ -59,12 +59,7 @@ ajax.get('/api/workshop_reports',function(data) {
                             {"label": "role_type", "value": "role_type"},
                             {"label": "active", "value": "active"},
                             {"label": "group_memberships", "value": "user_groups.groups as group_memberships"},
-                            {"label": "date_started", "value": "date_started"},
-                            {"label": "date_due", "value": "date_due"},
-                            {"label": "date_completed", "value": "date_completed"},
-                            {"label": "status", "value": "module_assignments.status as status"},
-                            {"label": "score", "value": "score"},
-                            {"label": "duration", "value": "duration"},                
+                            {"label": "status", "value": "module_assignments.status as status"},               
                         ]
                     },
                     {

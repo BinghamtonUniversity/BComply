@@ -234,14 +234,11 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
             if(form_event.form.validate()){
               
                 
-                ajax.post('/api/workshops/'+id+'/recurring_offerings', form_event.form, function (data) {
+                ajax.post('/api/workshops/'+id+'/recurring_offerings', form_event.form, function (new_data) {
               
-                    console.log(data);
-                    data.forEach(element => {
-                        //todo Ask Tim about updating Grid with multiple records
-                       // grid_event.model.attributes = element;
-                        //grid_event.model.update(element);
-                      
+                    console.log(new_data);
+                    new_data.forEach(element => {
+                        grid_event.grid.add(element);
                     });
                     form_event.form.trigger('close');
                 });

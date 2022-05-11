@@ -331,7 +331,7 @@ class AdminController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function run_workshop_report(Request $request, WorkshopReport $workshop_report, Workshop $workshop) {
-        return view('default.admin',['page'=>'workshop_reports_execute','ids'=>[$report->id],'title'=>$report->name,'help'=>$report->description
+        return view('default.admin',['page'=>'workshop_reports_execute','ids'=>[$workshop_report->id],'title'=>$workshop_report->name,'help'=>$workshop_report->description
         ]);
     }
 

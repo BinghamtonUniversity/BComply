@@ -33,6 +33,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_offering_attendances']);
         Route::get('/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
         Route::get('/workshop_reports', ['uses'=>'AdminController@workshop_reports']);
+        Route::get('/workshop_reports/{workshop_report}/run', ['uses'=>'AdminController@run_workshop_report']);
         // Workshop  Admin Methods --- END
         Route::get('/modules', ['uses'=>'AdminController@modules']);
         Route::get('/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
@@ -107,6 +108,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::delete('/workshop_reports/{workshop_report}','WorkshopReportController@delete_report');
         Route::get('/workshop_reports/tables/columns', 'WorkshopReportController@get_columns');
         Route::get('/workshop_reports/tables', 'WorkshopReportController@get_tables');
+        Route::get('/workshop_reports/{workshop_report}/execute', 'WorkshopReportController@execute');
         //todo methods are below will be added
         
         

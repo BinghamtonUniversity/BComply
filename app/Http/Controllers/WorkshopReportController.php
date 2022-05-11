@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 
 class WorkshopReportController extends Controller
 {
-    private $tables = ['users','workshops','groups'];
+    private $tables = ['users','workshops','groups','workshop_offerings','workshop_attendances'];
     public function __construct() {}
 
     public function get_all_reports(Request $request) {
@@ -76,7 +76,7 @@ class WorkshopReportController extends Controller
         return $this->tables;
     }
     public function execute(Request $request, WorkshopReport $workshop_report) {
-        $default_columns = ['first_name','last_name','email','modules.name as module_name','module_versions.name as version_name','date_assigned'];
+        $default_columns = ['first_name','last_name','email','workshops.name as workshop_name','workshop_offerings.workshop_date as workshop_date','workshop_attendances.attendance','workshop_attendances.status'];
         $columns = array_merge($default_columns, $workshop_report->report->columns);
 
         $subq_user_groups = DB::table('group_memberships')
@@ -85,12 +85,12 @@ class WorkshopReportController extends Controller
             })->groupBy('group_memberships.user_id')
             ->select('group_memberships.user_id', DB::raw('group_concat(`groups`.`name`) as `groups`'));
         $q = DB::table('users')
-            ->leftJoin('module_assignments', function ($join) {
-                $join->on('users.id', '=', 'module_assignments.user_id');
-            })->leftJoin('module_versions', function ($join) {
-                $join->on('module_assignments.module_version_id', '=', 'module_versions.id');
-            })->leftJoin('modules', function ($join) {
-                $join->on('module_versions.module_id', '=', 'modules.id');
+            ->leftJoin('workshop_attendances', function ($join) {
+                $join->on('users.id', '=', 'workshop_attendances.user_id');
+            })->leftJoin('workshops', function ($join) {
+                $join->on('workshop_attendances.workshop_id', '=', 'workshops.id');
+            })->leftJoin('workshop_offerings', function ($join) {
+                $join->on('workshop_attendances.workshop_offering_id', '=', 'workshop_offerings.id');
             })->leftJoin('group_memberships', function ($join) {
                 $join->on('users.id', '=', 'group_memberships.user_id');
             })->leftJoin('groups', function ($join) {
@@ -101,7 +101,7 @@ class WorkshopReportController extends Controller
                 $join->on('users.id', '=', 'user_groups.user_id');
             })
             ->distinct();
-        QueryBuilder::build_where($q, $report->report);
+        QueryBuilder::build_where($q, $workshop_report->report);
 
         $results = $q->select($columns)->get();
         return $results;
