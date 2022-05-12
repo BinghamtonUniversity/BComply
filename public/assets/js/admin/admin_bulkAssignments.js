@@ -98,7 +98,7 @@ ajax.get('/api/bulk_assignments',function(data) {
                 "legend" : "Query Builder",
                 "fields": [
                     {
-                        "type":"smallcombo",
+                        "type":"combobox",
                         "options":"/api/modules",
                         "name":"module_id",
                         "label":"Module To Assign",
@@ -189,7 +189,7 @@ ajax.get('/api/bulk_assignments',function(data) {
                                 },
                                 "fields": [
                                     {
-                                        "type": "smallcombo",
+                                        "type": "combobox",
                                         "label": "Column",
                                         "name": "column",
                                         "columns": "4",

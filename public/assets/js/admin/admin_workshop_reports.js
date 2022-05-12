@@ -125,7 +125,7 @@ ajax.get('/api/workshop_reports',function(data) {
                         },
                         "fields": [
                             {
-                                "type": "smallcombo",
+                                "type": "select",
                                 "label": "Column",
                                 "name": "column",
                                 "columns": "4",

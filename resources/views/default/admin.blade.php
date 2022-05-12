@@ -72,13 +72,13 @@
               @endcan
                <!--added workshop-->
               
-              <li class="visible-xs-block @if($page=="workshops") active @endif"><a href="/admin/workshops"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Workshops</a></li>
+              <li class="visible-xs-block @if($page=="workshops") active @endif"><a href="/admin/workshops"><i class="fa fa-bug fa-fw"></i>&nbsp; Workshops</a></li>
               
               @can('view_reports','App\Report')
-                  <li class="visible-xs-block @if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
+                  <li class="visible-xs-block @if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-file fa-fw"></i>&nbsp;Module Reports</a></li>
               @endcan
 
-              <li class="visible-xs-block @if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp;Workshop Reports</a></li>
+              <li class="visible-xs-block @if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-file fa-fw"></i>&nbsp;Workshop Reports</a></li>
 
               @can('manage_bulk_assignments','App\BulkAssignment')
                   <li class="visible-xs-block @if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-fw fa-notes-medical"></i>&nbsp; Bulk Assignments</a></li>
@@ -109,9 +109,9 @@
             <li class="@if($page=="workshops") active @endif"><a href="/admin/workshops"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Workshops</a></li>
         
             @can('view_reports','App\Report')
-                <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Reports</a></li>
+                <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-file fa-fw"></i>&nbsp;Module Reports</a></li>
             @endcan
-                <li class="@if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-notes-medical fa-fw"></i>&nbsp;Workshop Reports</a></li>
+                <li class="@if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-file fa-fw"></i>&nbsp;Workshop Reports</a></li>
 
             @can('manage_bulk_assignments','App\BulkAssignment')
                 <li class="@if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Bulk Assignments</a></li>
