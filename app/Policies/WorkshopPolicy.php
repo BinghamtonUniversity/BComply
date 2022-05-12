@@ -20,10 +20,9 @@ class WorkshopPolicy
      */
     public function view_in_admin(User $user){
         $is_workshop_owner = is_null(Workshop::where('owner_id',$user->id)->select('id')->first())?false:true;
-
         if(in_array('manage_workshops',$user->user_permissions)
         || in_array('assign_workshops',$user->user_permissions)
-        || $is_workshop_owner
+        || $is_workshop_owner || $is_instructor
          ){
             return true;
         }
@@ -52,8 +51,8 @@ class WorkshopPolicy
         if ($workshop->owner_user_id === $user->id) {
             return true;
         }
-        if (property_exists($user->worshop_permissions,$worshop->id) &&
-            in_array('manage',$user->worshop_permissions->{$worshop->id})){
+        if (property_exists($user->workshop_permissions,$workshop->id) &&
+            in_array('manage',$user->workshop_permissions->{$workshop->id})){
             return true;
         }
     }
@@ -83,20 +82,68 @@ class WorkshopPolicy
             return true;
         }
     }
-    public function manage_workshop_offerings(User $user, WorkshopOffering $workshop_offering)
+    public function view_workshop_offerings(User $user){
+        $is_workshop_owner = is_null(Workshop::where('owner_id',$user->id)->select('id')->first())?false:true;
+        $is_instructor = is_null(WorkshopOffering::where('instructor_id',$user->id)->select('id')->first())?false:true;
+        if(in_array('manage_workshops',$user->user_permissions)
+        || in_array('assign_workshops',$user->user_permissions)
+        || $is_workshop_owner || $is_instructor
+         ){
+            return true;
+        }
+    }
+    public function manage_workshop_offerings(User $user,Workshop $workshop, WorkshopOffering $offering)
     {
         if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
             return true;
         }
-        if ($workshop_offering->instructor_id === $user->id) {
+        if ($offering->instructor->id === $user->id) {
             return true;
         }
-        if ($workshop_offering->workshop->owner_id === $user->id) {
+        if ($offering->workshop->owner_id === $user->id) {
             return true;
         }
-        if (property_exists($user->worshop_permissions,$worshop->id) &&
-            in_array('manage',$user->worshop_permissions->{$worshop->id})){
+        // if (property_exists($user->workshop_permissions,$workshop->id) &&
+        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
+        //     return true;
+        // }
+    }
+    public function view_workshop_attendances(User $user,Workshop $workshop, WorkshopOffering $offering)
+    {
+        
+    // $workshop = Workshop::where('id',$workshop_id)->with('owner')->first();
+    // $offering = WorkshopOffering::where('id',$offering_id)->with('instructor')->first();
+        if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
             return true;
         }
+        if ($offering->instructor->id === $user->id) {
+            return true;
+        }
+        if ($offering->workshop->owner_id === $user->id) {
+            return true;
+        }
+        // if (property_exists($user->workshop_permissions,$workshop->id) &&
+        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
+        //     return true;
+        // }
+    }
+    public function manage_workshop_attendances(User $user,Workshop $workshop, WorkshopOffering $offering,WorkshopAttendance $attendance)
+    {
+        
+    // $workshop = Workshop::where('id',$workshop_id)->with('owner')->first();
+    // $offering = WorkshopOffering::where('id',$offering_id)->with('instructor')->first();
+        if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
+            return true;
+        }
+        if ($offering->instructor->id === $user->id) {
+            return true;
+        }
+        if ($offering->workshop->owner_id === $user->id) {
+            return true;
+        }
+        // if (property_exists($user->workshop_permissions,$workshop->id) &&
+        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
+        //     return true;
+        // }
     }
 }

@@ -24,7 +24,9 @@ class AddNewEnumToUserPermissionsTable extends Migration
         'run_reports',
         'manage_bulk_assignments',
         'manage_workshops',
-        'assign_workshops'
+        'assign_workshops',
+        'manage_workshop_reports,
+        'run_workshop_reports'
         ) ");
     }
 
@@ -44,6 +46,10 @@ class AddNewEnumToUserPermissionsTable extends Migration
         'assign_modules',
         'manage_reports',
         'run_reports',
-        'manage_bulk_assignments')");
+        'manage_bulk_assignments',
+        'manage_workshops',
+        'assign_workshops',
+        'manage_workshop_reports,
+        'run_workshop_reports')");
     }
 }

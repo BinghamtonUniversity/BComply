@@ -50,10 +50,23 @@ class WorkshopController extends Controller
     }
 
     public function get_workshop_offerings(Request $request,Workshop $workshop){
-        return WorkshopOffering::where('workshop_id',$workshop->id)
+        $is_instructor = is_null(WorkshopOffering::where('workshop_id',$workshop->id)->where('instructor_id',Auth::user()->id)->select('id')->first())?false:true;
+        
+        if($is_instructor){
+            return WorkshopOffering::where('workshop_id',$workshop->id)
+            ->where('instructor_id',Auth::user()->id)
             ->with(['instructor'=>function($query){
                 $query->select('id','first_name','last_name');
             }])->get();
+        }
+        else{
+            return WorkshopOffering::where('workshop_id',$workshop->id)
+            ->with(['instructor'=>function($query){
+                $query->select('id','first_name','last_name');
+            }])->get();
+        }
+
+        
     }
     public function add_recurring_workshop_offering(Request $request, Workshop $workshop){
             $workshop_offering = new WorkshopOffering($request->all());
