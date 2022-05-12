@@ -302,26 +302,18 @@ class AdminController extends Controller
         $user = Auth::user();
         return view('default.admin',['page'=>'workshop_reports','ids'=>[],'title'=>'Workshop Reports',
         'actions' => [
-            ["name"=>"create","label"=>"Create New Workshop Report"],           
-            ["name"=>"edit","label"=>"Update Existing Workshop Report"],
-            ["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"],
+            $user->can('manage_reports','App\WorkshopReport')?["name"=>"create","label"=>"Create New Workshop Report"]:'',           
+            $user->can('see_update_buttons','App\Report')?["name"=>"edit","label"=>"Update Existing Workshop Report"]:'',
+            $user->can('see_update_buttons','App\Report')?["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"]:'',
             ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
             '',
-            ["name"=>"delete","label"=>"Delete Workshop Report"],
+            $user->can('see_update_buttons','App\Report')?["name"=>"delete","label"=>"Delete Workshop Report"]:'',
       
         ],
             'help'=>
                 'Build and Manage Workshop Reports'
         ]);
-          // 'actions' => [
-            //     $user->can('manage_reports','App\Report')?["name"=>"create","label"=>"Create New Report"]:'',
-            //     '',
-            //     $user->can('see_update_buttons','App\Report')?["name"=>"edit","label"=>"Edit Description"]:'',
-            //     $user->can('see_update_buttons','App\Report')?["label"=>"Configure Query","name"=>"configure_query","min"=>1,"max"=>1,"type"=>"default"]:'',
-            //     ["label"=>"Run Report","name"=>"run_report","min"=>1,"max"=>1,"type"=>"warning"],
-            //     '',
-            //     $user->can('see_update_buttons','App\Report')?["name"=>"delete","label"=>"Delete Report"]:""
-            // ],
+
     }
 
        /**

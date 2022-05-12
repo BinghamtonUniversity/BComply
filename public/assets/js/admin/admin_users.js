@@ -280,11 +280,11 @@ new gform(
                                 "value": "impersonate_users"
                             },    
                             {
-                                "label": "Manage Reports",
+                                "label": "Manage Module Reports",
                                 "value": "manage_reports"
                             },
                             {
-                                "label": "Run Reports",
+                                "label": "Run Module Reports",
                                 "value": "run_reports"
                             },
                             {
@@ -310,7 +310,15 @@ new gform(
                             {
                                 "label": "Assign Workshops",
                                 "value": "assign_workshops"
-                            }
+                            },
+                            {
+                                "label": "Manage Workshop Reports",
+                                "value": "manage_workshop_reports"
+                            },
+                            {
+                                "label": "Run Workshop Reports",
+                                "value": "run_workshop_reports"
+                            },
                         ]
                     }    
                 ],

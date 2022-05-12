@@ -19,10 +19,11 @@ class WorkshopPolicy
      * @return mixed
      */
     public function view_in_admin(User $user){
-        $is_module_owner = is_null(Workshop::where('owner_id',$user->id)->select('id')->first())?false:true;
+        $is_workshop_owner = is_null(Workshop::where('owner_id',$user->id)->select('id')->first())?false:true;
 
         if(in_array('manage_workshops',$user->user_permissions)
-        || $is_module_owner
+        || in_array('assign_workshops',$user->user_permissions)
+        || $is_workshop_owner
          ){
             return true;
         }
@@ -48,11 +49,13 @@ class WorkshopPolicy
         if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
             return true;
         }
-      
-        // if (property_exists($user->workshop_permissions,$workshop->id) &&
-        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
-        //     return true;
-        // }
+        if ($workshop->owner_user_id === $user->id) {
+            return true;
+        }
+        if (property_exists($user->worshop_permissions,$worshop->id) &&
+            in_array('manage',$user->worshop_permissions->{$worshop->id})){
+            return true;
+        }
     }
     public function assign_workshops(User $user, String $workshop_id)
     {
@@ -77,6 +80,22 @@ class WorkshopPolicy
         }
         
         if ($this->manage_workshop($user,$workshop)){
+            return true;
+        }
+    }
+    public function manage_workshop_offerings(User $user, WorkshopOffering $workshop_offering)
+    {
+        if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
+            return true;
+        }
+        if ($workshop_offering->instructor_id === $user->id) {
+            return true;
+        }
+        if ($workshop_offering->workshop->owner_id === $user->id) {
+            return true;
+        }
+        if (property_exists($user->worshop_permissions,$worshop->id) &&
+            in_array('manage',$user->worshop_permissions->{$worshop->id})){
             return true;
         }
     }

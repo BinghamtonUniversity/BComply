@@ -43,12 +43,24 @@ class User extends Authenticatable
         return $this->hasMany(UserActionLog::class);
     }
     // These are default Relationships that are restructured
-    // using the setters below.  
+    // using the setters below.
+    public function workshop_perms(){
+        return $this->hasMany(WorkshopPermission::class);
+    }  
     public function module_perms(){
         return $this->hasMany(ModulePermission::class);
     }
     public function user_perms(){
         return $this->hasMany(UserPermission::class);
+    }
+     // Converts Workshop Permissions to Array
+     public function getWorkshopPermissionsAttribute() {
+        $permissions = $this->workshop_perms()->get();
+        $permissions_arr = [];
+        foreach($permissions as $permission) {
+            $permissions_arr[] = $permission->permission;
+        }
+        return $permissions_arr;
     }
     // Converts User Permissions to Array
     public function getUserPermissionsAttribute() {

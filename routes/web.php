@@ -79,6 +79,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::post('/workshops','WorkshopController@add_workshop')->middleware('can:manage_all_workshops,App\Workshop');
         Route::put('/workshops/{workshop}','WorkshopController@update_workshop')->middleware('can:manage_all_workshops,App\Workshop');
         Route::delete('/workshops/{workshop}','WorkshopController@delete_workshop')->middleware('can:manage_all_workshops,App\Workshop');
+        Route::post('/workshops/{workshop}/recurring_offerings','WorkshopController@add_recurring_workshop_offering')->middleware('can:manage_workshop_offerings,App\Workshop,workshop');
 
         /* Workshop File Methods */
         Route::get('/workshops/{workshop}/files', 'WorkshopController@get_workshop_files')->middleware('can:manage_workshops,App\Workshop,workshop');
@@ -88,31 +89,27 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshops/{workshop}/files/{file_name}/exists', 'FileUploadController@workshop_file_exists')->middleware('can:manage_workshops,App\Workshop,workshop');
         /* Workshop Offerings Methods */
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings')->middleware('can:manage_workshops,App\Workshop,workshop');
-        Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering')->middleware('can:create_workshop_offering,App\WorkshopOffering,workshop');
-        Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
-        Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
-        //todo
-        Route::post('/workshops/{workshop}/recurring_offerings','WorkshopController@add_recurring_workshop_offering')->middleware('can:create_workshop_offering,App\WorkshopOffering,workshop');
+        Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering')->middleware('can:manage_workshops,App\Workshop,workshop');
+        Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering')->middleware('can:manage_workshop_offerings,App\Workshop,workshop');
+        Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering')->middleware('can:manage_workshop_offerings,App\Workshop,workshop');
+
+        
         /* Workshop Attendance Methods */
-        Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances')->middleware('can:manage_workshops,App\Workshop,workshop');
-        Route::post('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@add_workshop_attendances')->middleware('can:assign_workshops,App\Workshop,workshop');
-        Route::put('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@update_workshop_attendances')->middleware('can:assign_workshops,App\Workshop,workshop');
-        Route::delete('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@delete_workshop_attendances')->middleware('can:delete_workshop,App\Workshop');
+        Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances')->middleware('can:manage_workshop_offerings,App\Workshop,workshop');
+        Route::post('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@add_workshop_attendances')->middleware('can:manage_workshop_offerings,App\Workshop,workshop');
+        Route::put('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@update_workshop_attendances')->middleware('can:manage_workshop_offerings,App\Workshop,workshop');
+        Route::delete('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@delete_workshop_attendances')->middleware('can:manage_workshop_offerings,App\Workshop');
     
         /* Workshop Report Methods */
-        //todo middleware (policies) will be added
-        Route::get('/workshop_reports','WorkshopReportController@get_all_reports');
-        Route::post('/workshop_reports','WorkshopReportController@add_report');
-        Route::get('/workshop_reports/{workshop_report}','WorkshopReportController@get_report');
-        Route::put('/workshop_reports/{workshop_report}','WorkshopReportController@update_report');
-        Route::delete('/workshop_reports/{workshop_report}','WorkshopReportController@delete_report');
-        Route::get('/workshop_reports/tables/columns', 'WorkshopReportController@get_columns');
-        Route::get('/workshop_reports/tables', 'WorkshopReportController@get_tables');
-        Route::get('/workshop_reports/{workshop_report}/execute', 'WorkshopReportController@execute');
-        //todo methods are below will be added
-        
-        
-        // Route::get('/reports/{report}/execute', 'ReportController@execute')->middleware('can:execute_report,report');
+        Route::get('/workshop_reports','WorkshopReportController@get_all_reports')->middleware('can:view_reports, App\WorkshopReport');
+        Route::post('/workshop_reports','WorkshopReportController@add_report')->middleware('can:manage_reports, App\WorkshopReport');
+        Route::get('/workshop_reports/{workshop_report}','WorkshopReportController@get_report')->middleware('can:view_reports, App\WorkshopReport');
+        Route::put('/workshop_reports/{workshop_report}','WorkshopReportController@update_report')->middleware('can:update_reports, App\WorkshopReport');
+        Route::delete('/workshop_reports/{workshop_report}','WorkshopReportController@delete_report')->middleware('can:update_reports, App\WorkshopReport');
+        Route::get('/workshop_reports/tables/columns', 'WorkshopReportController@get_columns')->middleware('can:view_reports, App\WorkshopReport');
+        Route::get('/workshop_reports/tables', 'WorkshopReportController@get_tables')->middleware('can:view_reports, App\WorkshopReport');
+        Route::get('/workshop_reports/{workshop_report}/execute', 'WorkshopReportController@execute')->middleware('can:exacute_reports, App\WorkshopReport');
+
 
         Route::get('/modules','ModuleController@get_all_modules')->middleware('can:view_in_admin,App\Module');
         Route::get('/modules/{module}','ModuleController@get_module')->middleware('can:view_module,module');
