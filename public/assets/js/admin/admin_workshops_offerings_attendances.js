@@ -1,5 +1,6 @@
 ajax.get('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances',function(data) {
     create_fields = [
+        {type:"hidden", name:"id"},
         {type:"hidden", name:"workshop_id",label:"Workshop ID",value:ids[0]},
         {type:"hidden", name:"workshop_offering_id",label:"Workshop Offering ID",value:ids[1]},
         {type:"user", name:"user_id",required:true, label:"Attendee", template:"{{attributes.attendee.first_name}} {{attributes.attendee.last_name}}"},
@@ -18,6 +19,7 @@ ajax.get('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances',function(d
     actions:actions,
     count:20,
     schema:[
+        {type:"hidden", name:"id"},
          {type:"hidden", name:"workshop_id",label:"Workshop ID",value:ids[0]},
         {type:"hidden", name:"workshop_offering_id",label:"Workshop Offering ID",value:ids[1]},
         {type:"user", name:"user_id",required:true, label:"Attendee", template:"{{attributes.attendee.first_name}} {{attributes.attendee.last_name}}"},
@@ -35,7 +37,7 @@ ajax.get('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances',function(d
            
         });
     }).on("model:edited",function(grid_event) {
-        debugger;
+    
         ajax.put('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
             // grid_event.model.update(data);

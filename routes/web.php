@@ -93,12 +93,11 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering');
         Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering');
 
-        
         /* Workshop Attendance Methods */
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering');
-        Route::post('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@add_workshop_attendances')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering');
-        Route::put('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@update_workshop_attendances')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering');
-        Route::delete('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@delete_workshop_attendances')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering,attendance');
+        Route::post('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@add_workshop_attendances')->middleware('can:create_workshop_attendances,App\Workshop,workshop,offering');
+        Route::put('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@update_workshop_attendances')->middleware('can:manage_workshop_attendances,App\Workshop,workshop,offering');
+        Route::delete('/workshops/{workshop}/offerings/{offering}/attendances/{attendance}','WorkshopController@delete_workshop_attendances')->middleware('can:manage_workshop_attendances,App\Workshop,workshop,offering');
     
         /* Workshop Report Methods */
         Route::get('/workshop_reports','WorkshopReportController@get_all_reports')->middleware('can:view_reports, App\WorkshopReport');
