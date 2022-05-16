@@ -92,6 +92,21 @@ class WorkshopPolicy
             return true;
         }
     }
+    public function create_workshop_offerings(User $user,String $workshop_id)
+    {
+        $workshop = Workshop::where('id',$workshop_id)->with('owner')->first();
+    
+        if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
+            return true;
+        }
+        if ($workshop->owner_id === $user->id) {
+            return true;
+        }
+        if (property_exists($user->workshop_permissions,$workshop->id) &&
+            in_array('manage',$user->workshop_permissions->{$workshop->id})){
+            return true;
+        }
+    }
     public function manage_workshop_offerings(User $user,Workshop $workshop, WorkshopOffering $offering)
     {
         if(in_array('manage_workshops',$user->user_permissions)||$workshop->owner_id === $user->id) {
@@ -103,10 +118,10 @@ class WorkshopPolicy
         if ($offering->workshop->owner_id === $user->id) {
             return true;
         }
-        // if (property_exists($user->workshop_permissions,$workshop->id) &&
-        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
-        //     return true;
-        // }
+        if (property_exists($user->workshop_permissions,$workshop->id) &&
+            in_array('manage',$user->workshop_permissions->{$workshop->id})){
+            return true;
+        }
     }
     public function view_workshop_attendances(User $user,Workshop $workshop, WorkshopOffering $offering)
     {
@@ -122,10 +137,10 @@ class WorkshopPolicy
         if ($offering->workshop->owner_id === $user->id) {
             return true;
         }
-        // if (property_exists($user->workshop_permissions,$workshop->id) &&
-        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
-        //     return true;
-        // }
+        if (property_exists($user->workshop_permissions,$workshop->id) &&
+            in_array('manage',$user->workshop_permissions->{$workshop->id})){
+            return true;
+        }
     }
     public function create_workshop_attendances(User $user,String $workshop_id, String $offering_id)
     {
@@ -141,10 +156,10 @@ class WorkshopPolicy
         if ($offering->workshop->owner_id === $user->id) {
             return true;
         }
-        // if (property_exists($user->workshop_permissions,$workshop->id) &&
-        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
-        //     return true;
-        // }
+        if (property_exists($user->workshop_permissions,$workshop->id) &&
+            in_array('manage',$user->workshop_permissions->{$workshop->id})){
+            return true;
+        }
     }
     
     public function manage_workshop_attendances(User $user, Workshop $workshop,WorkshopOffering $offering)
@@ -159,9 +174,9 @@ class WorkshopPolicy
         if ($offering->workshop->owner_id === $user->id) {
             return true;
         }
-        // if (property_exists($user->workshop_permissions,$workshop->id) &&
-        //     in_array('manage',$user->workshop_permissions->{$workshop->id})){
-        //     return true;
-        // }
+        if (property_exists($user->workshop_permissions,$workshop->id) &&
+            in_array('manage',$user->workshop_permissions->{$workshop->id})){
+            return true;
+        }
     }
 }

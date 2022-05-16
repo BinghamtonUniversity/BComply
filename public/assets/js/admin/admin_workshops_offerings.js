@@ -1,5 +1,6 @@
 ajax.get('/api/workshops/'+id+'/offerings',function(data) {
     create_fields = [
+        {type:"hidden", name:"id"},
         {type:"hidden", name:"workshop_id",label:"Workshop ID",value:id},
         
         {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},

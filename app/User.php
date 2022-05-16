@@ -13,10 +13,10 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $fillable = ['unique_id','first_name', 'last_name','email','payroll_code','supervisor','department_id','department_name','division_id','division','negotiation_unit','title','role_type','active'];
-    protected $hidden = ['password', 'remember_token','created_at','updated_at','user_perms','module_perms'];
+    protected $hidden = ['password', 'remember_token','created_at','updated_at','user_perms','module_perms','workshop_perms'];
     protected $casts = ['active'=>'boolean'];
-    protected $appends = ['user_permissions','module_permissions'];
-    protected $with = ['user_perms','module_perms'];
+    protected $appends = ['user_permissions','module_permissions','workshop_permissions'];
+    protected $with = ['user_perms','module_perms','workshop_perms'];
 //    protected $dispatchesEvents=[
 //        'saved' =>UserSaved::class,
 //        'deleted'=->UserDeleted::class,
@@ -29,6 +29,9 @@ class User extends Authenticatable
     }
     public function pivot_module_permissions() {
         return $this->belongsToMany('App\Module','module_permissions')->withPivot('permission');
+    }
+    public function pivot_workshop_permissions() {
+        return $this->belongsToMany('App\Module','workshop_permissions')->withPivot('permission');
     }
     public function pivot_module_assignments() {
         return $this->belongsToMany('App\ModuleVersion','module_assignments')->withPivot('status');
