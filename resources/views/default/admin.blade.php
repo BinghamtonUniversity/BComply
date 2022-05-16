@@ -108,6 +108,9 @@
             @can('view_in_admin','App\Workshop')
               <li class="@if($page=="workshops") active @endif"><a href="/admin/workshops"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; Workshops</a></li>
             @endcan
+            @can('is_instructor','App\Workshop')
+              <li class="@if($page=="instructor_workshops") active @endif"><a href="/admin/instructor_workshops"><i class="fa fa-notes-medical fa-fw"></i>&nbsp; My Workshops</a></li>
+            @endcan
             @can('view_reports','App\Report')
                 <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-file fa-fw"></i>&nbsp;Module Reports</a></li>
             @endcan

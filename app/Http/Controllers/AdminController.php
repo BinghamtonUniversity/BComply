@@ -123,7 +123,7 @@ class AdminController extends Controller
         ]);
     }
  /**
-     * Handle the user "created" event.
+  
      *
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -132,20 +132,31 @@ class AdminController extends Controller
         $user = Auth::user();
         return view('default.admin',['page'=>'workshops','ids'=>[],'title'=>'Manage Workshops',
             'actions' => [
-                ["name"=>"create","label"=>"Create New Workshop"],           
+                $user->can('manage_all_workshops','App\Workshop')? ["name"=>"create","label"=>"Create New Workshop"]:'',           
                 ["name"=>"edit","label"=>"Update Existing Workshop"],
                 ["name"=>"upload_file","label"=>"Upload Files","min"=>1,"max"=>1,"type"=>"default"],
                 ["name"=>"manage_files","label"=>"Manage Files","min"=>1,"max"=>1,"type"=>"default"],
                 ["name"=>"manage_offerings","label"=>"Manage Workshop Offerings","min"=>1,"max"=>1,"type"=>"default"],
-                ["name"=>"delete","label"=>"Delete Workshop"],
+                $user->can('manage_all_workshops','App\Workshop')? ["name"=>"delete","label"=>"Delete Workshop"]:'',
             ],
             'help'=>
                 'Use this page to manage workshops within the BComply Application.  You may create new
                 workshops.'
         ]);
     }
+    public function instructor_workshops(Request $request) {
+        $offerings = WorkshopOffering::where('instructor_id',Auth::user()->id)->get();
+
+        return view('default.admin',['page'=>'instructor_workshops','ids'=>[],'title'=>'My Workshops',
+        'actions' => [
+        ],
+        'help'=>
+            'The workshops that you are instructor of them are listed below.'
+    ]);
+        return view('default.admin',['page'=>'instructor_workshops','offerings'=>$offerings,'user'=>Auth::user(),'title'=>'Manage Workshops']);
+    }
      /**
-     * Handle the user "created" event.
+  
      *
      * @param Request $request
      * @param Workshop $workshop
@@ -167,21 +178,22 @@ class AdminController extends Controller
         ]);
     }
          /**
-     * Handle the user "created" event.
+
      *
      * @param Request $request
      * @param Workshop $workshop
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function workshop_offerings(Request $request,Workshop $workshop) {
+        $user = Auth::user();
         return view('default.admin',['page'=>'workshops_offerings','ids'=>[$workshop->id],'title'=>$workshop->name.' Offerings',          
         'actions' => [
-            ["name"=>"create","label"=>"Create New Workshop Offering"],           
+            $user->can('manage_all_workshops','App\Workshop')?["name"=>"create","label"=>"Create New Workshop Offering"]:'',           
             ["name"=>"edit","label"=>"Update Existing Workshop Offering"], 
             ["name"=>"manage_attendance","label"=>"Manage Workshop Offerings Attendance","min"=>1,"max"=>1,"type"=>"default"],
-            ["name"=>"delete","label"=>"Delete Workshop Offering"],
+            $user->can('manage_all_workshops','App\Workshop')? ["name"=>"delete","label"=>"Delete Workshop Offering"]:'',
             '',
-            ["name"=>"create_recurring","label"=>"Create Recurring Workshop Offering","type"=>"warning"],
+            $user->can('manage_all_workshops','App\Workshop')? ["name"=>"create_recurring","label"=>"Create Recurring Workshop Offering","type"=>"warning"]:'',
         ],'help'=>
             'Use this page to manage training workshop offerings.  You may add new
             users, view a status report for currently assigned users, and remove assigned users.'
@@ -189,7 +201,7 @@ class AdminController extends Controller
     }
 
          /**
-     * Handle the user "created" event.
+
      *
      * @param Request $request
      * @param Workshop $workshop
@@ -204,11 +216,11 @@ class AdminController extends Controller
             ["name"=>"edit","label"=>"Update Existing Workshop Attendance"],
             ["name"=>"delete","label"=>"Delete Workshop Attendance"],
         ],'help'=>
-            'Use this page to manage training workshop attendances.'
+            'Use this page to manage workshop attendances.'
         ]);
     }
              /**
-     * Handle the user "created" event.
+
     * @param Request $request
     * @param Workshop $workshop
     * @param WorkshopOffering $offering

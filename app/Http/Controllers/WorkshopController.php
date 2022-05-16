@@ -48,23 +48,48 @@ class WorkshopController extends Controller
         $workshop->delete();
         return 'Success';
     }
+    public function get_instructor_offerings(Request $request){
+        
+          $is_instructor = is_null(WorkshopOffering::where('instructor_id',Auth::user()->id)->select('id')->first())?false:true;
+      
+          if($is_instructor){
+              return WorkshopOffering::where('instructor_id',Auth::user()->id)
+              ->with(['instructor'=>function($query){
+                  $query->select('id','first_name','last_name');
+              }])->get();
+          }
+          else{
+              return [];
+          }
+      
+  }
 
     public function get_workshop_offerings(Request $request,Workshop $workshop){
-        $is_instructor = is_null(WorkshopOffering::where('workshop_id',$workshop->id)->where('instructor_id',Auth::user()->id)->select('id')->first())?false:true;
-        
-        if($is_instructor){
-            return WorkshopOffering::where('workshop_id',$workshop->id)
-            ->where('instructor_id',Auth::user()->id)
-            ->with(['instructor'=>function($query){
-                $query->select('id','first_name','last_name');
-            }])->get();
+          if (in_array('manage_workshops',Auth::user()->user_permissions) ||
+            in_array('assign_workshops',Auth::user()->user_permissions)) {
+
+                return WorkshopOffering::where('workshop_id',$workshop->id)
+                ->with(['instructor'=>function($query){
+                    $query->select('id','first_name','last_name');
+                }])->get();
         }
         else{
-            return WorkshopOffering::where('workshop_id',$workshop->id)
-            ->with(['instructor'=>function($query){
-                $query->select('id','first_name','last_name');
-            }])->get();
+            $is_instructor = is_null(WorkshopOffering::where('workshop_id',$workshop->id)->where('instructor_id',Auth::user()->id)->select('id')->first())?false:true;
+        
+            if($is_instructor){
+                return WorkshopOffering::where('workshop_id',$workshop->id)
+                ->where('instructor_id',Auth::user()->id)
+                ->with(['instructor'=>function($query){
+                    $query->select('id','first_name','last_name');
+                }])->get();
+            }
+            else{
+                return [];
+            }
         }
+
+
+       
 
         
     }

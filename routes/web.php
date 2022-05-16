@@ -35,6 +35,9 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshop_reports', ['uses'=>'AdminController@workshop_reports']);
         Route::get('/workshop_reports/{workshop_report}/run', ['uses'=>'AdminController@run_workshop_report']);
         // Workshop  Admin Methods --- END
+
+        Route::get('/instructor_workshops', ['uses'=>'AdminController@instructor_workshops']);
+
         Route::get('/modules', ['uses'=>'AdminController@modules']);
         Route::get('/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
         Route::get('/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);
@@ -74,6 +77,9 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::delete('/users/{user}/assignments/{module_assignment}','UserController@delete_assignment')->middleware('can:delete_assignment,App\User,module_assignment');
         Route::post('/login/{user}','UserController@login_user')->middleware('can:impersonate_users,App\User');
         
+        /* Instructor Methods */
+        Route::get('/instructor_workshops','WorkshopController@get_instructor_offerings')->middleware('can:is_instructor,App\Workshop');
+
         /* Workshop Methods */
         Route::get('/workshops','WorkshopController@get_all_workshops')->middleware('can:view_in_admin,App\Workshop');
         Route::post('/workshops','WorkshopController@add_workshop')->middleware('can:manage_all_workshops,App\Workshop');
@@ -91,8 +97,8 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshops/{workshop}/offerings','WorkshopController@get_workshop_offerings')->middleware('can:view_workshop_offerings,App\Workshop,workshop');
         Route::post('/workshops/{workshop}/offerings','WorkshopController@add_workshop_offering')->middleware('can:create_workshop_offerings,App\Workshop,workshop');
         Route::put('/workshops/{workshop}/offerings/{offering}','WorkshopController@update_workshop_offering')->middleware('can:manage_workshop_offerings,App\Workshop,workshop,offering');
-        Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering');
-        Route::post('/workshops/{workshop}/recurring_offerings','WorkshopController@add_recurring_workshop_offering')->middleware('can:manage_workshop_offerings,App\Workshop,workshop');
+        Route::delete('/workshops/{workshop}/offerings/{offering}','WorkshopController@delete_workshop_offering')->middleware('can:manage_workshop_offerings,App\Workshop,workshop,offering');
+        Route::post('/workshops/{workshop}/recurring_offerings','WorkshopController@add_recurring_workshop_offering')->middleware('can:create_workshop_offerings,App\Workshop,workshop');
 
         /* Workshop Attendance Methods */
         Route::get('/workshops/{workshop}/offerings/{offering}/attendances','WorkshopController@get_workshop_attendances')->middleware('can:view_workshop_attendances,App\Workshop,workshop,offering');

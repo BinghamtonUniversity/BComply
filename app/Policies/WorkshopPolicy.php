@@ -41,7 +41,15 @@ class WorkshopPolicy
             return true;
         }
     }
- 
+    public function is_instructor(User $user){
+       // $is_workshop_owner = is_null(Workshop::where('owner_id',$user->id)->select('id')->first())?false:true;
+        $is_instructor = is_null(WorkshopOffering::where('instructor_id',$user->id)->select('id')->first())?false:true;
+        if(
+       $is_instructor // || $is_instructor
+         ){
+            return true;
+        }
+    }
 
     public function manage_workshops(User $user, Workshop $workshop)
     {
