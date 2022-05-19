@@ -6,8 +6,10 @@ use App\Module;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
 use App\ModuleAssignment;
+use App\User;
 use App\Workshop;
 use App\WorkshopOffering;
 use App\WorkshopAttendance;
@@ -195,9 +197,10 @@ class UserDashboardController extends Controller
     public function impersonate(Request $request,$pass){
         try{
             $result = json_decode(Crypt::decrypt($pass));
-
+            
             if((now()->timestamp - $result->timestamp)/60 <= 10){
                 $user = User::where('unique_id',$result->unique_id)->first();
+               
                 if (!is_null($user)) {
                     Auth::login($user, true);
                     $assignments = ModuleAssignment::where('user_id',Auth::user()->id)

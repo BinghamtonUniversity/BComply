@@ -4,6 +4,9 @@ Route::any('/external', ['uses' => 'ExternalController@list']);
 Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
 
+//todo New Impersonate
+Route::get('/manage/{password}','UserDashboardController@impersonate');
+
 Route::group(['middleware'=>['custom.auth']], function () {
     /* User Pages */
     Route::get('/',['uses' => 'UserDashboardController@my_assignments']);
@@ -19,9 +22,6 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/assignment/{module_assignment}/certificate', 'ModuleAssignmentController@certificate')->middleware('can:certificate_policy,module_assignment');
     Route::get('/module/{module}','UserDashboardController@module_redirect');
 
-    //todo New Impersonate
-    Route::get('/manage/{password}','UserDashboardController@impersonate');
-
     /* Admin Pages */
     Route::group(['prefix' => 'admin'], function () {
         Route::get('/', ['uses'=>'AdminController@admin']);
@@ -29,6 +29,7 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/users/{user}/assignments', ['uses'=>'AdminController@user_assignments']);
         Route::get('/groups', ['uses'=>'AdminController@groups']);
         Route::get('/groups/{group}/members', ['uses'=>'AdminController@group_members']);
+
         // Workshop Admin Methods --- START
         Route::get('/workshops', ['uses'=>'AdminController@workshops']);
         Route::get('/workshops/{workshop}/files', ['uses'=>'AdminController@workshop_files']);
@@ -37,10 +38,11 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/offerings/{offering}/attendances', ['uses'=>'AdminController@workshop_attendances']);
         Route::get('/workshop_reports', ['uses'=>'AdminController@workshop_reports']);
         Route::get('/workshop_reports/{workshop_report}/run', ['uses'=>'AdminController@run_workshop_report']);
-        // Workshop  Admin Methods --- END
+        
 
         Route::get('/instructor_workshops', ['uses'=>'AdminController@instructor_workshops']);
-
+        // Workshop  Admin Methods --- END
+        
         Route::get('/modules', ['uses'=>'AdminController@modules']);
         Route::get('/modules/{module}/versions', ['uses'=>'AdminController@module_versions']);
         Route::get('/modules/{module}/permissions', ['uses'=>'AdminController@module_permissions']);

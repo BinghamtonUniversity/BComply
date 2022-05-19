@@ -3,9 +3,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use App\SimpleUser;
 use App\GroupMembership;
 use App\Group;
+use App\User;
 use App\ModuleAssignment;
 use App\Module;
 
@@ -160,9 +162,9 @@ class PublicAPIController extends Controller
     }
 
      //todo New Impersonate
-     public function impersonate_user(User $user){
+     public function impersonate_user(String $unique_id){
         $encryption_obj = [
-            'unique_id'=>$user->unique_id,
+            'unique_id'=>$unique_id,
             'timestamp'=>now()->timestamp
         ];
         return url('/manage/'.Crypt::encrypt(json_encode($encryption_obj)));
