@@ -19,10 +19,10 @@ ajax.get('/api/instructor_workshops/',function(data) {
         ]},
         {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
         {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
-            input: "YYYY-MM-DD HH:mm:ss"
+            input: "MM-DD-YYYY HH:mm:ss"
         }},
         {type:"datetime",name:"multi_days",label:"Workshop Dates",format: {
-            input: "YYYY-MM-DD HH:mm:ss"
+            input: "MM-DD-YYYY HH:mm:ss"
         }},
 
     ], data: data
