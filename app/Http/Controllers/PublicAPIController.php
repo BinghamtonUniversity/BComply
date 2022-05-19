@@ -158,4 +158,13 @@ class PublicAPIController extends Controller
         }
         return $query->paginate(100);
     }
+
+     //todo New Impersonate
+     public function impersonate_user(User $user){
+        $encryption_obj = [
+            'unique_id'=>$user->unique_id,
+            'timestamp'=>now()->timestamp
+        ];
+        return url('/manage/'.Crypt::encrypt(json_encode($encryption_obj)));
+    }
 }

@@ -17,3 +17,7 @@ Route::get('/cron', function () {
 Route::get('/users/{unique_id}/assignments','PublicAPIController@get_user_assignments');
 Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assignments');
 
+
+//todo New Impersonate
+//Use the same pass_reset methods
+Route::get('/users/{unique_id}/impersonate', 'PublicAPIController@impersonate_user');

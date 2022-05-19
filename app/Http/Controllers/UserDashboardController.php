@@ -191,5 +191,36 @@ class UserDashboardController extends Controller
             ->header('Content-Disposition', 'attachment; filename="cal.ics"');
         // return view('calendar',['page'=>'calendar','events'=>$events,'user'=>Auth::user()]);
     }
+    //todo New Impersonate
+    public function impersonate(Request $request,$pass){
+        try{
+            $result = json_decode(Crypt::decrypt($pass));
+
+            if((now()->timestamp - $result->timestamp)/60 <= 10){
+                $user = User::where('unique_id',$result->unique_id)->first();
+                if (!is_null($user)) {
+                    Auth::login($user, true);
+                    $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
+                        ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
+                        ->whereNull('date_completed')
+                        ->with('version')
+                        ->with('module')->get();
+                    foreach($assignments as $index => $assignment) {
+                        if (is_null($assignment->module->icon) || $assignment->module->icon=='') {$assignments[$index]->module->icon='book-open';}
+                    }
+                    return view('my_assignments',['page'=>'my_assignments','assignments'=>$assignments,'user'=>Auth::user()]);
+                } else {
+                    return abort(401);
+                }
+            }
+            else{
+                return abort(401);
+            }
+        }catch (\Exception $e){
+            return abort(401);
+        }
+
+
+    }
     
 }

@@ -19,6 +19,9 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/assignment/{module_assignment}/certificate', 'ModuleAssignmentController@certificate')->middleware('can:certificate_policy,module_assignment');
     Route::get('/module/{module}','UserDashboardController@module_redirect');
 
+    //todo New Impersonate
+    Route::get('/manage/{password}','UserDashboardController@impersonate');
+
     /* Admin Pages */
     Route::group(['prefix' => 'admin'], function () {
         Route::get('/', ['uses'=>'AdminController@admin']);
