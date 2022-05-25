@@ -197,27 +197,11 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                     //todo
                     {type:"datetime",name:"recurring_start_date",label:"Start Date",required:true, format: {
                         input: "YYYY-MM-DD HH:mm:ss"
-                    },"required":true,"show": [
-                        {
-                            "name": "is_recurring",
-                            "type": "matches",
-                            "value": [
-                                true
-                            ]
-                        }
-                    ],
+                    },"required":true,
                     },
                     {type:"datetime",name:"recurring_end_date",label:"End Date",required:true, format: {
                         input: "YYYY-MM-DD HH:mm:ss"
-                    },"required":true,"show": [
-                        {
-                            "name": "is_recurring",
-                            "type": "matches",
-                            "value": [
-                                true
-                            ]
-                        }
-                    ],
+                    },"required":true,
                     },
                         
                 ],
