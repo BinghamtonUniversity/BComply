@@ -125,7 +125,7 @@ class UserDashboardController extends Controller
             return redirect('/assignment/'.$assignment->id);
         }
     }
-    //todo will be moved to admin site
+    //todo link will be changed
     public function create_calendar(Request $request){
         $events = array();
         $workshops = Workshop::where('public',true)->with('owner')->get();
@@ -135,7 +135,7 @@ class UserDashboardController extends Controller
             $workshop_offerings =WorkshopOffering::where('workshop_id',$workshop->id)->with('instructor')->get();
             foreach($workshop_offerings as $index => $workshop_offering){
                 $instructor_name =$workshop_offering->instructor->first_name . ' '.  $workshop_offering->instructor->last_name;
-                $description = $workshop->description .' To Sign Up Please click following link: http://bcomplydev.local:8000/workshops/'. $workshop_offering->workshop->id .'/offerings/'.$workshop_offering->id;
+                $description = $workshop->description .' To Sign Up Please click following link: http://bcomplydev.binghamton.edu/workshops/'. $workshop_offering->workshop->id .'/offerings/'.$workshop_offering->id;
                 $organizer = new Organizer(
                     new EmailAddress( $workshop_offering->instructor->email),
                     $instructor_name,

@@ -65,7 +65,7 @@
             <li class="visible-xs-block @if($page =="my_workshops") active @endif"><a href="/workshops"><i class="fa fa-user fa-fw"></i>&nbsp; My Workshops</a></li>
             <li class="visible-xs-block @if($page  =="history") active @endif"><a href="/history"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
             <li class="visible-xs-block @if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Modules</a></li>
-            <li class="visible-xs-block @if($page =="calendar") active @endif"><a href="/calendar"><i class="fa fa-calendar fa-fw"></i>&nbsp; Google Calendar</a></li>
+            {{-- <li class="visible-xs-block @if($page =="calendar") active @endif"><a href="/calendar"><i class="fa fa-calendar fa-fw"></i>&nbsp; Google Calendar</a></li> --}}
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -78,7 +78,7 @@
           <li class="@if($page =="my_workshops") active @endif"><a href="/workshops"><i class="fa fa-user fa-fw"></i>&nbsp; My Workshops</a></li>
           <li class="@if($page  =="history") active @endif"><a href="/history"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
           <li class="@if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Modules</a></li>
-          <li class="@if($page =="calendar") active @endif"><a href="/calendar"><i class="fa fa-calendar fa-fw"></i>&nbsp; Google Calendar</a></li>
+          {{-- <li class="@if($page =="calendar") active @endif"><a href="/calendar"><i class="fa fa-calendar fa-fw"></i>&nbsp; Google Calendar</a></li> --}}
         </ul>
       </div>
     @endif
