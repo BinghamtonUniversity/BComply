@@ -128,6 +128,7 @@ class AdminController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+    //todo Link will be changed
     public function workshops(Request $request) {
         $user = Auth::user();
         return view('default.admin',['page'=>'workshops','ids'=>[],'title'=>'Manage Workshops',
@@ -141,7 +142,7 @@ class AdminController extends Controller
             ],
             'help'=>
                 'Use this page to manage workshops within the BComply Application.  You may create new
-                workshops.'
+                workshops, edit or delete existing workshop'
         ]);
     }
     public function instructor_workshops(Request $request) {
