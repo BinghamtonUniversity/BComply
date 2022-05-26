@@ -2,10 +2,12 @@
 
 namespace App\Policies;
 
-use App\Module;
-use App\Report;
+use App\Workshop;
+use App\WorkshopOffering;
+use App\WorkshopAttendance;
+use App\WorkshopReport;
 use App\User;
-use App\ModulePermission;
+use App\WorkshopPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WorkshopReportPolicy
