@@ -13,7 +13,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
 
         {type:"datetime",name:"workshop_date",label:"Workshop Date",required:true, format: {
-            input: "MM-DD-YYYY HH:mm:ss"
+            input: "YYYY-MM-DD HH:mm:ss"
         }, "show": [
             {
                 "name": "is_multi_day",
@@ -28,7 +28,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
     },
 
         {type:"datetime",name:"multi_days",label:"Workshop Dates",required:true,format: {
-            input: "MM-DD-YYYY HH:mm:ss"
+            input: "YYYY-MM-DD HH:mm:ss"
         }, "show": [
             {
                 "name": "is_multi_day",
@@ -65,10 +65,10 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         ]},
         {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
         {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
-            input: "MM-DD-YYYY HH:mm:ss"
+            input: "YYYY-MM-DD HH:mm:ss"
         }},
         {type:"datetime",name:"multi_days",label:"Workshop Dates",format: {
-            input: "MM-DD-YYYY HH:mm:ss"
+            input: "YYYY-MM-DD HH:mm:ss"
         }},
 
     ], data: data
