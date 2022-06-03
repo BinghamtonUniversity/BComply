@@ -112,6 +112,9 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
     // .on("model:manage_attendance",function(grid_event) {
     //     window.location = '/admin/offerings/'+grid_event.model.attributes.id+"/attendances";
     // });
+    .on("click",function(grid_event) {     
+        window.location = '/workshops/'+ grid_event.model.attributes.workshop_id +'/offerings/'+grid_event.model.attributes.id;
+    })
     //TODO might be replaced with above
     .on("model:manage_attendance",function(grid_event) {
         window.location = '/admin/workshops/'+id+'/offerings/'+grid_event.model.attributes.id+"/attendances";
