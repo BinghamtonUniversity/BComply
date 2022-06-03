@@ -115,7 +115,7 @@
                                     @else
                                         <tr>
                                         <td colspan="2" class="text-danger">Date</td>
-                                        <td class="text-end text-danger">{{$offering->workshop_date}}</td>
+                                        <td class="text-end text-danger">{{ date('m/d/Y h:i A', strtotime($offering->workshop_date))}}</td>
                                         </tr>
                                     @endif
                                 @else
@@ -130,7 +130,7 @@
                                     @else
                                         <tr>
                                         <td colspan="2">Date</td>
-                                        <td class="text-end">{{$offering->workshop_date}}</td>
+                                        <td class="text-end">{{ date('m/d/Y h:i A', strtotime($offering->workshop_date))}}</td>
                                         </tr>
                                     @endif
                                 @endif
