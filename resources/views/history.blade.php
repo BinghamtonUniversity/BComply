@@ -9,7 +9,11 @@
                 </ol>
             </nav>
             <div class="row">
+                
                     @if(count($assignments) > 0)
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><p>My Module History</p></li>
+                    </ol>
                             @foreach ($assignments as $assignment)
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 {{--                                <div >--}}
@@ -45,16 +49,18 @@
                             @endforeach
                             
                     @elseif(count($attendances) > 0)     
-                 
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><p>My Workshop History</p></li>
+                    </ol>
                     @foreach ($attendances as $attendance)
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                          
                             @if($attendance->workshop->public)
-                                <a class="trigger-help" href="#"
+                                <a class="trigger-help" href="workshops/{{$attendance->workshop->id}}/offerings/{{$attendance->workshop_offering->id}}"
                                 data-toggle="popover" data-placement="top" title="" data-content="Public"
                             style="height: 350px">
                             @else
-                                <a class="trigger-help" href="#"
+                                <a class="trigger-help" href="workshops/{{$attendance->workshop->id}}/offerings/{{$attendance->workshop_offering->id}}"
                                 data-toggle="popover" data-placement="top" title="" data-content="Private"
                             style="height: 350px">
                             @endif

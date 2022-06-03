@@ -1,11 +1,16 @@
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
     {{-- <a class="trigger-help"    href="/assignment/{{$assignment->id}}" --}}
+        {{-- .on("click",function(grid_event) {     
+            window.location = '/admin/workshops/'+ grid_event.model.attributes.workshop_id +'/offerings/'+grid_event.model.attributes.id+'/attendances';
+          
+    
+        }) --}}
         @if($attendance->workshop->public)
-        <a class="trigger-help" href="#"
+        <a class="trigger-help" href="workshops/{{$attendance->workshop->id}}/offerings/{{$attendance->workshop_offering->id}}"
         data-toggle="popover" data-placement="top" title="" data-content="Public"
     style="height: 350px">
     @else
-        <a class="trigger-help" href="#"
+        <a class="trigger-help" href="workshops/{{$attendance->workshop->id}}/offerings/{{$attendance->workshop_offering->id}}"
         data-toggle="popover" data-placement="top" title="" data-content="Private"
     style="height: 350px">
     @endif
