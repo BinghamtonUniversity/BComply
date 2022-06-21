@@ -4,12 +4,11 @@ Route::any('/external', ['uses' => 'ExternalController@list']);
 Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
 Route::get('/auth/token/{password}','UserDashboardController@impersonate');
-Route::get('/calendar',['uses' => 'UserDashboardController@create_calendar']);
+Route::get('/calendar',['uses' => 'PublicAPIController@create_calendar']);
 
 Route::group(['middleware'=>['custom.auth']], function () {
     /* User Pages */
     Route::get('/',['uses' => 'UserDashboardController@my_assignments']);
-
     Route::get('/workshops',['uses' => 'UserDashboardController@my_workshops']);
     Route::get('/workshops/{workshop}/offerings/{offering}',['uses' => 'WorkshopOfferingController@run'])->middleware('can:view_offering,App\WorkshopOffering,offering');
     Route::get('/workshops/{workshop}/offerings/{offering}/assign',['uses' => 'WorkshopOfferingController@assign'])->middleware('can:register,App\WorkshopOffering,offering');

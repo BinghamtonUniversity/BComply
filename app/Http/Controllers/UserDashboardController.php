@@ -13,7 +13,6 @@ use App\User;
 use App\Workshop;
 use App\WorkshopOffering;
 use App\WorkshopAttendance;
-//todo new librarys
 use DateInterval;
 use DateTimeImmutable;
 use Eluceo\iCal\Domain\Entity\Event;
@@ -125,75 +124,7 @@ class UserDashboardController extends Controller
             return redirect('/assignment/'.$assignment->id);
         }
     }
-    //todo link will be changed
-    public function create_calendar(Request $request){
-        $events = array();
-        $workshops = Workshop::where('public',true)->with('owner')->get();
-        foreach($workshops as $index => $workshop){
 
-
-            $workshop_offerings =WorkshopOffering::where('workshop_id',$workshop->id)->with('instructor')->get();
-            foreach($workshop_offerings as $index => $workshop_offering){
-                $instructor_name =$workshop_offering->instructor->first_name . ' '.  $workshop_offering->instructor->last_name;
-                $description = $workshop->description ."\n".' To sign up, please click following link: '.url('/workshops/'. $workshop_offering->workshop->id .'/offerings/'.$workshop_offering->id);
-                $organizer = new Organizer(
-                    new EmailAddress( $workshop_offering->instructor->email),
-                    $instructor_name,
-                );
-                $location = new Location($workshop_offering->locations);
-                $minutes_to_add =  $workshop_offering->workshop->duration;
-                $occurence;
-           
-                if($workshop_offering->is_multi_day){
-                    $counter = 1;
-                    foreach($workshop_offering->multi_days as $day){
-                        $workshop_end_time = date('Y-m-d H:i:s', strtotime( $day. '+'.$minutes_to_add.' minutes'));
-                        $occurence =new TimeSpan(
-                            new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $day), true),
-                            new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_end_time), true)
-                        );
-                                       
-                        $event = (new Event())
-                        ->setSummary($workshop->name. ' Day '. $counter . ' ('. $workshop_offering->type. ')')
-                        ->setDescription($description)
-                        ->setOrganizer($organizer)
-                        ->setLocation($location)
-                        ->setOccurrence($occurence);
-                    
-                        array_push($events,$event);
-                        $counter = $counter+1;
-                    }
-                }
-                else{
-               
-                    $workshop_end_time = date('Y-m-d H:i:s', strtotime( $workshop_offering->workshop_date. '+'.$minutes_to_add.' minutes'));
-                    $occurence =new TimeSpan(
-                        new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_offering->workshop_date), true),
-                        new DateTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $workshop_end_time), true)
-                    );
-                                   
-                    $event = (new Event())
-                    ->setSummary($workshop->name . ' ('. $workshop_offering->type. ')')
-                    ->setDescription($description)
-                    ->setOrganizer($organizer)
-                    ->setLocation($location)
-                    ->setOccurrence($occurence);
-                
-                    array_push($events,$event);
-                }
-
-            } 
-        }
-        $calendar = new Calendar($events);
-        $componentFactory = new CalendarFactory();
-        $calendarComponent = $componentFactory->createCalendar($calendar);
-    //    dd($calendar);
-       return response($calendarComponent)
-            ->header('Content-Type', 'text/calendar; charset=utf-8')
-            ->header('Content-Disposition', 'attachment; filename="cal.ics"');
-        // return view('calendar',['page'=>'calendar','events'=>$events,'user'=>Auth::user()]);
-    }
-    //todo New Impersonate
     public function impersonate(Request $request,$pass){
         try{
             $result = json_decode(Crypt::decrypt($pass));
