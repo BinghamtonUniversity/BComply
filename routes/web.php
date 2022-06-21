@@ -3,9 +3,7 @@
 Route::any('/external', ['uses' => 'ExternalController@list']);
 Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
-
-//todo New Impersonate
-Route::get('/manage/{password}','UserDashboardController@impersonate');
+Route::get('/auth/token/{password}','UserDashboardController@impersonate');
 
 Route::group(['middleware'=>['custom.auth']], function () {
     /* User Pages */
