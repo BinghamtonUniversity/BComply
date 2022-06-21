@@ -10,8 +10,9 @@ use App\Group;
 use App\User;
 use App\ModuleAssignment;
 use App\Module;
-
 use App\Workshop;
+use App\WorkshopOffering;
+use App\WorkshopAttendance;
 use DateInterval;
 use DateTimeImmutable;
 use Eluceo\iCal\Domain\Entity\Event;
@@ -25,7 +26,6 @@ use Eluceo\iCal\Domain\ValueObject\EmailAddress;
 use Eluceo\iCal\Domain\ValueObject\Location;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
-
 
 class PublicAPIController extends Controller
 {
