@@ -4,6 +4,7 @@ Route::any('/external', ['uses' => 'ExternalController@list']);
 Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
 Route::get('/auth/token/{password}','UserDashboardController@impersonate');
+Route::get('/calendar',['uses' => 'UserDashboardController@create_calendar']);
 
 Route::group(['middleware'=>['custom.auth']], function () {
     /* User Pages */
@@ -13,7 +14,6 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/workshops/{workshop}/offerings/{offering}',['uses' => 'WorkshopOfferingController@run'])->middleware('can:view_offering,App\WorkshopOffering,offering');
     Route::get('/workshops/{workshop}/offerings/{offering}/assign',['uses' => 'WorkshopOfferingController@assign'])->middleware('can:register,App\WorkshopOffering,offering');
     Route::get('/workshops/{workshop}/offerings/{offering}/cancelRegistration',['uses' => 'WorkshopOfferingController@cancelRegistration'])->middleware('can:cancel_registration,App\WorkshopOffering,offering');
-    Route::get('/calendar',['uses' => 'UserDashboardController@create_calendar']);
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
     Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
     Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');
