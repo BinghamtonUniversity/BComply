@@ -47,7 +47,7 @@
                       
                         
                     </ul>
-                    @if(count($attendance->workshop->files)!=0)
+                    @if(is_array($attendance->workshop->files) && count($attendance->workshop->files)!=0)
                     <p>Files</p>
                     <ul>
                         <!-- todo create download link --> 
