@@ -1,6 +1,6 @@
 @extends('default.default')
 
-@section('title', 'Youtube Module')
+@section('title', 'Training Module')
 
 @section('content')
 <div class="row">
