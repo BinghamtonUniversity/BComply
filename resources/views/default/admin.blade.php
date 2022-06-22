@@ -71,7 +71,7 @@
                   <li class="visible-xs-block @if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-cog fa-fw"></i>&nbsp; Modules</a></li>
               @endcan
               @can('view_reports','App\Report')
-                  <li class="visible-xs-block @if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-files-o fa-fw"></i>&nbsp;Module Reports</a></li>
+                  <li class="visible-xs-block @if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-clipboard fa-fw"></i>&nbsp;Module Reports</a></li>
               @endcan
               @can('manage_bulk_assignments','App\BulkAssignment')
                   <li class="visible-xs-block @if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-fw fa-shopping-cart"></i>&nbsp; Bulk Assignments</a></li>
@@ -83,7 +83,7 @@
                   <li class="visible-xs-block @if($page=="instructor_workshops") active @endif"><a href="/admin/instructor_workshops"><i class="fa fa-home fa-fw"></i>&nbsp; My Workshops</a></li>
               @endcan
               @can('view_in_admin','App\Workshop')
-                  <li class="visible-xs-block @if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-files-o fa-fw"></i>&nbsp;Workshop Reports</a></li>
+                  <li class="visible-xs-block @if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-clipboard fa-fw"></i>&nbsp;Workshop Reports</a></li>
               @endcan
               <li class="visible-xs-block"><a href="https://github.com/BinghamtonUniversity/BComply/wiki" target="_blank"><i class="fa fa-info fa-fw"></i>&nbsp; View Documentation</a></li>
             </li>
@@ -106,7 +106,7 @@
                 <li class="@if($page=="modules") active @endif"><a href="/admin/modules"><i class="fa fa-cog fa-fw"></i>&nbsp; Modules</a></li>
             @endcan
             @can('view_reports','App\Report')
-                <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-files-o fa-fw"></i>&nbsp;Module Reports</a></li>
+                <li class="@if($page=="reports") active @endif"><a href="/admin/reports"><i class="fa fa-clipboard fa-fw"></i>&nbsp;Module Reports</a></li>
             @endcan
             @can('manage_bulk_assignments','App\BulkAssignment')
                 <li class="@if($page=="bulk_assignments") active @endif"><a href="/admin/bulk_assignments"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Bulk Assignments</a></li>
@@ -118,7 +118,7 @@
               <li class="@if($page=="instructor_workshops") active @endif"><a href="/admin/instructor_workshops"><i class="fa fa-home fa-fw"></i>&nbsp; My Workshops</a></li>
             @endcan
             @can('view_in_admin','App\Workshop')
-                <li class="@if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-files-o fa-fw"></i>&nbsp;Workshop Reports</a></li>
+                <li class="@if($page=="workshop_reports") active @endif"><a href="/admin/workshop_reports"><i class="fa fa-clipboard fa-fw"></i>&nbsp;Workshop Reports</a></li>
             @endcan
             <li><a href="https://github.com/BinghamtonUniversity/BComply/wiki" target="_blank"><i class="fa fa-fw fa-info"></i>&nbsp; View Documentation</a></li>
         </ul>
