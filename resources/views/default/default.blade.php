@@ -61,11 +61,10 @@
               @endif
             </li>
             <li class="visible-xs-block">&nbsp;</li>
-            <li class="visible-xs-block @if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; My Modules</a></li>
-            <li class="visible-xs-block @if($page =="my_workshops") active @endif"><a href="/workshops"><i class="fa fa-user fa-fw"></i>&nbsp; My Workshops</a></li>
+            <li class="visible-xs-block @if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-cog fa-fw"></i>&nbsp; My Modules</a></li>
+            <li class="visible-xs-block @if($page =="my_workshops") active @endif"><a href="/workshops"><i class="fa fa-home fa-fw"></i>&nbsp; My Workshops</a></li>
             <li class="visible-xs-block @if($page  =="history") active @endif"><a href="/history"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
             <li class="visible-xs-block @if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Modules</a></li>
-            {{-- <li class="visible-xs-block @if($page =="calendar") active @endif"><a href="/calendar"><i class="fa fa-calendar fa-fw"></i>&nbsp; Google Calendar</a></li> --}}
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -74,16 +73,13 @@
     @if(!is_null(Auth::user()))
       <div class="sidebar col-sm-3 col-md-2 ">
         <ul class="nav nav-sidebar">
-          <li class="@if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-user fa-fw"></i>&nbsp; My Modules</a></li>
-          <li class="@if($page =="my_workshops") active @endif"><a href="/workshops"><i class="fa fa-user fa-fw"></i>&nbsp; My Workshops</a></li>
+          <li class="@if($page =="my_assignments") active @endif"><a href="/"><i class="fa fa-cog fa-fw"></i>&nbsp; My Modules</a></li>
+          <li class="@if($page =="my_workshops") active @endif"><a href="/workshops"><i class="fa fa-home fa-fw"></i>&nbsp; My Workshops</a></li>
           <li class="@if($page  =="history") active @endif"><a href="/history"><i class="fa fa-history fa-fw"></i>&nbsp; My History</a></li>
           <li class="@if($page =="shop") active @endif"><a href="/shop"><i class="fa fa-shopping-cart fa-fw"></i>&nbsp; Shop Modules</a></li>
-          {{-- <li class="@if($page =="calendar") active @endif"><a href="/calendar"><i class="fa fa-calendar fa-fw"></i>&nbsp; Google Calendar</a></li> --}}
         </ul>
       </div>
     @endif
-
-
     <div class="container-fluid" id="main-container">
       <div class="row">
         <div class="col-sm-12 admin-main">
