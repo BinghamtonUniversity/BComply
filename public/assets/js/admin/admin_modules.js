@@ -131,19 +131,21 @@ ajax.get('/api/modules',function(data) {
                     "name":"assignment",
                     "id":"assignment",
                     "label":"Assignment Notification Template",
+                    "raw":true,
                     "template": "{{attributes.templates.assignment}}",
                     "value":
-`{{user.first_name}} {{user.last_name}}<br>
-<br>
-This email serves as notification that you have been assigned the "{{module.name}}" training module, 
-which is required to be completed by {{module.due_date}}.<br>
-<br>
-To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
+                    `{{user.first_name}} {{user.last_name}}<br>
+                    <br>
+                    This email serves as notification that you have been assigned the "{{module.name}}" training module, 
+                    which is required to be completed by {{module.due_date}}.<br>
+                    <br>
+                    To complete this training, please utilize the following link: <a href="{{link}}">{{module.name}}</a>.`
                 },
                 {
                     "type":"textarea",
                     "name":"reminder",
                     "id":"reminder",
+                    "raw":true,
                     "label":"Assignment Reminder Template",
                     "template": "{{attributes.templates.reminder}}",
                     "value":
@@ -158,6 +160,7 @@ To complete this training, please utilize the following link: <a href="{{link}}"
                     "type":"textarea",
                     "name":"past_due_reminder",
                     "id":"past_due_reminder",
+                    "raw":true,
                     "label":"Assignment Past Due Reminder Template",
                     "template": "{{attributes.templates.past_due_reminder}}",
                     "show": [
@@ -181,6 +184,7 @@ To complete this training, please utilize the following link: <a href="{{link}}"
                     "type":"textarea",
                     "name":"completion_notification",
                     "id":"completion_notification",
+                    "raw":true,
                     "label":"Assignment Complation Template",
                     "template": "{{attributes.templates.completion_notification}}",
                     "value":
@@ -194,6 +198,7 @@ You may view the confirmation certificate here: <a href="{{link}}">Certificate</
                     "type":"textarea",
                     "name":"certificate",
                     "id":"certificate",
+                    "raw":true,
                     "label":"Completion Certificate Template",
                     "template": "{{attributes.templates.certificate}}",
                     "value":

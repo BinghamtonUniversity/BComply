@@ -29,6 +29,7 @@ ajax.get('/api/workshops',function(data) {
                     "type":"textarea",
                     "name":"notification",
                     "id":"notification",
+                    "raw":true,
                     "label":"Workshop Notification Template",
                     "template": "{{attributes.config.notification}}",
                     "value":
@@ -43,6 +44,7 @@ ajax.get('/api/workshops',function(data) {
                     "type":"textarea",
                     "name":"reminder",
                     "id":"reminder",
+                    "raw":true,
                     "label":"Workshop Reminder Template",
                     "template": "{{attributes.config.reminder}}",
                     "value":
@@ -56,6 +58,7 @@ ajax.get('/api/workshops',function(data) {
                     "type":"textarea",
                     "name":"unregister",
                     "id":"unregister",
+                    "raw":true,
                     "label":"Workshop Unregister Template",
                     "template": "{{attributes.config.unregister}}",
                     "value":
@@ -70,6 +73,7 @@ ajax.get('/api/workshops',function(data) {
                     "type":"textarea",
                     "name":"certificate",
                     "id":"certificate",
+                    "raw":true,
                     "label":"Workshop Certificate Template",
                     "template": "{{attributes.config.completion}}",
                     "value":
@@ -83,6 +87,7 @@ ajax.get('/api/workshops',function(data) {
                     "type":"textarea",
                     "name":"completion",
                     "id":"completion",
+                    "raw":true,
                     "label":"Workshop Completion Template",
                     "template": "{{attributes.config.certificate}}",
                     "value":
