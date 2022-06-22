@@ -27,7 +27,9 @@ class WorkshopAttendanceObserver
       
         $offering = WorkshopOffering::where('id',$attendance->workshop_offering_id)->first();
         $workshop = Workshop::where('id',$attendance->workshop_id)->first();
-      
+        // $offering = WorkshopOffering::where('id',$attendance)->first();
+        // $workshop = $offering->workshop;
+       
         // Don't send email if the assignment template is blank
         if ($workshop->config != '') {
           

@@ -16,7 +16,7 @@ ajax.get('/api/workshops',function(data) {
             "name": "config",
             "type": "fieldset",
             "editable":true,
-            "label": "Config",
+            "label": "Email Templates",
             "fields": [
                 {
                     "type":"output",
