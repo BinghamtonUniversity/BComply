@@ -86,19 +86,16 @@
                                         </div>
                                     </div>
                                     <div class="panel-footer">
-                                       <ul>
-                                            <li><div class="badge">Location: {{$attendance->workshop_offering->locations}}</div></li>
-                                            <li><div class="badge">Type: {{$attendance->workshop_offering->type}}</div></li>
-                                            <li><div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div></li>
-                                         
+                                            <div class="badge">Location: {{$attendance->workshop_offering->locations}}</div>
+                                            <div class="badge">Type: {{$attendance->workshop_offering->type}}</div>
+                                            <div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div>
                                             @if($attendance->workshop_offering->is_multi_day)
                                             @foreach($attendance->workshop_offering->multi_days as $day)
-                                                <li><div class="badge">Date: {{$day}}</div></li>
+                                                <div class="badge">Date: {{$day}}</div>
                                             @endforeach  
                                         @else
-                                            <li><div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div></li>
+                                            <div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div></li>
                                         @endif
-                                        </ul>
                                         {{-- <div class="badge">Location: {{$attendance->date_completed->format('m/d/y')}}</div> --}}
                                     {{-- <!-- @if(!is_null($assignment->score))<div class="">Score: {{$assignment->score}}</div>@endif --> --}}
                                         {{-- @if(($assignment->status==='completed')||($assignment->status==='passed')||($assignment->status==='attended'))

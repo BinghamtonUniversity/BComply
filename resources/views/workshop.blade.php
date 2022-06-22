@@ -33,21 +33,17 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <ul>
-                        <li><div class="badge">Location: {{$attendance->workshop_offering->locations}}</div></li>
-                        <li><div class="badge">Type: {{$attendance->workshop_offering->type}}</div></li>
-                        <li><div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div></li>
+                        <div class="badge">Location: {{$attendance->workshop_offering->locations}}</div>
+                        <div class="badge">Type: {{$attendance->workshop_offering->type}}</div>
+                        <div class="badge">Instructor: {{$attendance->workshop_offering->instructor->first_name}} {{$attendance->workshop_offering->instructor->last_name}}</div>
                         @if($attendance->workshop_offering->is_multi_day)
                             @foreach($attendance->workshop_offering->multi_days as $day)
-                                <li><div class="badge">Date: {{$day}}</div></li>
+                                <div class="badge">Date: {{$day}}</div>
                             @endforeach  
                         @else
-                            <li><div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div></li>
-                        @endif
-                      
-                        
-                    </ul>
-                    @if(is_array($attendance->workshop->files) && count($attendance->workshop->files)!=0)
+                            <div class="badge">Date: {{$attendance->workshop_offering->workshop_date}}</div>
+                        @endif 
+                        @if(is_array($attendance->workshop->files) && count($attendance->workshop->files)!=0)
                     <p>Files</p>
                     <ul>
                         <!-- todo create download link --> 
@@ -55,11 +51,8 @@
                         <li><a href=""> {{$file}}</div></li>
                             @endforeach  
                     </ul>
-                
                     @endif
-                  
                 </div>
             </div>
         </a>
-
 </div>
