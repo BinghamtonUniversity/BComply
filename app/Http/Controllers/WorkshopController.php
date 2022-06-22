@@ -63,6 +63,19 @@ class WorkshopController extends Controller
           }
       
   }
+  public function download_files(Request $request,Workshop $workshop,String $file){
+    if(!is_null(Auth::user())){
+    
+            $path = public_path('storage/workshops/'.$workshop->id.'/files/'.$file);
+            return response()->download($path);
+       
+    }
+    else{
+        return view('demo_login',['page'=>'demo','error'=>'The '.$request->accountId.' guest user account is not authorized']);
+    }
+  }
+
+ 
 
     public function get_workshop_offerings(Request $request,Workshop $workshop){
           if (in_array('manage_workshops',Auth::user()->user_permissions) ||

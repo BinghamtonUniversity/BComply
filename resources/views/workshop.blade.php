@@ -48,7 +48,7 @@
                     <ul>
                         <!-- todo create download link --> 
                         @foreach($attendance->workshop->files as $file)
-                        <li><a href=""> {{$file}}</div></li>
+                        <li><a href="workshops/{{$attendance->workshop->id}}/download_file/{{$file}}"> {{$file}}</div></li>
                             @endforeach  
                     </ul>
                     @endif

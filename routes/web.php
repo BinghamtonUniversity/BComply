@@ -13,6 +13,8 @@ Route::group(['middleware'=>['custom.auth']], function () {
     Route::get('/workshops/{workshop}/offerings/{offering}',['uses' => 'WorkshopOfferingController@run'])->middleware('can:view_offering,App\WorkshopOffering,offering');
     Route::get('/workshops/{workshop}/offerings/{offering}/assign',['uses' => 'WorkshopOfferingController@assign'])->middleware('can:register,App\WorkshopOffering,offering');
     Route::get('/workshops/{workshop}/offerings/{offering}/cancelRegistration',['uses' => 'WorkshopOfferingController@cancelRegistration'])->middleware('can:cancel_registration,App\WorkshopOffering,offering');
+    //todo middleware will be added?
+    Route::get('/workshops/{workshop}/download_file/{file}',['uses' => 'WorkshopController@download_files']);
     Route::get('/history', ['uses'=>'UserDashboardController@assignment_history']);
     Route::get('/shop',['uses'=>'UserDashboardController@shop_courses']);
     Route::get('/assignment/{module_assignment}','ModuleAssignmentController@run');
