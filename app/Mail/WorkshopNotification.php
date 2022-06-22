@@ -33,7 +33,7 @@ class WorkshopNotification extends Mailable
                 'last_name'=>$user->last_name,
             ],
             'workshop'=>[
-                'name'=>$user_message['workshop_name'],
+                'name'=>$user_message['workshop_name'], 
                 'workshop_date'=>$user_message['offering_date'],
             ],
             'link'=>url('/workshops/'.$attendance->workshop_id.'/offerings/'.$attendance->workshop_offering_id)
