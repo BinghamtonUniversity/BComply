@@ -50,6 +50,17 @@ class WorkshopPolicy
             return true;
         }
     }
+    public function can_download(User $user, Workshop $workshop){
+        $is_instructor = is_null(WorkshopOffering::where('instructor_id',$user->id)->where('workshop_id',$workshop->id)->select('id')->first())?false:true;
+        $is_student = is_null(WorkshopAttendance::where('user_id',$user->id)->where('workshop_id',$workshop->id)->select('id')->first())?false:true;
+        $is_owner =$workshop->owner_user_id === $user->id ;
+        if ($is_owner || $is_student || $is_instructor) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     public function manage_workshops(User $user, Workshop $workshop)
     {
