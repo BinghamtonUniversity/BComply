@@ -5,7 +5,10 @@ ajax.get('/api/workshops',function(data) {
         {type:"hidden", name:"id"},
         {type:"checkbox", name:"public", label:"Public?","columns":6},
         {type:"select", name:"duration", label:"Duration","columns":6,options:[
-           '0:15','0:30','0:45','1:00','1:15','1:30','1:45','2:00','2:15','2:30','2:45','3:00','3:15','3:30','3:45','4:00'
+           {label:'0:15',value:15},{label:'0:30',value:30},{label:'0:45',value:45},{label:'1:00',value:60},
+           {label:'1:15',value:75},{label:'1:30',value:90},{label:'1:45',value:105},{label:'2:00',value:120},
+           {label:'2:15',value:135},{label:'2:30',value:150},{label:'2:45',value:165},{label:'3:00',value:180},
+           {label:'3:15',value:195},{label:'3:30',value:210},{label:'3:45',value:225},{label:'4:00',value:240}
         ]},
         //{type:"number", name:"duration", label:"Duration (In Minutes)","columns":6},
         {type:"text", name:"name", label:"Name", columns:8, "required":true},
@@ -113,6 +116,7 @@ ajax.get('/api/workshops',function(data) {
             {type:"checkbox", name:"public", label:"Public?", template:"{{#attributes.public}}Public{{/attributes.public}}{{^attributes.public}}Private{{/attributes.public}}"},
             {type:"text", name:"name", label:"Name"},
             {type:"textarea", name:"description", label:"Description Name"},
+            {type:"text", name:"duration", label:"Duration",template:"{{attributes.duration}} min"},
             {type:"user", name:"owner_user_id", label:"Owner", template:"{{attributes.owner.first_name}} {{attributes.owner.last_name}}"},
             {type:"text", name:"files", label:"Files"},
         ],data: data
