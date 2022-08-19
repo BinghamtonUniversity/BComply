@@ -19,7 +19,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                 "name": "is_multi_day",
                 "type": "matches",
                 "value": [
-                    false
+                    false,0
                 ]
             },
            
