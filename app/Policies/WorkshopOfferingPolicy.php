@@ -16,8 +16,8 @@ class WorkshopOfferingPolicy
     public function view_offering(User $user,String $offering){
         $workshop_offering = WorkshopOffering::where('id',$offering)->first();
         $is_public = $workshop_offering->workshop->public;
-        $workshop_attendance =  WorkshopAttendance::where('id',$workshop_offering->id)->where('user_id',$user->id)->first();
-
+        $workshop_attendance =  WorkshopAttendance::where('workshop_offering_id',$workshop_offering->id)->where('user_id',$user->id)->first();
+       
         if($is_public || $workshop_attendance){
             return true;
         }

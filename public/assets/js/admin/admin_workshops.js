@@ -121,21 +121,17 @@ ajax.get('/api/workshops',function(data) {
             {type:"text", name:"files", label:"Files"},
         ],data: data
     }).on("model:edited",function(grid_event) {
-        const duration_formatted = grid_event.model.attributes.duration.split(':');
-        const hourToMin = parseInt(duration_formatted[0])*60 + parseInt(duration_formatted[1]);
-        grid_event.model.attributes.duration = hourToMin;
+      
         ajax.put('/api/workshops/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
             // grid_event.model.update(data);
             // grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
+            grid_event.model.draw();
         });
     }).on("model:created",function(grid_event) {
-        
-        const duration_formatted = grid_event.model.attributes.duration.split(':');
-        const hourToMin = parseInt(duration_formatted[0])*60 + parseInt(duration_formatted[1]);
-        grid_event.model.attributes.duration = hourToMin;
+   
         
         ajax.post('/api/workshops',grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
