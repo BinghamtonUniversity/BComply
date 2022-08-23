@@ -56,7 +56,7 @@
             line-height: 20px;
             cursor: pointer;
             transition: 0.3s;" onclick="this.parentElement.style.display='none';">&times;</span> 
-            <strong>403</strong> Forbidden!
+            <strong>403</strong> Forbidden! {{$attendance}} {{$workshop->public}}
           </div>
        
     </div>
