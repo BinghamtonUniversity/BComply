@@ -89,8 +89,8 @@ ajax.get('/api/workshop_reports',function(data) {
                         "label": false,
                         "name": "block",
                         "array": {
-                            "min": 1,
-                            "max": null
+                            "min": 0,
+                            "max": 10
                         },
                         "fields": [
                             {
@@ -120,8 +120,8 @@ ajax.get('/api/workshop_reports',function(data) {
                         "label": false,
                         "name": "check",
                         "array": {
-                            "min": 1,
-                            "max": null
+                            "min": 0,
+                            "max": 10
                         },
                         "fields": [
                             {

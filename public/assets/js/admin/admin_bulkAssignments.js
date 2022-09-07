@@ -153,8 +153,8 @@ ajax.get('/api/bulk_assignments',function(data) {
                         "label": false,
                         "name": "block",
                         "array": {
-                            "min": 1,
-                            "max": null
+                            "min": 0,
+                            "max": 10
                         },
                         "fields": [
                             {
@@ -184,8 +184,8 @@ ajax.get('/api/bulk_assignments',function(data) {
                                 "label": false,
                                 "name": "check",
                                 "array": {
-                                    "min": 1,
-                                    "max": null
+                                    "min": 0,
+                                    "max": 10
                                 },
                                 "fields": [
                                     {
