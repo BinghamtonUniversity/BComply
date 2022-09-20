@@ -11,7 +11,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Mime\RawMessage;
-
+use Throwable;
 
 class ModuleAssignmentObserver
 {
@@ -27,7 +27,7 @@ class ModuleAssignmentObserver
         // Don't send email if the assignment template is blank
         if ($module->templates->assignment != '') {
             $user = User::where('id',$moduleAssignment->user_id)->first();
-            if($user->active && $user->send_email_check()){
+            if($user->active && $user->send_email_check() && !is_null($user->email)){
                 $user_messages =[
                     'module_name'=> $module['name'],
                     'link' => $moduleAssignment['id'],
@@ -35,7 +35,7 @@ class ModuleAssignmentObserver
                 ];
                 try {
                     Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
-                } catch (\Exception $e) {
+                } catch (Throwable $e) {
                     // keep going
                 }
             }
@@ -62,7 +62,7 @@ class ModuleAssignmentObserver
                     ];
                     try {
                         Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
-                    } catch (\Exception $e) {
+                    } catch (Throwable $e) {
                         // keep going
                     }
                 }
