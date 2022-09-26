@@ -29,6 +29,32 @@ use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 
 class PublicAPIController extends Controller
 {
+    public function get_user(Request $request, $unique_id){
+        $user = User::where('unique_id', $unique_id)->first();
+        if ($user){
+            return $user;
+        }else{
+            return response("User Not Found!",404);
+        }
+    }
+
+    public function create_user(Request $request){
+        $user = new User($request->all());
+        $user->save();
+        return $user;
+    }
+
+    public function update_user(Request $request, $unique_id){
+        $user = User::where('unique_id', $unique_id)->first();
+        if ($user){
+            $user->update($request->all());
+            return $user;
+        }else{
+            return response("User not found!",404);
+        }
+        
+    }
+
     private function sync_users(&$remote_users, &$local_users) {
         $status=['warnings'=>[],'updated'=>[],'added'=>[],'ignored'=>[]];
         foreach($remote_users as $remote_user) {
