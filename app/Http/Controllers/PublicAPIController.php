@@ -30,8 +30,18 @@ use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 class PublicAPIController extends Controller
 {
     public function get_user(Request $request, $unique_id){
-        $user = User::where('unique_id', $unique_id)->first();
+        $user = User::where('unique_id', $unique_id);
+        if ($request->has('include_memberships') && $request->include_memberships == 'true'){
+            $user = $user->with('group_memberships');
+        }
+        $user = $user->first();
         if ($user){
+            if($request->has('include_memberships') && $request->include_memberships == 'true')
+            {
+                foreach($user->group_memberships as $membership){
+                    $membership->group;
+                }
+            }
             return $user;
         }else{
             return response("User Not Found!",404);
@@ -51,8 +61,30 @@ class PublicAPIController extends Controller
             return $user;
         }else{
             return response("User not found!",404);
+        }   
+    }
+    public function add_group_membership(Request $request, $group_name, $unique_id){
+        $group = Group::where("name",$group_name)->first();
+        if(!isset($group) || is_null($group)){
+            return response("Group not found!",404);
         }
+        $user = User::where("unique_id",$unique_id)->first();
         
+        if(!isset($user) || is_null($user)){
+            return response("User not found!",404);
+        }
+        $group_membership = new GroupMembership([
+            'user_id'=>$user->id,
+            "group_id"=>$group->id]);
+        $group_membership->save();
+        return response("Successfully added to the group",200);
+    }
+    
+    public function delete_group_membership(Request $request, $group_name, $unique_id){
+        $group = Group::where("name",$group_name)->first();
+        $user = User::where("unique_id",$unique_id)->first();
+        GroupMembership::where('user_id',$user->id)->where("group_id",$group->id)->delete();
+        return response("Successfully removed from the group",200);
     }
 
     private function sync_users(&$remote_users, &$local_users) {
