@@ -32,16 +32,14 @@ class PublicAPIController extends Controller
     public function get_user(Request $request, $unique_id){
         $user = User::where('unique_id', $unique_id);
         if ($request->has('include_memberships') && $request->include_memberships == 'true'){
-            $user = $user->with('group_memberships');
+            $user = $user->with('pivot_groups');
         }
         $user = $user->first();
+        if ($request->has('include_memberships') && $request->include_memberships == 'true'){
+            $user->group_memberships = $user->pivot_groups;
+            unset($user->pivot_groups);
+        }
         if ($user){
-            if($request->has('include_memberships') && $request->include_memberships == 'true')
-            {
-                foreach($user->group_memberships as $membership){
-                    $membership->group;
-                }
-            }
             return $user;
         }else{
             return response("User Not Found!",404);
@@ -63,8 +61,8 @@ class PublicAPIController extends Controller
             return response("User not found!",404);
         }   
     }
-    public function add_group_membership(Request $request, $group_name, $unique_id){
-        $group = Group::where("name",$group_name)->first();
+    public function add_group_membership(Request $request, $group_slug, $unique_id){
+        $group = Group::where("slug",$group_slug)->first();
         if(!isset($group) || is_null($group)){
             return response("Group not found!",404);
         }
@@ -80,8 +78,8 @@ class PublicAPIController extends Controller
         return response("Successfully added to the group",200);
     }
     
-    public function delete_group_membership(Request $request, $group_name, $unique_id){
-        $group = Group::where("name",$group_name)->first();
+    public function delete_group_membership(Request $request, $group_slug, $unique_id){
+        $group = Group::where("slug",$group_slug)->first();
         $user = User::where("unique_id",$unique_id)->first();
         GroupMembership::where('user_id',$user->id)->where("group_id",$group->id)->delete();
         return response("Successfully removed from the group",200);

@@ -24,9 +24,8 @@ Route::get('/users/{unique_id}/assignments','PublicAPIController@get_user_assign
 Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assignments');
 
 // Groups
-Route::get('/groups/{group_name}/members','PublicAPIController@get_members');
-Route::post('/groups/{group_name}/users/{unique_id}','PublicAPIController@add_group_membership');
-Route::delete('/groups/{group_name}/users/{unique_id}','PublicAPIController@delete_group_membership');
+Route::post('/groups/{group_slug}/users/{unique_id}','PublicAPIController@add_group_membership');
+Route::delete('/groups/{group_slug}/users/{unique_id}','PublicAPIController@delete_group_membership');
 
 //todo New Impersonate
 //Use the same pass_reset methods
