@@ -73,7 +73,9 @@ class PublicAPIController extends Controller
         }
         $group_membership = new GroupMembership([
             'user_id'=>$user->id,
-            "group_id"=>$group->id]);
+            "group_id"=>$group->id,
+            'type' => 'external'
+        ]);
         $group_membership->save();
         return response("Successfully added to the group",200);
     }
