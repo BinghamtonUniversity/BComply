@@ -35,11 +35,11 @@ class PublicAPIController extends Controller
             $user = $user->with('pivot_groups');
         }
         $user = $user->first();
-        if ($request->has('include_memberships') && $request->include_memberships == 'true'){
-            $user->group_memberships = $user->pivot_groups;
-            unset($user->pivot_groups);
-        }
         if ($user){
+            if ($request->has('include_memberships') && $request->include_memberships == 'true'){
+                $user->group_memberships = $user->pivot_groups;
+                unset($user->pivot_groups);
+            }
             return $user;
         }else{
             return response("User Not Found!",404);
