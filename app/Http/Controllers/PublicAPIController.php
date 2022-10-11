@@ -71,12 +71,10 @@ class PublicAPIController extends Controller
         if(!isset($user) || is_null($user)){
             return response("User not found!",404);
         }
-        $group_membership = new GroupMembership([
+        $group_membership = GroupMembership::updateOrCreate([
             'user_id'=>$user->id,
             "group_id"=>$group->id,
-            'type' => 'external'
-        ]);
-        $group_membership->save();
+            ],['type' => 'external']);
         return response("Successfully added to the group",200);
     }
     
@@ -257,7 +255,7 @@ class PublicAPIController extends Controller
                 );
                 $location = new Location($workshop_offering->locations);
                 $minutes_to_add =  $workshop_offering->workshop->duration;
-                $occurence;
+                $occurence = null;
             
                 if($workshop_offering->is_multi_day){
                     $counter = 1;
