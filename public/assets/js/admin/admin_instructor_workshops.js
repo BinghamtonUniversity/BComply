@@ -9,7 +9,7 @@ ajax.get('/api/instructor_workshops/',function(data) {
     schema:[
         {type:"hidden", name:"id"},
         {type:"hidden", name:"workshop_id",label:"Workshop ID",value:id},
-        
+        {type:"text",name:"name",required:true,label:"Name", template:"{{attributes.workshop.name}}"},
         {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
         {type:"number",name:"max_capacity",required:true,label:"Max Capacity"},
         {type:"text",name:"locations",required:true,label:"Locations"},
@@ -17,6 +17,7 @@ ajax.get('/api/instructor_workshops/',function(data) {
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
         ]},
+        {type:"text", name:"workshop_attendance", label:"Attendance Count", template:"{{attributes.workshop_attendance.length}}"},
         {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
         {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
             input: "MM-DD-YYYY HH:mm:ss"

@@ -181,14 +181,41 @@ ajax.get('/api/workshops',function(data) {
             })
     })
     .on("model:deleted",function(grid_event) {
-        ajax.delete('/api/workshops/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
-            grid_event.model.undo();
-            grid_event.model.draw();
-        });
+        if (grid_event.model.attributes.workshop_offerings.length>0){
+            body = `
+            <form id="workshop_delete" method="get" enctype="multipart/form-data">
+            <p> This workshop has `+ grid_event.model.attributes.workshop_offerings.length+` workshop offerings </p>
+           
+            <input type="submit" class="btn btn-danger" value="Delete" name="submit" />
+            </form>
+            `;
+            $('#adminModal .modal-title').html('Are you sure you want to delete this record')
+            $('#adminModal .modal-body').html(body);
+            $('#adminModal').modal('show')
+            const deleteform = document.querySelector('#workshop_delete')
+            deleteform.addEventListener('submit', e => {
+                ajax.delete('/api/workshops/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+                    grid_event.model.undo();
+                    grid_event.model.draw();
+                });
+            })
+        }
+        else{
+            ajax.delete('/api/workshops/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
+                grid_event.model.undo();
+                grid_event.model.draw();
+            });
+        }
+        
+        
     }).on("model:manage_offerings",function(grid_event) {
         window.location = '/admin/workshops/'+grid_event.model.attributes.id+'/offerings/';
     }).on("model:manage_files",function(grid_event) {
         window.location = '/admin/workshops/'+grid_event.model.attributes.id+'/files/';
+    }).on("click",function(grid_event) {     
+        window.location = '/admin/workshops/'+grid_event.model.attributes.id+'/offerings/';
+      
+
     });
 });
 var upload_file = function(url) {

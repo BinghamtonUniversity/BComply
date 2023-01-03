@@ -19,7 +19,7 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
                 "name": "is_multi_day",
                 "type": "matches",
                 "value": [
-                    false,0
+                    false
                 ]
             },
            
@@ -44,13 +44,58 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
      
       
     ];
+    edit_fields = [
+        {type:"hidden", name:"id"},
+        {type:"hidden", name:"workshop_id",label:"Workshop ID",value:id},
+        
+        {type:"user", name:"instructor_id",required:true, label:"Instructor", template:"{{attributes.instructor.first_name}} {{attributes.instructor.last_name}}"},
+        {type:"number",name:"max_capacity",required:true,label:"Max Capacity"},
+        {type:"text",name:"locations",required:true,label:"Locations"},
+      
+        {type:"select", name:"type", label:"Workshop Type",options:[
+            'online','in-person'
+        ]},
+        {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
+
+        {type:"datetime",name:"workshop_date",label:"Workshop Date",required:true, format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        }, "show": [
+            {
+                "name": "is_multi_day",
+                "type": "matches",
+                "value": [
+                    false
+                ]
+            },
+           
+        ],
+         
+    },
+
+        {type:"datetime",name:"multi_days",label:"Workshop Dates",required:true,format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        }, "show": [
+            {
+                "name": "is_multi_day",
+                "type": "matches",
+                "value": [
+                    false
+                ]
+            }
+        ],
+        "array": 50  },
+    
+     
+     
+      
+    ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
     item_template: gform.stencils['table_row'],
     search: false,columns: false,upload:false,download:false,title:'Instructors',
     entries:[],
     actions:actions,
     create:{fields:create_fields},
-    edit:{fields:create_fields},
+    edit:{fields:edit_fields},
     count:20,
     schema:[
         {type:"hidden", name:"id"},
@@ -65,10 +110,12 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         ]},
         {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
         {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
-            input: "YYYY-MM-DD HH:mm:ss"
+            input: "YYYY-MM-DD HH:mm:ss",
+           
         }},
         {type:"datetime",name:"multi_days",label:"Workshop Dates",format: {
-            input: "YYYY-MM-DD HH:mm:ss"
+            input: "YYYY-MM-DD HH:mm:ss",
+          
         }},
 
     ], data: data
@@ -80,9 +127,9 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
     }).on("model:edited",function(grid_event) {
         if(grid_event.model.attributes.is_multi_day){
            
-            grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
-            var myJsonString =  grid_event.model.attributes.multi_days;
-            grid_event.model.attributes.multi_days =myJsonString;
+            // grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
+            // var myJsonString =  grid_event.model.attributes.multi_days;
+            // grid_event.model.attributes.multi_days =myJsonString;
  
         }
         ajax.put('/api/workshops/'+id+'/offerings/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {

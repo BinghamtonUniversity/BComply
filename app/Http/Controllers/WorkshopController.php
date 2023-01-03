@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class WorkshopController extends Controller
 {
     public function get_all_workshops(){
-        return Workshop::with('owner')->get();
+        return Workshop::with('owner')->with('workshop_offerings')->get();
         // TODO
         // if (in_array('manage_modules',Auth::user()->user_permissions) ||
         //     in_array('assign_modules',Auth::user()->user_permissions)) {
@@ -51,12 +51,16 @@ class WorkshopController extends Controller
     public function get_instructor_offerings(Request $request){
         
           $is_instructor = is_null(WorkshopOffering::where('instructor_id',Auth::user()->id)->select('id')->first())?false:true;
-      
+         
           if($is_instructor){
-              return WorkshopOffering::where('instructor_id',Auth::user()->id)
+          
+           return WorkshopOffering::where('instructor_id',Auth::user()->id)
               ->with(['instructor'=>function($query){
                   $query->select('id','first_name','last_name');
-              }])->get();
+              }])->with('workshop')->with('workshop_attendance')->get();
+
+            $attendance_count=0;// = WorkshopAttendance::where('workshop_offering_id',$workshop_offering->id)->count();
+           
           }
           else{
               return [];

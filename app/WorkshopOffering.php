@@ -14,7 +14,7 @@ class WorkshopOffering extends Model
    protected $casts = ['multi_days' => 'array'];
    protected function serializeDate(\DateTimeInterface $date) {
        return $date->format('Y-m-d H:i:s');
-   }
+    }
       /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -24,10 +24,13 @@ class WorkshopOffering extends Model
    /**
     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
     */
-   public function workshop(){
+    public function workshop(){
        return $this->belongsTo(Workshop::class,'workshop_id');
-   }
-   public function instructor(){
-    return $this->belongsTo(User::class,'instructor_id');
-}
+    }
+    public function instructor(){
+        return $this->belongsTo(User::class,'instructor_id');
+    
+    }
+   
+  
 }

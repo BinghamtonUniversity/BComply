@@ -189,7 +189,7 @@ class PublicAPIController extends Controller
         $events = array();
         $workshops = Workshop::where('public',true)->with('owner')->get();
         foreach($workshops as $index => $workshop){
-            $workshop_offerings =WorkshopOffering::where('workshop_id',$workshop->id)->with('instructor')->get();
+            $workshop_offerings =WorkshopOffering::where('workshop_id',$workshop->id)->where('deleted_at',null)->with('instructor')->get();
             foreach($workshop_offerings as $index => $workshop_offering){
                 $instructor_name =$workshop_offering->instructor->first_name . ' '.  $workshop_offering->instructor->last_name;
                 $description = $workshop->description ."\n".'To sign up, please click the following link: '.url('/workshops/'. $workshop_offering->workshop->id .'/offerings/'.$workshop_offering->id);
