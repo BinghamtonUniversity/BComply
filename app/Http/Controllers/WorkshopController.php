@@ -151,8 +151,9 @@ class WorkshopController extends Controller
                                 'locations' => $workshop_offering->locations,
                                 'workshop_date' => $start_date,
                                 'type' => $workshop_offering->type,
-                                'is_multi_day' =>false,
-                                'multi_days' => [],
+                                'status' => 'active',
+                                'is_multi_day' =>true,
+                                'multi_days' => [$start_date],
                             ]);
                         if ($flag ==0){
                             $first_id = $new_offering->id;
@@ -185,6 +186,8 @@ class WorkshopController extends Controller
         return $workshop_offering->where('id',$workshop_offering->id)->with('instructor')->first();
     }
     public function update_workshop_offering(Request $request,Workshop $workshop,WorkshopOffering $offering){
+
+       
         $offering->update($request->all());
         $offering->save();
 

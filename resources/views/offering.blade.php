@@ -87,7 +87,7 @@
                             <img src="https://az818438.vo.msecnd.net/icons/slack.png" style="width:72px;height:72px;" />
                         </div> --}}
                         <h4 id="thumbnail-label"><p>{{$workshop->name}}</p></h4>
-                        <p><i class="glyphicon glyphicon-user light-red lighter bigger-120"></i>&nbsp;{{$workshop->owner->first_name}} {{$workshop->owner->last_name}}</p>
+                        <p><i class="glyphicon glyphicon-user light-red lighter bigger-120"></i>&nbsp;Instructor: {{$offering->instructor->first_name}} {{$offering->instructor->last_name}}</p>
                         @if($attendance)
                         <span class="label label-info">Status: {{$attendance->attendance}}</span>
                         @else
@@ -98,8 +98,14 @@
                         @else
                         <span class="label label-primary">Private</span>
                         @endif
+
+                        @if($offering->status=="active" || $offering->status=="reactive" )
+                        <span class="label label-success">Active</span>
+                        @else
+                        <span class="label label-danger">Cancelled</span>
+                        @endif
                         
-                        <div class="thumbnail-description smaller" style="margin-top: 20px;" > {{$workshop->description}}</div>
+                        <div class="thumbnail-description smaller" style="margin-top: 20px;" > Description: {{$workshop->description}}</div>
                         </div>
                         <table class="table table-borderless">
                         
@@ -145,7 +151,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2">Instructor</td>
-                                <td class="text-end">{{$offering->instructor->first_name }} {{$offering->instructor->last_name}}</td>
+                                <td class="text-end"><i class="glyphicon glyphicon-user light-red lighter bigger-120"></i>&nbsp;{{$offering->instructor->first_name }} {{$offering->instructor->last_name}}</td>
                             </tr>
                             <tr>
                                 <td colspan="2">Max Capacity</td>

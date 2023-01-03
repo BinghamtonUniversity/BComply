@@ -26,7 +26,7 @@ class WorkshopNotification extends Mailable
     {
       
         $m = new \Mustache_Engine;
-       
+        
         $this->content = $m->render($user_message['notification'],[
             'user'=>[
                 'first_name'=> $user->first_name,
@@ -36,6 +36,7 @@ class WorkshopNotification extends Mailable
                 'name'=>$user_message['workshop_name'], 
                 'workshop_date'=>$user_message['offering_date'],
             ],
+            'status'=> $user_message['status'] ? $user_message['status'] : "active",
             'link'=>url('/workshops/'.$attendance->workshop_id.'/offerings/'.$attendance->workshop_offering_id)
         ]);
         $this->attendance = $attendance;

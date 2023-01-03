@@ -10,39 +10,15 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
         ]},
-        {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
-
-        {type:"datetime",name:"workshop_date",label:"Workshop Date",required:true, format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        }, "show": [
-            {
-                "name": "is_multi_day",
-                "type": "matches",
-                "value": [
-                    false
-                ]
-            },
-           
-        ],
-         
-    },
-
-        {type:"datetime",name:"multi_days",label:"Workshop Dates",required:true,format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        }, "show": [
-            {
-                "name": "is_multi_day",
-                "type": "matches",
-                "value": [
-                    true
-                ]
-            }
-        ],
-        "array": 50  },
-    
      
-     
-      
+        {type:"hidden", name:"is_multi_day",value:1},
+
+        {type:"hidden",name:"workshop_date",label:"Workshop Date"},
+
+        {type:"datetime",name:"multi_days",label:"Workshop Dates",required:true,  format: {
+            input: "YYYY-MM-DD HH:mm:ss"
+        },"array": 50  },
+
     ];
     edit_fields = [
         {type:"hidden", name:"id"},
@@ -55,38 +31,17 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
         ]},
-        {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
+        {type:"select", name:"status", label:"Status",options:[
+            'active','cancelled','reactive'
+        ]},
+        {type:"hidden", name:"is_multi_day",value:1},
 
-        {type:"datetime",name:"workshop_date",label:"Workshop Date",required:true, format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        }, "show": [
-            {
-                "name": "is_multi_day",
-                "type": "matches",
-                "value": [
-                    false
-                ]
-            },
-           
-        ],
-         
-    },
+        {type:"hidden",name:"workshop_date",label:"Workshop Date"},
 
         {type:"datetime",name:"multi_days",label:"Workshop Dates",required:true,format: {
             input: "YYYY-MM-DD HH:mm:ss"
-        }, "show": [
-            {
-                "name": "is_multi_day",
-                "type": "matches",
-                "value": [
-                    false
-                ]
-            }
-        ],
+        }, 
         "array": 50  },
-    
-     
-     
       
     ];
     gdg = new GrapheneDataGrid({el:'#adminDataGrid',
@@ -108,45 +63,42 @@ ajax.get('/api/workshops/'+id+'/offerings',function(data) {
         {type:"select", name:"type", label:"Workshop Type",options:[
             'online','in-person'
         ]},
-        {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
-        {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
-            input: "YYYY-MM-DD HH:mm:ss",
+        {type:"select", name:"status", label:"Status",options:[
+            'active','cancelled','reactive'
+        ]},
+        // {type:"checkbox", name:"is_multi_day", label:"Multiple Day?","columns":6},
+        // {type:"datetime",name:"workshop_date",label:"Workshop Date",format: {
+        //     input: "YYYY-MM-DD HH:mm:ss",
            
-        }},
-        {type:"datetime",name:"multi_days",label:"Workshop Dates",format: {
+        // }},
+        {type:"datetime",name:"multi_days",label:"Workshop Dates", template:"{{#attributes.multi_days}} {{.}} <br>{{/attributes.multi_days}}",format: {
             input: "YYYY-MM-DD HH:mm:ss",
-          
-        }},
+        },},
 
     ], data: data
     }).on("model:deleted",function(grid_event) {
+        
         ajax.delete('/api/workshops/'+id+'/offerings/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
             grid_event.model.undo();
            
         });
     }).on("model:edited",function(grid_event) {
-        if(grid_event.model.attributes.is_multi_day){
-           
-            // grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
-            // var myJsonString =  grid_event.model.attributes.multi_days;
-            // grid_event.model.attributes.multi_days =myJsonString;
- 
-        }
+        
+        grid_event.model.attributes.is_multi_day = 1;          
+        grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
+
         ajax.put('/api/workshops/'+id+'/offerings/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
             // grid_event.model.update(data);
             // grid_event.model.draw();
         },function(data) {
             grid_event.model.undo();
+            grid_event.model.draw();
         });
     }).on("model:created",function(grid_event) {
-        if(grid_event.model.attributes.is_multi_day){
-            
-            grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
-            var myJsonString =  grid_event.model.attributes.multi_days;
-            grid_event.model.attributes.multi_days =myJsonString;
-        
-        }
+        grid_event.model.attributes.is_multi_day = 1;   
+        grid_event.model.attributes.workshop_date = grid_event.model.attributes.multi_days[0]
+       
         ajax.post('/api/workshops/'+id+'/offerings',grid_event.model.attributes,function(data) {
            // debugger;
             grid_event.model.update(data)

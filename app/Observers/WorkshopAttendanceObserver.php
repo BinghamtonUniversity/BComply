@@ -53,7 +53,7 @@ class WorkshopAttendanceObserver
         }
     }
      /**
-     * Handle the workshop attendance "saved" event.
+     * Handle the workshop attendance "deleted" event.
      *
      * @param WorkshopAttendance $attendance
      * @return void

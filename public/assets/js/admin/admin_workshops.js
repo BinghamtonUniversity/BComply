@@ -45,6 +45,24 @@ ajax.get('/api/workshops',function(data) {
                 },
                 {
                     "type":"textarea",
+                    "name":"update",
+                    "id":"update",
+                    "raw":true,
+                    "label":"Workshop Update Template",
+                    "template": "{{attributes.config.update}}",
+                    "value":
+                        `{{user.first_name}} {{user.last_name}}<br>
+                        <br>
+                        This email serves as notification that the workshop you have been assigned is updated. 
+                        <br>
+                        Workshop name: "{{workshop.name}}" <br>
+                        Workshop date: "{{workshop.workshop_date}}"<br>
+                        Workshop status: "{{status}}"<br>
+                        <br>
+                        Workshop link: <a href="{{link}}">{{workshop.name}}</a>.`
+                },
+                {
+                    "type":"textarea",
                     "name":"reminder",
                     "id":"reminder",
                     "raw":true,

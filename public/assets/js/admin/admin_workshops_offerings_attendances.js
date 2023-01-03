@@ -37,7 +37,7 @@ ajax.get('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances',function(d
            
         });
     }).on("model:edited",function(grid_event) {
-    
+       
         ajax.put('/api/workshops/'+ids[0]+'/offerings/'+ids[1]+'/attendances/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {
             grid_event.model.update(data)
             // grid_event.model.update(data);
