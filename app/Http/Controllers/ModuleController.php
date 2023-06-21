@@ -72,7 +72,7 @@ class ModuleController extends Controller
     }
     public function get_module_assignments(Request $request,Module $module){
         // TJC -- Written like this to be faster and more efficient 6/21/23
-        $assignments = DB::table('module_versions')
+        $assignments = DB::table('module_assignments')
             ->select(
                 'module_assignments.id as id',
                 'module_versions.name as version',
@@ -82,10 +82,9 @@ class ModuleController extends Controller
                 'date_due as due', 
                 'date_started as started', 
                 'date_completed as completed')
-            ->from('module_versions')
-            ->leftJoin('module_assignments','module_versions.id','=','module_assignments.module_version_id')
+            ->leftJoin('module_versions','module_assignments.module_version_id','=','module_versions.id')
             ->leftJoin('users','module_assignments.user_id','=','users.id')
-            ->where('module_versions.module_id',$module->id)->get();
+            ->where('module_assignments.module_id',$module->id)->get();
         return $assignments;
     }
     public function update_module(Request $request,Module $module){
