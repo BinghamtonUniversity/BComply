@@ -38,15 +38,15 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         template = `
         <table class="table">
         <tbody>
-        <tr><td>User</td><td>{{user.first_name}} {{user.last_name}}</td></tr>
-        <tr><td>Module</td><td>{{version.name}}</td></tr>
+        <tr><td>User</td><td>{{first}} {{last}}</td></tr>
+        <tr><td>Module</td><td>{{version}}</td></tr>
         <tr><td>Status</td><td>{{status}}</td></tr>
         <tr><td>Score</td><td>{{score}}</td></tr>
         <tr><td>Duration</td><td>{{duration}}</td></tr>
-        <tr><td>Date Assigned</td><td>{{date_assigned}}</td></tr>
-        <tr><td>Date Due</td><td>{{date_due}}</td></tr>
-        <tr><td>Date Started</td><td>{{date_started}}</td></tr>
-        <tr><td>Date Completed</td><td>{{date_completed}}</td></tr>
+        <tr><td>Date Assigned</td><td>{{assigned}}</td></tr>
+        <tr><td>Date Due</td><td>{{due}}</td></tr>
+        <tr><td>Date Started</td><td>{{started}}</td></tr>
+        <tr><td>Date Completed</td><td>{{completed}}</td></tr>
         </tbody>
         </table>
         `;

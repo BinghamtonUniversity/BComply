@@ -77,11 +77,14 @@ class ModuleController extends Controller
                 'module_assignments.id as id',
                 'module_versions.name as version',
                 'users.first_name as first', 
-                'users.last_name as last', 
-                'date_assigned as assigned', 
-                'date_due as due', 
-                'date_started as started', 
-                'date_completed as completed')
+                'users.last_name as last',
+                'module_assignments.status',
+                'module_assignments.score',
+                'module_assignments.duration',
+                'module_assignments.date_assigned as assigned', 
+                'module_assignments.date_due as due', 
+                'module_assignments.date_started as started', 
+                'module_assignments.date_completed as completed')
             ->leftJoin('module_versions','module_assignments.module_version_id','=','module_versions.id')
             ->leftJoin('users','module_assignments.user_id','=','users.id')
             ->where('module_assignments.module_id',$module->id)->get();
