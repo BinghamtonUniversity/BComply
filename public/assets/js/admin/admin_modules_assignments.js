@@ -5,8 +5,8 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     entries:[],
     actions:[
 // Need to rewrite this with custom form -- TJC 6/21/23
-// {"name":"create","label":"Add Module Assignment"},
-// '',
+        {"name":"add_assignment","label":"Add Module Assignment",type:"success"},
+        '',
         {"label":"Mark As Completed","name":"complete","min":1,"max":1,"type":"danger"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
         '',
@@ -27,13 +27,49 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         ajax.delete('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
             grid_event.model.undo();
         });
-    // Need to rewrite this with custom form -- TJC 6/21/23
-    // }).on("model:created",function(grid_event) {
-    //     ajax.post('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+id,grid_event.model.attributes,function(data) {
-    //         grid_event.model.update(data)
-    //     },function(data) {
-    //         grid_event.model.undo();
-    //     });
+    }).on('add_assignment',function(grid_event) {
+        new gform({
+            "fields": [
+                {type:"text",name:"version", label:"Module Version", parse:false,show:false,template:"{{attributes.version.name}}"},
+                {type:"user", name:"user_id",required:true, label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
+                {type:"datetime", name:"date_assigned", label:"Date Assigned",parse:false,show:false,format: {
+                    input: "YYYY-MM-DD HH:mm:ss"
+                }},
+                {type:"datetime", name:"date_due", label:"Date Due",
+                    format: {input: "YYYY-MM-DD HH:mm:ss" },
+                    required: true
+                },
+                {type:"text", parse:false,show:false, name:"date_started", label:"Date Started"},
+                {type:"text", parse:false,show:false, name:"date_completed", label:"Date Completed"},        
+            ]
+        }).modal().on('save', function (form_event) {
+            var form_data = form_event.form.get();
+            if(form_event.form.validate()){
+                ajax.post('/api/users/'+form_data.user_id+'/assignments/'+id,form_data,function(data) {
+                    // Remap Object
+                    var assignment = {
+                        user_id: data.user.id,
+                        id:data.id,
+                        first:data.user.first_name,
+                        last:data.user.last_name,
+                        version:data.version.name,
+                        status:data.status,
+                        score:data.score,
+                        duration:data.duration,
+                        assigned:data.date_assigned,
+                        due:data.date_due,
+                        started:data.date_started,
+                        completed:data.date_completed
+                    };
+                    grid_event.grid.add(assignment)
+                    form_event.form.trigger('close');
+                },function(data) {
+                    // Do Nothing!
+                });
+            }
+        }).on('cancel', function (form_event) {
+            form_event.form.trigger('close');
+        });
     }).on("model:report",function(grid_event) {
         template = `
         <table class="table">
@@ -54,8 +90,8 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         $('#adminModal .modal-body').html(gform.m(template,grid_event.model.attributes));
         $('#adminModal').modal('show')
     }).on('model:complete',function(grid_event) {
-        data = grid_event.model.attributes.assignment || {};
-        new gform(
+        assignment_data = grid_event.model.attributes || {};
+        var update_form = new gform(
             {
                 "fields": [
                     {
@@ -139,29 +175,23 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                         "name":"score",
                         "value":100,
                     }
-                ],
-                "data": data
-            })
-            .modal().on('save', function (form_event) {
-            // console.log(form_event.form.get());
+                ]
+        }).on('save', function (form_event) {
             if(form_event.form.validate()){
                 ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
-                    // grid_event.model.attributes.assignment = data;
-                    // grid_event.model.draw();
                     grid_event.model.update(data)
                     form_event.form.trigger('close');
                 }, function (err) {
                     grid_event.model.undo();
-                    // console.log(data.response)
                 })
             }
         }).on('cancel', function (form_event) {
             form_event.form.trigger('close');
         })
+        update_form.modal().set(assignment_data);
     })
 });
 
 // Built-In Events:
 //'edit','model:edit','model:edited','model:create','model:created','model:delete','model:deleted'
-
 

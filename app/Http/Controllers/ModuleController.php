@@ -76,6 +76,7 @@ class ModuleController extends Controller
             ->select(
                 'module_assignments.id as id',
                 'module_versions.name as version',
+                'users.id as user_id',
                 'users.first_name as first', 
                 'users.last_name as last',
                 'module_assignments.status',
