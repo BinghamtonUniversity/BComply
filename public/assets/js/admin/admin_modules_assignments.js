@@ -4,8 +4,9 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
     actions:[
-        {"name":"create","label":"Add Module Assignment"},
-        '',
+// Need to rewrite this with custom form -- TJC 6/21/23
+// {"name":"create","label":"Add Module Assignment"},
+// '',
         {"label":"Mark As Completed","name":"complete","min":1,"max":1,"type":"danger"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
         '',
@@ -14,32 +15,25 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     count:20,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"text",name:"version", label:"Module Version", parse:false,show:false,template:"{{attributes.version.name}}"},
-        {type:"user", name:"user_id",required:true, label:"User", template:"{{attributes.user.first_name}} {{attributes.user.last_name}}"},
-        {type:"datetime", name:"date_assigned", label:"Date Assigned",parse:false,show:false,format: {
-            input: "YYYY-MM-DD HH:mm:ss"
-        }},
-        {type:"datetime", name:"date_due", label:"Date Due",
-            format: {input: "YYYY-MM-DD HH:mm:ss" },
-            required: true
-        },
-        {type:"text", parse:false,show:false, name:"date_started", label:"Date Started"},
-        {type:"text", parse:false,show:false, name:"date_completed", label:"Date Completed"},
-
+        {type:"text",name:"version", label:"Module Version"},
+        {type:"text", name:"first", label:"First Name"},
+        {type:"text", name:"first", label:"Last Name"},
+        {type:"text", name:"assigned", label:"Assigned"},
+        {type:"text", name:"due", label:"Due"},
+        {type:"text", name:"started", label:"Started"},
+        {type:"text", name:"completed", label:"Completed"}
     ], data: data
     }).on("model:deleted",function(grid_event) {
         ajax.delete('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+grid_event.model.attributes.id,{},function(data) {},function(data) {
             grid_event.model.undo();
         });
-    }).on("model:created",function(grid_event) {
-        ajax.post('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+id,grid_event.model.attributes,function(data) {
-           // debugger;
-            grid_event.model.update(data)
-            // grid_event.model.attributes = data;
-            // grid_event.model.draw();
-        },function(data) {
-            grid_event.model.undo();
-        });
+    // Need to rewrite this with custom form -- TJC 6/21/23
+    // }).on("model:created",function(grid_event) {
+    //     ajax.post('/api/users/'+grid_event.model.attributes.user_id+'/assignments/'+id,grid_event.model.attributes,function(data) {
+    //         grid_event.model.update(data)
+    //     },function(data) {
+    //         grid_event.model.undo();
+    //     });
     }).on("model:report",function(grid_event) {
         template = `
         <table class="table">
