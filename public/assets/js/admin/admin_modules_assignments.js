@@ -17,7 +17,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         {type:"hidden", name:"id"},
         {type:"text",name:"version", label:"Module Version"},
         {type:"text", name:"first", label:"First Name"},
-        {type:"text", name:"first", label:"Last Name"},
+        {type:"text", name:"last", label:"Last Name"},
         {type:"text", name:"assigned", label:"Assigned"},
         {type:"text", name:"due", label:"Due"},
         {type:"text", name:"started", label:"Started"},
