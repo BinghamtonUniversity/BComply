@@ -4,7 +4,6 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     search: false,columns: false,upload:false,download:false,title:'Users',
     entries:[],
     actions:[
-// Need to rewrite this with custom form -- TJC 6/21/23
         {"name":"add_assignment","label":"Add Module Assignment",type:"success"},
         '',
         {"label":"Mark As Completed","name":"complete","min":1,"max":1,"type":"danger"},
@@ -177,12 +176,15 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
                     }
                 ]
         }).on('save', function (form_event) {
-            if(form_event.form.validate()){
-                ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_event.form.get(), function (data) {
+            if(form_event.form.validate()) {
+                var form_data = form_event.form.get();
+                ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_data, function (data) {
+                    data.started = data.date_started;
+                    data.completed = data.date_completed;
                     grid_event.model.update(data)
                     form_event.form.trigger('close');
                 }, function (err) {
-                    grid_event.model.undo();
+                    // Do Nothing
                 })
             }
         }).on('cancel', function (form_event) {
@@ -191,7 +193,3 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         update_form.modal().set(assignment_data);
     })
 });
-
-// Built-In Events:
-//'edit','model:edit','model:edited','model:create','model:created','model:delete','model:deleted'
-
