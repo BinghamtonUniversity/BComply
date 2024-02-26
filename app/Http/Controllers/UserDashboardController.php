@@ -30,10 +30,13 @@ class UserDashboardController extends Controller
 {
     public function my_assignments(Request $request) {
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
-            ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
+            ->where('date_assigned','<=',now())
+            ->whereRaw('DATE_ADD(date_assigned, INTERVAL 365 DAY) >= NOW()')
             ->whereNull('date_completed')
             ->with('version')
-            ->with('module')->get();
+            ->with('module')
+            ->orderBy('date_assigned','desc')
+            ->get();
         foreach($assignments as $index => $assignment) {
             if (is_null($assignment->module->icon) || $assignment->module->icon=='') {$assignments[$index]->module->icon='book-open';}
         }
