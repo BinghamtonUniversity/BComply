@@ -136,7 +136,7 @@ class UserDashboardController extends Controller
                 $user = User::where('unique_id',$result->unique_id)->first();
                
                 if (!is_null($user)) {
-                    Auth::login($user, true);
+                    Auth::login($user);
                     $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
                         ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
                         ->whereNull('date_completed')

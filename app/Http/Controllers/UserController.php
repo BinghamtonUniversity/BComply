@@ -78,7 +78,7 @@ class UserController extends Controller
     }
 
     public function login_user(Request $request, User $user) {
-        Auth::login($user,true);
+        Auth::login($user);
         return "1";
     }
 

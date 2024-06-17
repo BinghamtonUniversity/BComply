@@ -25,7 +25,7 @@ class CASController extends Controller {
         $user->first_name = $user_attributes['firstname'];
         $user->last_name = $user_attributes['lastname'];
         $user->save();
-        Auth::login($user,true);
+        Auth::login($user);
         if ($request->has('redirect')) {
             return redirect($request->redirect);
         } else {
