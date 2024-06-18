@@ -27,7 +27,7 @@
                         <div>The Articulate Launch URL "{{$assignment->version->reference->filename}}" can not be found.  Please confirm that the module version has been configured properly.</div>
                     </div>
                 @else
-                    <iframe style="border:0px;" width="100%" height="570" src="{{url('/storage/modules/'.$assignment->module_id.'/versions/'.$assignment->module_version_id)}}/{{$assignment->version->reference->filename}}?activity_id={{$assignment->id}}&endpoint={{url('/api/tincan')}}&auth=0&actor=<?php echo htmlentities(json_encode(["name"=>Auth::user()->first_name.' '.Auth::user()->last_name,"mbox"=>Auth::user()->email]));?>"></iframe>
+                    <iframe style="border:0px;" width="100%" height="570" src="{{url('/storage/modules/'.$assignment->module_id.'/versions/'.$assignment->module_version_id)}}/{{$assignment->version->reference->filename}}?activity_id={{$assignment->id}}&endpoint={{url('/api/tincan')}}&auth=0&actor=<?php echo htmlentities(json_encode(["name"=>Auth::user()->first_name.' '.Auth::user()->last_name,"mbox"=>Auth::user()->email,'assignment_id'=>$assignment_id]));?>"></iframe>
                 @endif
             @elseif($assignment->version->type === 'youtube')
                 <div class="callout callout-info">{!! $assignment->version->reference->instructions !!}</div>
