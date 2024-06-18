@@ -10,7 +10,7 @@ use App\ModuleAssignment;
 class TinCanController extends Controller
 {   
     public function get_state(Request $request) {
-        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where(function (Builder $query) {
+        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where(function (Builder $query) use ($request) {
             $query->orWhere('id',$request->id)
                 ->where('id',$request->activityId)
                 ->orWhere('id',$request->registration);
@@ -25,7 +25,7 @@ class TinCanController extends Controller
         return response('Assignment Does Not Exist',404);
     }
     public function set_state(Request $request) {
-        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where(function (Builder $query) {
+        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where(function (Builder $query) use ($request) {
             $query->orWhere('id',$request->id)
                 ->where('id',$request->activityId)
                 ->orWhere('id',$request->registration);
