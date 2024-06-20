@@ -42,7 +42,11 @@ class TinCanController extends Controller
     public function register_statement(Request $request) {
         $activity_id_arr = explode('/',$request->object['id']);
         $activity_id = $activity_id_arr[0];
-        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where('id',$activity_id)->sharedLock()->first();
+        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where(function (Builder $query) use ($request) {
+            $query->orWhere('id',$request->id)
+                ->where('id',$request->activityId)
+                ->orWhere('id',$request->registration);
+        })->first();
         if (!is_null($assignment)) {
             if (!is_null($assignment->date_started) && is_null($assignment->date_completed)) {
                 $assignment->duration = $assignment->date_started->diffInSeconds();
