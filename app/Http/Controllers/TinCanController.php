@@ -40,13 +40,7 @@ class TinCanController extends Controller
         return response('Assignment Does Not Exist',404);
     }
     public function register_statement(Request $request) {
-        $activity_id_arr = explode('/',$request->object['id']);
-        $activity_id = $activity_id_arr[0];
-        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where(function (Builder $query) use ($request) {
-            $query->orWhere('id',$request->id)
-                ->where('id',$request->activityId)
-                ->orWhere('id',$request->registration);
-        })->first();
+        $assignment = ModuleAssignment::where('user_id',Auth::user()->id)->where('id',$request->context['registration'])->sharedLock()->first();
         if (!is_null($assignment)) {
             if (!is_null($assignment->date_started) && is_null($assignment->date_completed)) {
                 $assignment->duration = $assignment->date_started->diffInSeconds();
@@ -77,7 +71,8 @@ class TinCanController extends Controller
             }
             $assignment->updated_by_user_id = Auth::user()->id;
             $assignment->save();
+            return ['response'=>'acknowledged'];
         }
-        return ['response'=>'acknowledged'];
+        return response('Assignment Does Not Exist',404);
     }
 }
