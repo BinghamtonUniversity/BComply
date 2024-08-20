@@ -6,7 +6,7 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
     actions:[
         {"name":"add_assignment","label":"Add Module Assignment",type:"success"},
         '',
-        {"label":"Mark As Completed","name":"complete","min":1,"max":1,"type":"danger"},
+        {"label":"Mark As Completed","name":"complete","min":1,"max":10000,"type":"danger"},
         {"label":"View Report","name":"report","min":1,"max":1,"type":"default"},
         '',
         {"name":"delete","label":"Remove Module Assignment"}
@@ -88,8 +88,21 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         $('#adminModal .modal-title').html('Module Report')
         $('#adminModal .modal-body').html(gform.m(template,grid_event.model.attributes));
         $('#adminModal').modal('show')
-    }).on('model:complete',function(grid_event) {
-        assignment_data = grid_event.model.attributes || {};
+    }).on('complete',function(grid_event) {
+        var incomplete_models = _.filter(grid_event.grid.getSelected(),function(current_model) {
+            return current_model.attributes.completed === null;
+        })
+        if (grid_event.grid.getSelected().length !== incomplete_models.length) {
+            toastr.error('One or more of the assignments you have selected have already been completed. You can only mark incomplete items as completed!');
+            return;
+        }
+        if (grid_event.grid.getSelected().length > 1) {
+            if (!confirm('You have selected ' + grid_event.grid.getSelected().length + ' assignments to bulk update. Are you sure you want to continue?')) {
+                toastr.error('Exiting without updating.');
+                return;
+            }
+        }
+        // assignment_data = grid_event.model.attributes || {};
         var update_form = new gform(
             {
                 "fields": [
@@ -178,18 +191,21 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         }).on('save', function (form_event) {
             if(form_event.form.validate()) {
                 var form_data = form_event.form.get();
-                ajax.put('/api/assignment/' + grid_event.model.attributes.id + '/complete', form_data, function (data) {
-                    data.started = data.date_started;
-                    data.completed = data.date_completed;
-                    grid_event.model.update(data)
-                    form_event.form.trigger('close');
-                }, function (err) {
-                    // Do Nothing
+                form_event.form.trigger('close');
+                _.each(grid_event.grid.getSelected(), function(selected_model) {
+                    toastr.info('Processing Assignment '+selected_model.attributes.id + '...')
+                    ajax.put('/api/assignment/' + selected_model.attributes.id + '/complete', form_data, function (data) {
+                        data.started = data.date_started;
+                        data.completed = data.date_completed;
+                        selected_model.update(data)
+                    }, function (err) {
+                        // Do Nothing
+                    })
                 })
             }
         }).on('cancel', function (form_event) {
             form_event.form.trigger('close');
         })
-        update_form.modal().set(assignment_data);
+        update_form.modal().set({});
     })
 });
