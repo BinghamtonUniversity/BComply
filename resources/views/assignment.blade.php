@@ -60,11 +60,13 @@
                     </div>
                 </div>
                 <div class="panel-footer">
+                    <!--
                     @if(isset($assignment->date_due))
                         <div class="badge">Due: {{$assignment->date_due->format('m/d/y')}}</div>
                     @else
                         <div class="badge">No Due Date</div>
                     @endif
+                    -->
                 </div>
             </div>
         </a>
