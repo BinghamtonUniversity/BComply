@@ -55,11 +55,17 @@ class Module extends Model
             if ($assignment->module_version_id === $this->module_version_id) {
                 return null;
             }
-            if (!is_null($assignment->date_due)
-                    && $assignment->date_due > Carbon::now()
-                    && is_null($assignment->date_completed)) {
-                return null;
-            }
+//            11/13/2024 - AKT - START
+//            As per our meeting with the UCTD on 11/13/2024 ->
+//            We were asked by Aaron and Kitty to allow users to be assigned to the another version of the assignment
+//            even if the user has not finished the assignment from the another version
+//            if (!is_null($assignment->date_due)
+//                    && $assignment->date_due > Carbon::now()
+//                    && is_null($assignment->date_completed)) {
+//                return null;
+//            }
+//             11/13/2024 - AKT - END
+
         // Code below was commented out after meeting with Aaron on 11/18/2020
         //    if(is_null($assignment->date_completed) && $assignment->date_due < Carbon::now()){
         //        $assignment->status = 'incomplete';
