@@ -17,6 +17,13 @@ ajax.get('/api/modules/'+id+'/assignments',function(data) {
         {type:"text",name:"version", label:"Module Version"},
         {type:"text", name:"first", label:"First Name"},
         {type:"text", name:"last", label:"Last Name"},
+        {type:"select", name:"status", label:"Status", options:[
+            {"label": "Assigned","value": "assigned"},
+            {"label": "Attended","value": "attended"},
+            {"label": "Completed","value": "completed"},
+            {"label": "Passed","value": "passed"},
+            {"label": "Incomplete","value": "incomplete"}
+        ]},
         {type:"text", name:"assigned", label:"Assigned"},
         {type:"text", name:"due", label:"Due"},
         {type:"text", name:"started", label:"Started"},
