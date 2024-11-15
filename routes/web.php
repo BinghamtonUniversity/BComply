@@ -38,7 +38,6 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshop_reports', ['uses'=>'AdminController@workshop_reports']);
         Route::get('/workshop_reports/{workshop_report}/run', ['uses'=>'AdminController@run_workshop_report']);
         
-
         Route::get('/instructor_workshops', ['uses'=>'AdminController@instructor_workshops']);
         // Workshop  Admin Methods --- END
         
@@ -53,6 +52,12 @@ Route::group(['middleware'=>['custom.auth']], function () {
     });
 
     Route::group(['prefix' => 'api'], function () {
+        Route::get('/keepalive',function() {
+            return response()->json(['session'=>true])
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');        
+        });
 
         /* Articulate Tincan Integration */
         Route::get('/tincan/activities/state', 'TinCanController@get_state');

@@ -73,13 +73,16 @@
                             event.target.playVideo();
                         },
                     });
-
                     setInterval(function() {
                         if (player.getPlayerState() === YT.PlayerState.PLAYING) {
                             $.ajax({
                                 url: '/api/video/state/{{$assignment->id}}',
                                 data: {time:player.getCurrentTime()},
                                 success: function() {},
+                                error: function() {
+                                    toastr.error('Session is Expired!');
+                                    window.location.reload();
+                                }
                                 method:'PUT',
                             });
                         }
@@ -108,4 +111,20 @@
     @endif
     </div>
 </div>
+<script>
+// 1-minute Heartbeat to keep session alive.
+setInterval(function() {
+    ajax.get('/api/keepalive',function(data) {
+        if (_.has(data,'session') && data.session === true) {
+            // everything is ok!
+        } else {
+            toastr.error('Session is Expired!');
+            window.location.reload();
+        }
+    },function(data) {
+        toastr.error('Session is Expired!');
+        window.location.reload();
+    })
+}, 60000);
+</script>
 @endsection
