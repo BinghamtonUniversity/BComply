@@ -147,7 +147,7 @@ class Kernel extends ConsoleKernel
                                 ]);
                             }
                         }
-                    } catch(\Exception $e){
+                    } catch(\Exception $exception){
                         echo "#";
                         Log::error('Error assigning module: '.$exception->getMessage());
                     }
