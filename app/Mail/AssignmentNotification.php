@@ -36,7 +36,7 @@ class AssignmentNotification extends Mailable
             'link'=>url('/assignment/'.$user_message['link'])
         ];
         for($days=1;$days<=60;$days++) {
-            $email_data['module']['assignment_date_plus_'.$days]= floor($moduleAssignment->date_assigned->addDays($days));
+            $email_data['module']['assignment_date_plus_'.$days]= $moduleAssignment->date_assigned->addDays($days)->format('m/d/y');
         }
         $m = new \Mustache_Engine;
         $this->content = $m->render($user_message['assignment'],$email_data);
