@@ -47,7 +47,7 @@ class Kernel extends ConsoleKernel
             $workshopAttendances = WorkshopAttendance::where('attendance','registered')->with('attendee')->with('workshop_offering')->with('workshop')->get();   
             foreach($workshopAttendances as $attendance){
                 try {
-                    $differenceInDays = $attendance->workshop_offering->workshop_date->diffInDays(Carbon::now());
+                    $differenceInDays = abs(floor($attendance->workshop_offering->workshop_date->diffInDays(Carbon::now())));
                     if($differenceInDays == 1){
                         $user = $attendance->attendee;
                         if ($user->active && $user->send_email_check()) {
@@ -81,8 +81,7 @@ class Kernel extends ConsoleKernel
                     $user = $assignment->user()->where('id', $assignment->user_id)->first();
                     if ($user->active && $user->send_email_check()) {
                         if (isset($assignment->date_due) && !is_null($assignment->date_due)) {
-                            $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
-                            Log::info('Assignment Due Date Difference In Days :'. $differenceInDays);
+                            $differenceInDays = abs(floor($assignment->date_due->diffInDays(Carbon::now())));
                             $user_message = null;
                             if (!is_array($module->past_due_reminders)) {
                                 $module->past_due_reminders = [];
@@ -96,14 +95,12 @@ class Kernel extends ConsoleKernel
                                     'link' => $assignment['id'],
                                     'reminder' => $module->templates->past_due_reminder
                                 ];
-                                Log::info('Needs Past Due Reminder... ');
                             } else if ($assignment->date_due > Carbon::now() && in_array($differenceInDays, $module->reminders) && $module->templates->reminder != '') {
                                 $user_message = [
                                     'module_name' => $module['name'],
                                     'link' => $assignment['id'],
                                     'reminder' => $module->templates->reminder
                                 ];
-                                Log::info('Needs Due Soon Reminder... ');
                             }
                             if (!is_null($user_message)) {
                                 echo ".";
