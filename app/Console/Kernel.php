@@ -130,7 +130,7 @@ class Kernel extends ConsoleKernel
                             }
                             $q = BulkAssignment::base_query();
                             QueryBuilder::build_where($q, $bulkAssignment->assignment);
-                            $users = $q->select('users.id', 'unique_id', 'first_name', 'last_name')->get();
+                            $users = $q->select('users.id', 'unique_id', 'first_name', 'last_name', 'email')->get();
 
                             foreach ($users as $user) {
                                 if ($bulkAssignment->assignment->date_due_format === 'relative') {
