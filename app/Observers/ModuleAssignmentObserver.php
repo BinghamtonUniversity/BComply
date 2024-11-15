@@ -35,8 +35,8 @@ class ModuleAssignmentObserver
                 ];
                 try {
                     Mail::to($user)->send(new AssignmentNotification($moduleAssignment,$user,$user_messages));
-                } catch (Throwable $e) {
-                    // keep going
+                } catch (\Exception $e) {
+                    Log::error('Error sending assignment email: '.$e->getMessage());
                 }
             }
         }
@@ -62,8 +62,8 @@ class ModuleAssignmentObserver
                     ];
                     try {
                         Mail::to($user)->send(new CompletionNotification($moduleAssignment,$user,$user_messages));
-                    } catch (Throwable $e) {
-                        // keep going
+                    } catch (\Exception $e) {
+                        Log::error('Error sending completion email: '.$e->getMessage());
                     }
                 }
             }
