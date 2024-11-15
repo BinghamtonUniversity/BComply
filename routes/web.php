@@ -5,6 +5,12 @@ Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
 Route::get('/auth/token/{password}','UserDashboardController@impersonate');
 Route::get('/calendar',['uses' => 'PublicAPIController@create_calendar']);
+Route::any('/health', function() {
+    return response()->json(['health'=>'ok'])
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');        
+});
 
 Route::group(['middleware'=>['custom.auth']], function () {
     /* User Pages */
