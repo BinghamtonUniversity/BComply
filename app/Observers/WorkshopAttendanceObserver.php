@@ -11,6 +11,7 @@ use App\WorkshopAttendance;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Mime\RawMessage;
 
 
