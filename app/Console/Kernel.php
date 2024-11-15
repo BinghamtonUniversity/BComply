@@ -16,6 +16,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use function foo\func;
 
 class Kernel extends ConsoleKernel
@@ -81,6 +82,7 @@ class Kernel extends ConsoleKernel
                     if ($user->active && $user->send_email_check()) {
                         if (isset($assignment->date_due) && !is_null($assignment->date_due)) {
                             $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
+                            Log::info('Assignment Due Date Difference In Days :'. $differenceInDays);
                             $user_message = null;
                             if (!is_array($module->past_due_reminders)) {
                                 $module->past_due_reminders = [];
@@ -94,12 +96,14 @@ class Kernel extends ConsoleKernel
                                     'link' => $assignment['id'],
                                     'reminder' => $module->templates->past_due_reminder
                                 ];
+                                Log::info('Needs Past Due Reminder... ');
                             } else if ($assignment->date_due > Carbon::now() && in_array($differenceInDays, $module->reminders) && $module->templates->reminder != '') {
                                 $user_message = [
                                     'module_name' => $module['name'],
                                     'link' => $assignment['id'],
                                     'reminder' => $module->templates->reminder
                                 ];
+                                Log::info('Needs Due Soon Reminder... ');
                             }
                             if (!is_null($user_message)) {
                                 echo ".";
