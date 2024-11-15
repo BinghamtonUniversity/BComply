@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\ModuleAssignment;
 use App\User;
+use App\SimpleUser;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,7 +22,7 @@ class AssignmentReminder extends Mailable
      * @param User $user
      * @param array $user_message
      */
-    public function __construct(ModuleAssignment $moduleAssignment, User $user, Array $user_message)
+    public function __construct(ModuleAssignment $moduleAssignment, SimpleUser $user, Array $user_message)
     {
         $due_date = isset($moduleAssignment->date_due)?$moduleAssignment->date_due->format('m/d/y'):'N/A';
         $m = new \Mustache_Engine;

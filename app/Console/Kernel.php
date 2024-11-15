@@ -55,11 +55,13 @@ class Kernel extends ConsoleKernel
                                 'offering_date' =>$attendance->workshop_offering->workshop_date,
                                 'reminder'=> $attendance->workshop->config->reminder
                             ];
+                            echo ".";
                             Log::info('Reminder Email to: '.$user->email.' for workshop '.$attendance->workshop->name);
                             Mail::to($user->email)->send(new WorkshopReminder($attendance, $user, $user_message));
                         }
                     }
                 } catch(\Exception $exception){
+                    echo "#";
                     Log::error('Error sending reminder email: '.$exception->getMessage());
                 }
             }
@@ -75,7 +77,7 @@ class Kernel extends ConsoleKernel
             foreach($module_assignments as $assignment){
                 try {
                     $module = $modules->where('id', $assignment->module_id)->first();
-                    $user = $assignment->user_full()->where('id', $assignment->user_id)->first();
+                    $user = $assignment->user()->where('id', $assignment->user_id)->first();
                     if ($user->active && $user->send_email_check()) {
                         if (isset($assignment->date_due) && !is_null($assignment->date_due)) {
                             $differenceInDays = $assignment->date_due->diffInDays(Carbon::now());
@@ -100,12 +102,14 @@ class Kernel extends ConsoleKernel
                                 ];
                             }
                             if (!is_null($user_message)) {
+                                echo ".";
                                 Log::info('Reminder Email to: '.$user->email.' for module '.$module['name']);
                                 Mail::to($user->email)->send(new AssignmentReminder($assignment, $user, $user_message));
                             }
                         }
                     }
                 } catch(\Exception $exception){
+                    echo "#";
                     Log::error('Error sending reminder email: '.$exception->getMessage());
                 }
             }
@@ -133,6 +137,7 @@ class Kernel extends ConsoleKernel
                                 } else {
                                     $date_due = $bulkAssignment->assignment->date_due;
                                 }
+                                echo ".";
                                 Log::info('Automated Assignment to: '.$user->email.' for '.$module['name']);
                                 $module->assign_to([
                                     'user_id' => $user->id,
@@ -142,6 +147,7 @@ class Kernel extends ConsoleKernel
                             }
                         }
                     } catch(\Exception $e){
+                        echo "#";
                         Log::error('Error assigning module: '.$exception->getMessage());
                     }
                 }
