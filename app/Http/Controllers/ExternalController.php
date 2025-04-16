@@ -19,7 +19,7 @@ class ExternalController extends Controller
                 ->orWhere('unique_id','_ext_'.$request->accountId)
                 ->first();
             if (!is_null($user)) {
-                Auth::login($user,true);
+                Auth::login($user);
                 if ($request->has('redirect')) {
                     return redirect($request->redirect);
                 } else {

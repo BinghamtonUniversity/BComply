@@ -25,20 +25,17 @@ class ModuleAssignmentController extends Controller
         ]);
     }
     public function check_complete(Request $request, ModuleAssignment $module_assignment){
-//        dd($request);
-        if(is_null($module_assignment->date_completed)){
-            if(is_null($module_assignment->date_started)){
-                if($request->specify_start_date){
+        if (is_null($module_assignment->date_completed)) {
+            if (is_null($module_assignment->date_started)) {
+                if ($request->specify_start_date) {
                     $module_assignment->date_started = $request->date_started;
-                }
-                else{
+                } else{
                     $module_assignment->date_started=now();
                 }
             }
-            if($request->specify_completed_date){
+            if ($request->specify_completed_date){
                 $module_assignment->date_completed = $request->date_completed;
-            }
-            else{
+            } else{
                 $module_assignment->date_completed = now();
             }
 
@@ -48,23 +45,20 @@ class ModuleAssignmentController extends Controller
 
             $module_assignment->save();
             return $module_assignment;
-        }
-        else{
+        } else {
             return response(['error'=>'The user has already completed this module'], 409)->header('Content-Type', 'application/json');
         }
     }
     public function certificate(Request $request, ModuleAssignment $module_assignment){
-        if(!is_null(Auth::user())){
-            if(($module_assignment->status==='completed')||($module_assignment->status==='passed')){
+        if (!is_null(Auth::user())){
+            if (($module_assignment->status==='completed')||($module_assignment->status==='passed')){
                 $pdf = \App::make('dompdf.wrapper');
                 $pdf->loadHTML($this->convert_to_html($module_assignment));
                 return $pdf->stream();
-            }
-            else{
+            } else {
                 return response(['error'=>'The user has not completed this module'], 409)->header('Content-Type', 'application/json');
             }
-        }
-        else{
+        } else {
             return view('demo_login',['page'=>'demo','error'=>'The '.$request->accountId.' guest user account is not authorized']);
         }
     }
@@ -102,8 +96,7 @@ class ModuleAssignmentController extends Controller
                     </div>
                 </div>
             </div>';
-        }
-        else{
+        } else {
             return abort(404);
         }
         return $output;

@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'file'),
+    'driver' => env('SESSION_DRIVER', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    'lifetime' => env('SESSION_LIFETIME', 960),
 
     'expire_on_close' => false,
 
@@ -50,19 +50,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Session File Location
-    |--------------------------------------------------------------------------
-    |
-    | When using the native session driver, we need a location where session
-    | files may be stored. A default has been set for you but a different
-    | location may be specified. This is only needed for file sessions.
-    |
-    */
-
-    'files' => storage_path('framework/sessions'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Session Database Connection
     |--------------------------------------------------------------------------
     |
@@ -72,7 +59,7 @@ return [
     |
     */
 
-    'connection' => env('SESSION_CONNECTION', null),
+    'connection' => env('SESSION_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -126,7 +113,7 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+        Str::slug(env('APP_NAME', 'bcomply'), '_').'_session'
     ),
 
     /*

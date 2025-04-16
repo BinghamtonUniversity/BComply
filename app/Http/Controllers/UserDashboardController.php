@@ -30,10 +30,14 @@ class UserDashboardController extends Controller
 {
     public function my_assignments(Request $request) {
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
-            ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
+            ->where('user_id',Auth::user()->id)
+            ->where('date_assigned','<=',now())
             ->whereNull('date_completed')
             ->with('version')
-            ->with('module')->get();
+            ->with('module')
+            ->orderBy('date_assigned','desc')
+            ->get();
+
         foreach($assignments as $index => $assignment) {
             if (is_null($assignment->module->icon) || $assignment->module->icon=='') {$assignments[$index]->module->icon='book-open';}
         }
@@ -59,7 +63,6 @@ class UserDashboardController extends Controller
     public function assignment_history(Request $request){
         $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
             ->whereNotNull('date_completed')
-            ->where('status','!=','incomplete')
             ->with('version')
             ->with('module')
             ->orderBy('date_completed','desc')->get();
@@ -133,7 +136,7 @@ class UserDashboardController extends Controller
                 $user = User::where('unique_id',$result->unique_id)->first();
                
                 if (!is_null($user)) {
-                    Auth::login($user, true);
+                    Auth::login($user);
                     $assignments = ModuleAssignment::where('user_id',Auth::user()->id)
                         ->where('date_assigned','<=',now())->orderBy('date_assigned','desc')
                         ->whereNull('date_completed')

@@ -45,6 +45,9 @@ class Module extends Model
      * @param bool $testonly
      * @return ModuleAssignment|bool|null
      */
+
+    // Returns false if the module does not have a current version
+    // Returns null if the user is already assigned to this module
     public function assign_to(Array $assignment_arr, $testonly=false) {
         if (is_null($this->module_version_id)) {
             // Not Current Version Exists!
@@ -55,18 +58,14 @@ class Module extends Model
             if ($assignment->module_version_id === $this->module_version_id) {
                 return null;
             }
-            if (!is_null($assignment->date_due)
-                    && $assignment->date_due > Carbon::now()
-                    && is_null($assignment->date_completed)) {
-                return null;
+            if (is_null($assignment->date_completed) && !$testonly){
+                $assignment->status = 'incomplete';
+                if (is_null($assignment->date_started)) {
+                    $assignment->date_started = now();
+                }
+                $assignment->date_completed = now();
+                $assignment->save();
             }
-        // Code below was commented out after meeting with Aaron on 11/18/2020
-        //    if(is_null($assignment->date_completed) && $assignment->date_due < Carbon::now()){
-        //        $assignment->status = 'incomplete';
-        //        $assignment->date_started = now();
-        //        $assignment->date_completed = now();
-        //        $assignment->save();
-        //    }
         }
         $new_assignment = new ModuleAssignment($assignment_arr);
         $new_assignment->module_version_id = $this->module_version_id;

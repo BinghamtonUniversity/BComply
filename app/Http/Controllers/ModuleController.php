@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use App\ModuleVersion;
 use App\ModuleAssignment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class ModuleController extends Controller
 {
@@ -69,14 +71,25 @@ class ModuleController extends Controller
         return 'Success';
     }
     public function get_module_assignments(Request $request,Module $module){
-        return ModuleAssignment::where('module_id',$module->id)
-            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started')
-            ->with(['user'=>function($query){
-                $query->select('id','first_name','last_name');
-            }])
-            ->with(['version'=>function($query){
-                $query->select('id','name');
-            }])->get();
+        // TJC -- Written like this to be faster and more efficient 6/21/23
+        $assignments = DB::table('module_assignments')
+            ->select(
+                'module_assignments.id as id',
+                'module_versions.name as version',
+                'users.id as user_id',
+                'users.first_name as first', 
+                'users.last_name as last',
+                'module_assignments.status',
+                'module_assignments.score',
+                'module_assignments.duration',
+                'module_assignments.date_assigned as assigned', 
+                'module_assignments.date_due as due', 
+                'module_assignments.date_started as started', 
+                'module_assignments.date_completed as completed')
+            ->leftJoin('module_versions','module_assignments.module_version_id','=','module_versions.id')
+            ->leftJoin('users','module_assignments.user_id','=','users.id')
+            ->where('module_assignments.module_id',$module->id)->get();
+        return $assignments;
     }
     public function update_module(Request $request,Module $module){
         $module->update($request->all());

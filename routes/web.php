@@ -5,6 +5,12 @@ Route::any('/login', ['uses' => 'CASController@login']);
 Route::get('/logout','UserDashboardController@logout');
 Route::get('/auth/token/{password}','UserDashboardController@impersonate');
 Route::get('/calendar',['uses' => 'PublicAPIController@create_calendar']);
+Route::any('/health', function() {
+    return response()->json(['health'=>'ok'])
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');        
+});
 
 Route::group(['middleware'=>['custom.auth']], function () {
     /* User Pages */
@@ -38,7 +44,6 @@ Route::group(['middleware'=>['custom.auth']], function () {
         Route::get('/workshop_reports', ['uses'=>'AdminController@workshop_reports']);
         Route::get('/workshop_reports/{workshop_report}/run', ['uses'=>'AdminController@run_workshop_report']);
         
-
         Route::get('/instructor_workshops', ['uses'=>'AdminController@instructor_workshops']);
         // Workshop  Admin Methods --- END
         
@@ -53,6 +58,12 @@ Route::group(['middleware'=>['custom.auth']], function () {
     });
 
     Route::group(['prefix' => 'api'], function () {
+        Route::get('/keepalive',function() {
+            return response()->json(['session'=>true])
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');        
+        });
 
         /* Articulate Tincan Integration */
         Route::get('/tincan/activities/state', 'TinCanController@get_state');

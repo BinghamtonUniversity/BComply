@@ -78,14 +78,13 @@ class UserController extends Controller
     }
 
     public function login_user(Request $request, User $user) {
-        Auth::login($user,true);
+        Auth::login($user);
         return "1";
     }
 
     public function assign_module(Request $request, User $user, ModuleVersion $module_version) {
         if ($request->has('due_date')) {
             $due_date =$request->due_date;
-//            dd()
         } else {
             $due_date = null;
         }
@@ -131,7 +130,7 @@ class UserController extends Controller
         if ($assignment === false) {
             return response(['error'=>'The specified module does not have a current version'], 404)->header('Content-Type', 'application/json');
         } else if (is_null($assignment)) {
-            return response(['error'=>'The user is already assigned to this module or has not completed the assignment yet'], 409)->header('Content-Type', 'application/json');
+            return response(['error'=>'The user is already assigned to this module'], 409)->header('Content-Type', 'application/json');
         }
 //        else if($assignment !== $module->current_version()){
 //            return response(['error']=>'This is not the current version')

@@ -15,7 +15,8 @@ ajax.get('/api/groups',function(data) {
     count:20,
     schema:[
         {type:"hidden", name:"id"},
-        {type:"text", name:"name", label:"Name",required:true},
+        {type:"text", name:"name", label:"Name",required:true, help:"Please enter the group name as you would like it to be displayed. e.g. Test Group"},
+        {type:"text", name:"slug", label:"Slug",required:true, help:"Please enter the group name in lower case no spaces. e.g. test_group"},
     ], data: data
     }).on("model:edited",function(grid_event) {
         ajax.put('/api/groups/'+grid_event.model.attributes.id,grid_event.model.attributes,function(data) {

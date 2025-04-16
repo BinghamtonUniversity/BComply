@@ -1,17 +1,22 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use App\User;
+use App\Module;
+use App\ModuleVersion;
+use App\ModuleAssignment;
+use App\UserPermission;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
-     *
-     * @return void
+     * Run the database seeders.
      */
-    public function run()
+    public function run(): void
     {
-        $user1 = new App\User([
+        $user1 = new User([
             'unique_id' => 'B00505893',
             'first_name' => 'Tim',
             'last_name' => 'Cortesi',
@@ -27,7 +32,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $user1->save();
 
-        $user2 = new App\User([
+        $user2 = new User([
             'unique_id' => 'B00450942',
             'first_name' => 'Ali',
             'last_name' => 'Tanriverdi',
@@ -43,7 +48,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $user2->save();
 
-        $module = new App\Module([
+        $module = new Module([
             'name' => 'Test Module',
             'description' => 'This is the first test module',
             'owner_user_id' => $user1->id,
@@ -92,14 +97,14 @@ class DatabaseSeeder extends Seeder
         ]);
         $module->save();
 
-        $moduleVersion = new App\ModuleVersion([
+        $moduleVersion = new ModuleVersion([
             'name' => 'Test Module',
             'module_id' => $module->id,
             'type' => 'articulate_tincan',
             'reference' => (Object)['filename'=>'story.html'],
         ]);
         $moduleVersion->save();
-        $moduleVersion2 = new App\ModuleVersion([
+        $moduleVersion2 = new ModuleVersion([
             'name' => 'Test Module 2 11/18/19',
             'module_id' => $module->id,
             'type' => 'articulate_tincan',
@@ -109,7 +114,7 @@ class DatabaseSeeder extends Seeder
         $module->module_version_id = $moduleVersion->id;
         $module->save();
 
-        $moduleAssignment1 = new App\ModuleAssignment([
+        $moduleAssignment1 = new ModuleAssignment([
             'user_id' => $user1->id,
             'module_version_id' => $moduleVersion->id,
             'module_id' => $moduleVersion->module_id,
@@ -118,7 +123,7 @@ class DatabaseSeeder extends Seeder
             'assigned_by_user_id' => $user1->id,
         ]);
         $moduleAssignment1->save();
-        $moduleAssignment2 = new App\ModuleAssignment([
+        $moduleAssignment2 = new ModuleAssignment([
             'user_id' => $user2->id,
             'module_version_id' => $moduleVersion->id,
             'module_id' => $moduleVersion->module_id,
@@ -137,17 +142,17 @@ class DatabaseSeeder extends Seeder
 //        ]);
 //        $moduleAssignment3->save();
 
-        $userPermission1 = new App\UserPermission([
+        $userPermission1 = new UserPermission([
             'user_id' => $user1->id,
             'permission' => 'manage_user_permissions',
         ]);
         $userPermission1->save();
-        $userPermission2 = new App\UserPermission([
+        $userPermission2 = new UserPermission([
             'user_id' => $user2->id,
             'permission' => 'manage_user_permissions',
         ]);
         $userPermission2->save();
-        $userPermission2 = new App\UserPermission([
+        $userPermission2 = new UserPermission([
             'user_id' => $user2->id,
             'permission' => 'manage_user_permissions',
         ]);
