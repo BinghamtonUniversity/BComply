@@ -40,6 +40,10 @@ class Module extends Model
         return $this->belongsTo(User::class,'owner_user_id');
     }
 
+    public function assignments(){
+        return $this->hasMany(ModuleAssignment::class);
+    }
+
     /**
      * @param array $assignment_arr
      * @param bool $testonly
@@ -85,5 +89,7 @@ class Module extends Model
         }
         return $permissions_arr;
     }
+
+    
 
 }

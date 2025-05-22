@@ -33,6 +33,18 @@ class BulkAssignmentController extends Controller
         return $bulkAssignment;
     }
 
+    public function add_bulk_assignments_with_json(Request $request, String $bulkAssignment_name) {
+        $assignment = $request['assignment'];
+        if ($request->has('description')) {
+            $description = $request['description'];
+        }
+        $module_assignment = BulkAssignment::create([
+            'name' => $bulkAssignment_name,
+            'description' => $description,
+            'assignment' => $assignment], ['type' => 'external']
+        );
+    }
+
     /**
      * @param Request $request
      * @return BulkAssignment
@@ -126,5 +138,89 @@ class BulkAssignmentController extends Controller
             'module' => $module,
         ];
         return $results;
+    }
+
+    /**
+     * Add workshop_attendance record for everyone in a group
+     *  parameters:
+     *      status (optional) - "not_applicable", "uncompleted", "completed" defaults to uncomplete
+     *      attendance (optional) - "registered", "attended", "completed" defaults to registered
+     */
+    public function add_workshop_attendence_to_group_members(Request $request, $group_slug, $workshop_id){
+        try {
+            $users = SimpleUser::select(
+                    'USER.id AS USER_ID', 
+                    'workshop_attendances.id as workshop_attendances_id'
+                )
+                ->leftJoin('group_memberships', 'group_memberships.user_id', 'user.id')
+                ->leftJoin('groups', 'groups.id', 'group_memberships.group_id')
+                ->leftJoin('workshop_attendances', 'workshop.user_id', 'user.id')
+                ->leftJoin('workshop_offering', 'workshop_offering.workshop_id', 'workshop_attendances.workshop_id')
+                ->where('workshop_attendance.workshop_id', $workshop_id)
+                ->where('groups.slug', $group_slug);
+            if ($request->has('not_completed_after')) { 
+                $not_completed_after = $this->string_to_date($request['not_completed_after']);
+                $users = $users->where('workshop_offerings.workshop_date', '<', $not_completed_after)
+                                ->where('workshop_attendances.attendance', "attended");
+            }
+            $users = $users->get();
+            if (is_set($request['state'])) {
+                $status = $request["status"];
+            } else {
+                $status = "uncomplete";
+            }
+            if (is_set($request['attendance'])) {
+                $attendance = $request["attendance"];
+            } else {
+                $attendance = "registered";
+            }
+            foreach ($users AS $user) {
+                $this->add_or_update_workshop_attendance($user, $workshop_id, $workshop_offering_id, $attendance, $status, $this->get_current_user(request));
+            }
+            $response = $this->get_group_users_status($request, $group_slug, $module_id);
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+        }
+        return $response;
+    }
+
+    /**
+     * Assign module for everyone in a group
+     *  parameters:
+     *      not_completed_after (optional): don't assign it to anyone that has complete the module after date (fomatted like after=2025-05-01)
+     *      version (optional): assign a specific version, if not passed the latest version is used
+     *      due_date (optional): enter a due date for the assignment specified like 2025-05-01
+     *  returns:
+     *      the module that was assigned or an error message
+     */
+    public function assign_module_to_group_members(Request $request, $group_slug, Module $module) {
+        try {
+            $users = SimpleUser::select(
+                    'USER.id AS USER_ID', 
+                    'module_assignments.id as MODULE_ASSIGNMENT_ID'
+                )
+                ->leftJoin('group_memberships', 'group_memberships.user_id', 'user.id')
+                ->leftJoin('groups', 'groups.id', 'group_memberships.group_id')
+                ->leftJoin('module_assignments', 'module_assigments.user_id', 'user.id')
+                ->where('module_assignments.module_id', $module_id)
+                ->where('groups.slug', $group_slug);
+            if ($request->has('not_completed_after')) { 
+                $not_completed_after = $this->string_to_date($request['not_completed_after']);
+                $users = $users->where('module_assisments.date_completed', '<', $not_completed_after);
+            }
+            $users = $users->get();
+            $version = $this->get_version_from_request_or_most_recent($request);
+            $date_due = null;
+            if ($request->has('date_due')) { 
+                $date_due = $request['date_due'];
+            }
+            foreach ($users AS $user) {
+                $this->add_or_update_module_assignment($user, $version, $module_id, $due_date, $this->get_current_user($request));
+            }
+            $response = $this->get_group_users_status($request, $group_slug, $module_id);
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+        }
+        return $response;
     }
 }
