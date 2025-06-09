@@ -45,7 +45,8 @@ Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assig
 /**
  * get the status of an assignment for a user
  *  parameters:
- *      after (optional) - only return records that were assigned after a specific date (formated as 2025-04-29)
+ *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
+ *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
  *      status (optional) - only return records that have the status specified
  *  returns:
  *      all rows from module_assignments for student and assignment
@@ -93,7 +94,8 @@ Route::delete('/groups/{slug}/users/{unique_id}','PublicAPIController@delete_gro
 /**
  *  gets all module assignments for the users of a group where the module id = module
  *  parameters:
- *      after (optional) - only return records that were assigned after a specifice date (formated as 2025-04-29)
+ *      assigned_after (optional) - only return records that were assigned after a specifice date (formated as 2025-04-29)
+ *      completed_after (optional) - returns the completed status after the date for all of the users of the group 
  *      version (optional) 
  *  returns: 
  *      all rows for module_assigments that fit the criteria plus the module_name, group_name, user_name, and boolean for completed
@@ -110,7 +112,7 @@ Route::get('/groups/{slug}/module/{module}','PublicAPIController@get_group_modul
  *      the module that was assigned or an error message
  */
 
-Route::post('/groups/{slug}/module/{module}','PublicAPIController@assign_module_to_group'); 
+Route::post('/groups/{slug}/module/{module}','PublicAPIController@assign_module_to_group_members'); 
 
 /**
  * Create a group with the group slug
@@ -126,7 +128,7 @@ Route::post('/groups/{slug}','PublicAPIController@create_group');
  * Create a bulk assignment
  *  parameters:
  *      assignment: json of the assignment
- *      description (optional): assignment description, default to ''
+ *      description (optional): assignment description, defaults to ''
  *  returns:
  *      the assignment row that was created or an error message
  */
