@@ -68,7 +68,7 @@ class PublicAPIController extends Controller
     public function update_user(Request $request, $unique_id){
         $user = User::where('unique_id', $unique_id)->first();
         if ($user){
-            $user->update($request->all());
+            $user->save($request->all());
             return $user;
         }else{
             return response("User not found!",404);
@@ -83,12 +83,17 @@ class PublicAPIController extends Controller
         if ($group != null) {
             $user = $this->get_user_for_unique_id($unique_id);
             if ($user != null) {
-                $group_membership = GroupMembership::updateOrCreate([
-                    'user_id'=>$user->id,
-                    "group_id"=>$group->id,
-                    ],['type' => 'external']);
-                
-                
+                $group_membership = GroupMembership->where('user_id', $user->id)
+                    ->where("group_id", $group->id);
+                if (group_membership != null){
+                    $response = ["success"=>$user->first_name." ".$user->last_name." was already a member of the group '".$group->name."'"];
+                } else {
+                    $group_membership = new GroupMembership([
+                        "user_id"=>$user->id,
+                        "group_id"=>$group->id
+                    ]);
+                    $group_membership->save();
+                }
                 $response = ["success"=>$user->first_name." ".$user->last_name." was added to the group '".$group->name."'"];
             } else {
                 $response = ["error"=>"User not found"];
@@ -329,19 +334,15 @@ class PublicAPIController extends Controller
                 if (in_array($status, $this->allowed_module_statuses)) {
                     $user = $this->get_user_for_unique_id($unique_id);
                     if ($user != null) {
-                        $now = now()->timestamp;
                         $assignment = ModuleAssignment::where('module_id', $module->id)
                                 ->where('user_id', $user->id)->first();
                         if ($assignment->status != $status) {
-                            $assignment->update([
-                                'user_id' => $user->id,
-                                'module_version_id' => $module->module_version_id,
-                                'status' =>$status,
-                                'updated_at' => $now] ,['type' => 'external']);
-                            $query = ModuleAssignment::where('module_id', $module->id)
-                                    ->where('user_id', $user->id)->get();
-                            $this->send_email_based_on_status($status, $module, $user);
-                            $response = json_encode($query);
+                            $assignment->user_id = $user->id;
+                            $assignment->module_version_id = $module->module_version_id;
+                            $assignment->status = $status;
+                            $assignment->updated_at = now();
+                            $assignment->save();
+                            $response = json_encode($assignment);
                         } else {
                             $response = ["warning"=>"The user's status was already $status"];
                         }
@@ -443,7 +444,7 @@ class PublicAPIController extends Controller
     /**
      *  lookup module versions
      *  parameters:
-     *      module_name (optional) - name to look up, can include %s for LIKE comparisons
+     *      module_name (required) - name to look up, can include %s for LIKE comparisons
      *                               if omitted return all modules
      *      
      *  returns:
@@ -453,7 +454,7 @@ class PublicAPIController extends Controller
     public function get_modules_by_name(Request $request){
         try {
             if ($request->has('module_name')) {
-                $modules = MODULE::select(
+                $modules = Module::select(
                     "modules.id as module_id, modules.name as module_name", "modules.description", "users.unique_id as owner_b_number", 
                     "modules.message_configuration", "modules.assignment_configuration", "modules.public", "modules.past_due", 
                     "modules.reminders", "modules.past_due_reminders", "modules.module_version_id", "modules.created_at", "modules.updated_at", 
@@ -463,8 +464,7 @@ class PublicAPIController extends Controller
                 ->where('name', 'LIKE', $request['module_name'])->get();
                 $response = json_encode($modules);
             } else {
-                $modules = MODULE::get();
-                $response = json_encode($modules);
+                $response = ['error'=>'Please provide the parameter group_name'];
             }
         } catch (Exception $e) {
             $response = ["error"=>$e];
@@ -475,7 +475,7 @@ class PublicAPIController extends Controller
     /**
      *  lookup groups  
      *  parameters:
-     *      group_name (optional) - name to look up, can include %s for LIKE comparisons
+     *      group_name (required) - name to look up, can include %s for LIKE comparisons
      *                               if omitted return all groups
      *  returns:
      *      rows from groups table
@@ -483,11 +483,11 @@ class PublicAPIController extends Controller
     public function get_groups_by_name(Request $request){
         try {
             if ($request->has('group_name')) {
-                $modules = GROUP::where('name', 'LIKE', $request['group_name'])->get();
+                $modules = Group::where('name', 'LIKE', $request['group_name'])->get();
+                $response = json_encode($modules);
             } else {
-                $modules = GROUP::get();
+                $response = ['error'=>'Please provide the parameter group_name'];
             }
-            $response = json_encode($modules);
         } catch (Exception $e) {
             $response = ["error"=>$e];
         }
@@ -500,41 +500,27 @@ class PublicAPIController extends Controller
     private function add_or_update_module_assignment($user, $version, $module_id, $due_date, $current_user){
         $user_id = $user->user_id;
         $now = now()->timestamp;
-        if ($user->MODULE_ASSIGNMENT_ID == null) {
-            $module_assignment = ModuleAssignment::create([
+        if ($user->module_assignment_id == null) {
+            $module_assignment = new ModuleAssignment([
                 'user_id' => $user_id,
                 'module_version_id' => $version,
                 'module_id' => $module_id,
                 'due_date' => $due_date,
-                'data_assigned' => $now,
+                'date_assigned' => $now,
                 'assigned_by_user_id' => $current_user,
-                'status' => 'assigned',
-                'created_at' => $now], ['type' => 'external']
-
+                'status' => 'assigned']
             );
         } else {
             $module_assignment = ModuleAssignment::where('id', $user->MODULE_ASSIGNMENT_ID)->first();
-            $module_assignment->update([
-                'user_id' => $user_id,
-                'module_version_id' => $version,
-                'module_id' => $module_id,
-                'due_date' => $due_date,
-                'data_assigned' => $now,
-                'updated_by_user_id' => $current_user,
-                'status' => 'assigned',
-                'updated_at' => $now] ,['type' => 'external']
-            );
-        } 
+            $module_assignment->user_id = $user_id;
+            $module_assignment->module_version_id = $version;
+            $module_assignment->module_id = $module_id;
+            $module_assignment->due_date = $due_date;
+            $module_assignment->data_assigned = now();
+            $module_assignment->status = "assigned";
+        }
+        $module_assignment->save();
     }
-
-    // /**
-    //  * 
-    //  */
-    // private function get_latest_module_version() {
-    //     $mod = ModuleVersion::orderBy('created_at', 'desc')
-    //         ->first();
-    //     return $mod->id;
-    // }
 
     /**
      * Create a group with the group slug
@@ -547,16 +533,19 @@ class PublicAPIController extends Controller
         $duplicate = $this->get_group_for_slug($group_slug);
         if (empty($duplicate)) {
             $group_name = $group_slug;
-            if ($request->has('group_name')) { 
-                $date_due = $request['date_due'];
-                $duplicate = GROUP::where('name', $group_name)->first();
+            if ($request->has('group_name')) {
+                $group_name = $request['group_name'];
+            } else {
+                $group_name = $group_slug;
             }
+            $date_due = $request['date_due'];
+            $duplicate = GROUP::where('name', $group_name)->first();
             if (empty($duplicate)) {
-                $group = Group::create([
+                $group = new Group([
                     'name' => $group_name,
-                    'slug' => $group_slug,
-                    'created_at' => now()->timestamp],['type' => 'external']
+                    'slug' => $group_slug]
                 );
+                $group.save();
                 $response = json_encode($group);
             } else {
                 $response = ["error"=>"group named '".$group_name."' already exists"];
@@ -581,6 +570,8 @@ class PublicAPIController extends Controller
 
     /**
      * Assigns a module to a user
+     *  parameters:
+     *      due_date (optional) - (formated as 2025-04-29) - null if omitted
      */
     public function assign_module_to_user(Request $request, Module $module, $unique_id) {
         $user = $this->get_user_for_unique_id($unique_id);
@@ -588,16 +579,41 @@ class PublicAPIController extends Controller
             $module = Module::where('id', $module->id)
                 ->first();
             if ($module != null) {
+                if ($request->has('due_date')) {
+                    $due_date = string_to_date($request['due_date']);
+                } else {
+                    $due_date = null;
+                }
                 //does the record already exist?
-                $old_record = ModuleAssignment::where('module_id', $module->id)
+                $assignment_record = ModuleAssignment::where('module_id', $module->id)
+                    ->where('module_version', $module->module_version)
                     ->where('user_id', $user->id)
+                    ->where(function($query) {
+                        $query->where('status', 'assigned')
+                        ->orWhere('status', 'attended')
+                        ->orWhere('status', 'in_progress')
+                        ->orWhere('status', 'passed')
+                        ->orWhere('status', 'completed');
+                    })
                     ->orderBy('date_assigned', 'desc')
                     ->first();
-                if ($old_record != null) {
+                if ($assignment_record != null) {
+                    if (($assignment_record->status == 'assigned' || $assignment_record->status == 'in_progress') && $due_date != null) {
+                        $assignment_record->due_date = $due_date;
+                        $assignment_record->save();
+                    }
                     $response = ['warning'=>"Module ".$module->id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their status is '".$old_record['status'].".'"];
                 } else {
-                    $this->sendAssignmentToUser($module, $user);
-                    $response = ['success'=>"record added"];
+                    $new_record = new ModuleAssignment([
+                        user_id => $unique_id,
+                        module_version_id => $module->module_version,
+                        module_id => $module->$module_id,
+                        date_assigned => now(),
+                        due_date => $due_date,
+                        status => 'assigned',
+                    ]);
+                    $new_record->save();
+                    
                 }
             } else {
                 $response = ['error'=>'The specified module does not exist'];
@@ -606,44 +622,6 @@ class PublicAPIController extends Controller
             $response = ['error'=>'The specified user does not exist'];
         }
         return $response;
-    }
-//  status (required) - "assigned", "attended", "in_progress", "passed", "failed", "completed", "incomplete"
-    public function send_email_based_on_status($status, $module, $user) {
-        switch ($status) {
-            case "assigned":
-                $this->sendAssignmentToUser($module, $user);
-                break;
-            case "attended":
-            case "passed":
-            case "completed":
-                $this->sendCompletionEmail($module, $user);
-                break;
-            default:
-                echo ("no email is sent for status $status");
-                break;
-        }
-    }
-
-    public function sendCompletionEmail($module, $user) {
-        $assignment = ModuleAssignment::where('module_id', $module->id)->first();
-        $templates = $module->templates;
-        $user_messages =[
-            'module_name'=> $module['name'],
-            'link' => $assignment['id'],
-            'assignment'=>$module->templates->completion_notification
-        ];
-        $notify = Mail::to($user)->send(new AssignmentNotification($assignment, $user, $user_messages));
-    }
-
-    public function sendAssignmentToUser($module, $user) {
-        $assignment = ModuleAssignment::where('module_id', $module->id)->first();
-        $templates = $module->templates;
-        $user_messages =[
-            'module_name'=> $module['name'],
-            'link' => $assignment['id'],
-            'assignment'=>$module->templates->assignment
-        ];
-        $notify = Mail::to($user)->send(new AssignmentNotification($assignment, $user, $user_messages));
     }
 
     public function getAssignmentFromTemplate($templates) {
@@ -721,77 +699,10 @@ class PublicAPIController extends Controller
             ->header('Content-Disposition', 'attachment; filename="cal.ics"');
     }    
 
-
-    /***
-     * 
-     * 
-     *          Unused for now below here
-     * 
-     */
-
-    /**
-     * Create the workshop attendance and add it to the table or update it if it already exists
-     */
-    private function add_or_update_workshop_attendance($user, $workshop_id, $workshop_offering_id, $attendance, $status, $current_user) {
-        $user_id = $user->user_id;
-        $now = now()-timestamp;
-        if ($user->workshop_attendances_id == null) {
-            $workshop_attendance = WorkshopAttendance::create([
-                'workshop_offering_id' => $workshop_offering_id,
-                'workshop_id' => $workshop_id,
-                'user_id' => $user_id,
-                'attendance' => $attendance,
-                'status' => $status,
-                'created_at' => $now
-            ], ['type' => 'external']
-            );
-        } else {
-            $workshop_attendance = WorkshopAttendance::create([
-                'workshop_offering_id' => $workshop_offering_id,
-                'workshop_id' => $workshop_id,
-                'user_id' => $user_id,
-                'attendance' => $attendance,
-                'status' => $status,
-                'updated_at' => $now
-            ], ['type' => 'external']
-            )->where('id', $user->workshop_attendance_id);
-        }
-    }
-
-    /**
-     * add the user to the workshop attendance table
-     *  parameters:
-     *      status (optional) - "not_applicable", "uncompleted", "completed" defaults to uncomplete
-     *      attendance (optional) - "registered", "attended", "completed" defaults to registered
-     */
-    public function add_workshop_attendance_for_user(Request $request, String $workshop_id, $unique_id) {
-        $user = $this->get_user_for_unique_id($unique_id);
-        if ($user != null) {
-            $workshop = Workshop::where('id', $workshop_id)
-                ->first();
-            if ($workshop != null) {
-                //does the record already exist?
-                $old_record = WorkshopAttendance::where('workshop_id', $workshop_id)
-                    ->where('user_id', $user->id)
-                    ->first();
-                if ($old_record != null) {
-                    $response = ['warning'=>"Workshop ".$workshop_id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their attendance is '".$old_record['attendance'].".'"];
-                } else {
-                    $response = ['success'=>"record added"];
-                }
-            } else {
-                $response = ['error'=>'The specified workshop does not exist'];
-            }
-        } else {
-            $response = ['error'=>'The specified user does not exist'];
-        }
-        return $response;
-    }
-
     /**
      *  lookup workshop  
      *  parameters:
-     *      workshop_name (optional) - name to look up, can include %s for LIKE comparisons
+     *      workshop_name (required) - name to look up, can include %s for LIKE comparisons
      *                               if omitted return all groups
      *  returns:
      *      rows from workshops table
@@ -800,137 +711,14 @@ class PublicAPIController extends Controller
         try{
             if ($request->has('workshop_name')) {
                 $workshops = Workshop::where('name', 'LIKE', $request['workshop_name'])->get();
+                $response = json_encode($workshops);
             } else {
-                $workshops = Workshop::get();
+                $response = ['error'=>'Please provide the parameter workshop_name'];
             }
-            $response = json_encode($workshops);
+            
         } catch (Exception $e) {
             $response = ["error"=>$e];
         }
         return $response;
-    }
-
-    /**
-     * Gets the workshop_attendance record for a user
-     *  parameters:
-     *      after(optional) - only return attendance records after the specified date (formated as 2025-04-29)
-     */
-    public function get_workshop_attendance_for_user(Request $request, String $workshop_id, String $unique_id) {
-        $after = null;
-        $query = Module::where('modules.id', $module_id)
-            ->select(
-                'workshop.name AS workshop_name', 'module_assignments.status AS assignment_status', 'module_assignments.date_due', 
-                'module_assignments.date_assigned',  'module_assignments.date_completed',  'users.first_name', 'users.last_name',
-                DB::raw("'$unique_id' as b_number"), 'module_versions.id', 'module_versions.name AS version_name', 
-                'module_versions.created_at AS version_date')
-            ->leftJoin('module_assignments', 'module_assignments.module_id', 'modules.id')
-            ->leftJoin('users', 'module_assignments.user_id', 'users.id')
-            ->leftJoin('module_versions', 'modules.module_version_id', 'module_versions.id');
-        try {
-            if ($request->has('after')) {
-                $after = $this->string_to_date($request['after']);
-                $query = $query->where('module_assignments.date_assigned', '>=', $after);
-            }
-            $query = $query->where('users.unique_id', $unique_id)
-                ->where('module_assignments.module_id', $module_id)
-                ->orderBy('modules.module_version_id', 'desc')
-                ->first();
-            if ($query == null) {
-                if ($after != null) {
-                    $error = "Module " . $module_id . " has not been assigned or completed by the user " . $unique_id." within the time period";
-                } else {
-                    $error = "The module " . $module_id . " has not been assigned to the user " . $unique_id;
-                }
-                $response = ["error"=>$error];
-            } else {
-                $version_query = ModuleVersion::where('module_id', $module_id)
-                    ->orderBy('id', 'desc')->first();
-                // $query['latest_version'] = $version_query['id'] == $query['module_version_id'];
-                if ($after != null) {
-                    if ($query['assignment_status'] != 'complete') {
-                        $query['assignment_status'] = 'incomplete';
-                    }
-                }
-                $response = $query;
-            }
-        } catch (Exception $e) {
-            $response = ["error"=>$e];
-        }
-        return $response;
-    }
-
-    /**
-     * set the status and attendance for a workshop and user
-     *  parameters:
-     *      status (required) - "not_applicable", "uncompleted", "completed"
-     *      attendance (required) - "registered", "attended", "completed"
-     */
-    public function update_user_workshop_status_and_attendance(Request $request, $workshop_id, $user_id) {
-        try {
-            if ($request->has('status') && $request->has('attendance')){
-                $status = $request['status'];
-                $attendance = $request['attendance'];
-                
-                if (in_array($status, $this->allowed_workshop_statuses) && in_array($attendance, $this->allowed_workshop_attendances)) {
-                    $workshop = Workshop::where('id', $workshop_id)->get();
-                        if (!empty($workshop)) {
-                            $user = get_user_for_unique_id($unique_id);
-                            if ($user != null) {
-                                $now = now()->timestamp;
-                                WorkshopAttendance::update([
-                                    'user_id' => $user->id,
-                                    'status' => $status,
-                                    'attendance' => $attendance,
-                                    'updated_at' => $now] ,['type' => 'external'])
-                                    ->where('workshop_id', $workshop_id)
-                                    ->where('user_id', $user->id);
-                                    $query = WorkshopAttendance::where('workshop_id', $workshop_id)
-                                        ->where('user_id', $user->id)->get();
-                                    $rosponse = json_encode($query);
-                            } else {
-                                $response = ["error"=>"User not found"];    
-                            }
-                        } else {
-                            $response = ["error"=>"Unfound workshop id."];
-                        }
-                } else {
-                    $response = ["error"=>"Invalid status"];
-                }
-            } else {
-                $response = ["error"=>"Invalid status"];
-            }
-        } catch (Exception $e) {
-            $response = ["error"=>$e];
-        }
-        return $response;
-    }
-
-    /**
-     *  gets all workshop attendance for the users of a group where the workshop id = workshop_id
-     *  parameters:
-     *      after (optional) - only return records where the workshop date is after a specifice date 
-     *  returns: 
-     *      workshop, workshop_attendance, workshop_offering, group, and user data
-     */
-    public function get_group_users_status_for_workshops(Request $request, $workshop_id) {
-        $users = WorkshopAttendance::select(
-                    "workshops.name AS workshop_name", "workshops.id AS workshop_id", "groups.name AS group_name",
-                    "groups.id AS group_id", "users.unique_id AS bnumber", "workshop_attendances.attendance",
-                    "workshop_attendances.id AS workshop_id", "workshop_attendances.workshop_offering_id",
-                    "workshop_offerings.workshop_date", "module_assignments.date_due",
-                    DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS user_name"))
-            ->leftJoin("users", 'users.id', 'workshop_attendences.user_id')
-            ->leftJoin("group_memberships", 'group_memberships.user_id', 'users.id')
-            ->leftJoin("workshops", "workshops.id", "workshop_attendances.module_id")
-            ->leftJoin("groups", "groups.id", "group_memberships.group_id")
-            ->leftJoin("workshop_attendances", "workshop_attendances.workshop_id", "workshop.id")
-            ->leftJoin("workshop_offerings", "workshop_offerings.workshop_id", "workshop.id")
-            ->where('groups.slug', $group_slug)
-            ->where('workshops.id', $module_id);
-        if ($request->has('after')) {
-            $users = $users->where('workshop_offering.workshop_date', $request['after']);
-        }
-        $users = $users->get();
-        return $users;
     }
 }

@@ -7,11 +7,13 @@
 .env
 .env.backup
 .phpunit.result.cache
+.vscode/launch.json
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
 /alikemal
+
 #Exclude .idea file from PhpStorm
 .idea
 
