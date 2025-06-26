@@ -271,7 +271,7 @@ class PublicAPIController extends Controller
         return $query->paginate(100);
     }
 
-    /**
+/**
  * get the status of an assignment for a user
  *  parameters:
  *      assigned_after (optional) - when returning the assigned boolean the specific date (formatted as 2025-04-29)
@@ -283,32 +283,42 @@ class PublicAPIController extends Controller
      public function get_user_module_status(Request $request, Module $module, String $unique_id) {
         $after = null;
         $curr_user = User::where('unique_id', $unique_id)->first();
+        $assigned_date_condition_text = null;
+        $completed_date_condition_text = null;
         if ($curr_user != null) {
             if ($request->has('completed_after')) {
                 $completed_after = $this->string_to_date($request['completed_after']); 
-                $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' OR module_assignments.date_completed IS NULL";
-            } else {
-                $completed_date_condition_text = "module_assignments.date_completed IS NULL";
+                $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' ";
+                $add_assigned_after = true;
             }
             if ($request->has('assigned_after')) {
                 $assigned_after = $this->string_to_date($request['assigned_after']);
-                $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' OR module_assignments.date_assigned IS NULL";
-            } else {
-                $assigned_date_condition_text = "module_assignments.date_assigned IS NULL";
+                $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' ";
+
             }
             $select_fields = ['modules.name AS module_name', 'modules.description AS module_description', 'module_assignments.status AS assignment_status', 
                     'module_assignments.date_due', 'module_assignments.date_assigned', 'module_assignments.date_completed', 'users.first_name', 
                     'users.last_name', DB::raw("'$unique_id' as b_number"), 'module_versions.id', 'module_versions.name AS version_name', 
-                    'module_versions.created_at AS version_date',
-                    DB::raw("(case when $completed_date_condition_text THEN 0 ELSE 1 END) AS completed_within_range"),
-                    DB::raw("(case when $assigned_date_condition_text THEN 0 ELSE 1 END) AS assigned_within_range")];
+                    'module_versions.created_at AS version_date'];
+            if ($completed_date_condition_text != null) {
+                $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
+            }
+            if ($assigned_date_condition_text != null) {
+                $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 0 ELSE 1 END");
+            }
             $query = $module->select($select_fields);
             try {
                 $query = $query->leftJoin('module_assignments', 'module_assignments.module_id', 'modules.id')
                     ->leftJoin('users', 'module_assignments.user_id', 'users.id')
                     ->leftJoin('module_versions', 'modules.module_version_id', 'module_versions.id');
-                $query = $query->where('users.unique_id', $unique_id)
-                    ->orderBy('modules.module_version_id', 'desc')
+                $query = $query->where('users.unique_id', $unique_id);
+                if ($completed_date_condition_text != null) {
+                    $query = $query->where($completed_where, 1);
+                }
+                if ($assigned_date_condition_text != null) {
+                    $query = $query->where($assigned_where, 1);
+                }
+                $query = $query->orderBy('modules.module_version_id', 'desc')
                     ->get();
                 $response = $query;
             } catch (Exception $e) {
@@ -342,7 +352,7 @@ class PublicAPIController extends Controller
                             $assignment->status = $status;
                             $assignment->updated_at = now();
                             $assignment->save();
-                            $response = json_encode($assignment);
+                            $response = $assignment;
                         } else {
                             $response = ["warning"=>"The user's status was already $status"];
                         }
@@ -455,14 +465,14 @@ class PublicAPIController extends Controller
         try {
             if ($request->has('module_name')) {
                 $modules = Module::select(
-                    "modules.id as module_id, modules.name as module_name", "modules.description", "users.unique_id as owner_b_number", 
+                    "modules.id as module_id", "modules.name as module_name", "modules.description", "users.unique_id as owner_b_number", 
                     "modules.message_configuration", "modules.assignment_configuration", "modules.public", "modules.past_due", 
                     "modules.reminders", "modules.past_due_reminders", "modules.module_version_id", "modules.created_at", "modules.updated_at", 
                     "modules.deleted_at"
                 )
                 ->leftJoin('users', 'users.id', 'modules.owner_user_id')
                 ->where('name', 'LIKE', $request['module_name'])->get();
-                $response = json_encode($modules);
+                $response = $modules;
             } else {
                 $response = ['error'=>'Please provide the parameter group_name'];
             }
@@ -484,7 +494,7 @@ class PublicAPIController extends Controller
         try {
             if ($request->has('group_name')) {
                 $modules = Group::where('name', 'LIKE', $request['group_name'])->get();
-                $response = json_encode($modules);
+                $response = $modules;
             } else {
                 $response = ['error'=>'Please provide the parameter group_name'];
             }
@@ -586,7 +596,7 @@ class PublicAPIController extends Controller
                 }
                 //does the record already exist?
                 $assignment_record = ModuleAssignment::where('module_id', $module->id)
-                    ->where('module_version', $module->module_version)
+                    ->where('module_version_id', $module->module_version_id)
                     ->where('user_id', $user->id)
                     ->where(function($query) {
                         $query->where('status', 'assigned')
@@ -602,11 +612,11 @@ class PublicAPIController extends Controller
                         $assignment_record->due_date = $due_date;
                         $assignment_record->save();
                     }
-                    $response = ['warning'=>"Module ".$module->id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their status is '".$old_record['status'].".'"];
+                    $response = ['warning'=>"Module ".$module->id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their status is '".$assignment_record['status'].".'"];
                 } else {
                     $new_record = new ModuleAssignment([
                         user_id => $unique_id,
-                        module_version_id => $module->module_version,
+                        module_version_id => $module->module_version_id,
                         module_id => $module->$module_id,
                         date_assigned => now(),
                         due_date => $due_date,
