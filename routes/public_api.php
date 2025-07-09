@@ -29,7 +29,7 @@ Route::get('/users/{unique_id}/assignments','PublicAPIController@get_user_assign
 /**
  *  lookup module versions
  *  parameters:
- *      module_name (optional) - name to look up, can include %s for LIKE comparisons
+ *      module_name (required) - name to look up, can include %s for LIKE comparisons
  *                               if omitted return all modules
  *      
  *  returns:
@@ -54,7 +54,6 @@ Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assig
 Route::get('/modules/{module}/users/{unique_id}','PublicAPIController@get_user_module_status');
 
 /**
- * remove
  * set that status of a module for a user
  *  parameter:
  *      status (required) - "assigned", "attended", "in_progress", "passed", "failed", "completed", "incomplete"
@@ -73,7 +72,7 @@ Route::post('/modules/{module}/users/{unique_id}', 'PublicAPIController@assign_m
 /**
  *  lookup groups  
  *  parameters:
- *      group_name (optional) - name to look up, can include %s for LIKE comparisons
+ *      group_name (required) - name to look up, can include %s for LIKE comparisons
  *                               if omitted return all groups
  *  returns:
  *      rows from groups table
@@ -99,7 +98,7 @@ Route::delete('/groups/{slug}/users/{unique_id}','PublicAPIController@delete_gro
  *  returns: 
  *      all rows for module_assigments that fit the criteria plus the module_name, group_name, user_name, and boolean for completed
  */
-Route::get('/groups/{slug}/module/{module}','PublicAPIController@get_group_module_status');
+Route::get('/groups/{slug}/modules/{module}','PublicAPIController@get_group_module_status');
 
 /**
  * Assign module for everyone in a group
@@ -111,7 +110,7 @@ Route::get('/groups/{slug}/module/{module}','PublicAPIController@get_group_modul
  *      the module that was assigned or an error message
  */
 
-Route::post('/groups/{slug}/module/{module}','PublicAPIController@assign_module_to_group_members'); 
+Route::post('/groups/{slug}/modules/{module}','BulkAssignmentController@assign_module_to_group_members'); 
 
 /**
  * Create a group with the group slug

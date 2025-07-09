@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\BulkAssignment;
+use App\Http\Controllers\PublicAPIController;
+use App\GroupMembership;
 use App\Module;
 use App\ModuleAssignment;
+use App\SimpleUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -175,7 +178,8 @@ class BulkAssignmentController extends Controller
                 $attendance = "registered";
             }
             foreach ($users AS $user) {
-                $this->add_or_update_workshop_attendance($user, $workshop_id, $workshop_offering_id, $attendance, $status, $this->get_current_user(request));
+                $pub_api = new PublicAPIController();
+                $this->add_or_update_workshop_attendance($user, $workshop_id, $workshop_offering_id, $attendance, $status, $$pub_api->get_current_user(request));
             }
             $response = $this->get_group_users_status($request, $group_slug, $module_id);
         } catch (Exception $e) {
@@ -195,29 +199,32 @@ class BulkAssignmentController extends Controller
      */
     public function assign_module_to_group_members(Request $request, $group_slug, Module $module) {
         try {
-            $users = SimpleUser::select(
-                    'USER.id AS USER_ID', 
-                    'module_assignments.id as MODULE_ASSIGNMENT_ID'
-                )
-                ->leftJoin('group_memberships', 'group_memberships.user_id', 'user.id')
-                ->leftJoin('groups', 'groups.id', 'group_memberships.group_id')
-                ->leftJoin('module_assignments', 'module_assigments.user_id', 'user.id')
-                ->where('module_assignments.module_id', $module_id)
+            $users = GroupMembership::select()
+                ->leftJoin('groups', 'group_memberships.group_id', 'groups.id')
                 ->where('groups.slug', $group_slug);
             if ($request->has('not_completed_after')) { 
                 $not_completed_after = $this->string_to_date($request['not_completed_after']);
-                $users = $users->where('module_assisments.date_completed', '<', $not_completed_after);
+                $users = $users->where('module_assignments.date_completed', '<', $not_completed_after);
             }
             $users = $users->get();
-            $version = $this->get_version_from_request_or_most_recent($request);
             $date_due = null;
             if ($request->has('date_due')) { 
                 $date_due = $request['date_due'];
             }
-            foreach ($users AS $user) {
-                $this->add_or_update_module_assignment($user, $version, $module_id, $due_date, $this->get_current_user($request));
+            $not_completed_after = null;
+            if ($request->has('not_completed_after')) {
+                $not_completed_after = $request['not_completed_after'];
             }
-            $response = $this->get_group_users_status($request, $group_slug, $module_id);
+            $pub_api = new PublicAPIController();
+            if ($request->has('version')){
+                $version = $request['version'];
+            } else {
+                $version = $pub_api->get_most_recent_version($module);
+            }
+            foreach ($users AS $user) {
+                $pub_api->add_or_update_module_assignment($user->id, $version, $module->id, $date_due, $not_completed_after, $pub_api->get_current_user($request));
+            }
+            $response = $pub_api->get_group_module_status($request, $group_slug, $module);
         } catch (Exception $e) {
             $response = ["error"=>$e];
         }
