@@ -83,9 +83,9 @@ class PublicAPIController extends Controller
         if ($group != null) {
             $user = $this->get_user_for_unique_id($unique_id);
             if ($user != null) {
-                $group_membership = GroupMembership->where('user_id', $user->id)
+                $group_membership = GroupMembership::where('user_id', $user->id)
                     ->where("group_id", $group->id);
-                if (group_membership != null){
+                if ($group_membership != null){
                     $response = ["success"=>$user->first_name." ".$user->last_name." was already a member of the group '".$group->name."'"];
                 } else {
                     $group_membership = new GroupMembership([
@@ -117,6 +117,19 @@ class PublicAPIController extends Controller
             } else {
                 $response = ["error"=>"User not found"];
             }
+        } else {
+            $response = ["error"=>"Group not found"];
+        }
+        return response($response, 200);
+    }
+
+    public function get_all_group_users(Request $request, Group $group) {
+        if ($group != null) {
+            $users = SimpleUser::select("*")
+                ->leftJoin('group_memberships', 'group_memberships.user_id', 'users.id')
+                ->where('group_memberships.group_id', $group->id)
+                ->get();
+            $response = $users;
         } else {
             $response = ["error"=>"Group not found"];
         }
@@ -310,7 +323,7 @@ class PublicAPIController extends Controller
             }
             $select_fields = ['modules.name AS module_name', 'modules.description AS module_description', 'module_assignments.status AS assignment_status', 
                     'module_assignments.date_due', 'module_assignments.date_assigned', 'module_assignments.date_completed', 'users.first_name', 
-                    'users.last_name', DB::raw("'$unique_id' as b_number"), 'module_versions.id', 'module_versions.name AS version_name', 
+                    'users.last_name', DB::raw("'$unique_id' as b_number"), 'module_versions.id AS module_version_id', 'module_versions.name AS version_name', 
                     'module_versions.created_at AS version_date'];
             if ($completed_date_condition_text != null) {
                 $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
@@ -323,7 +336,8 @@ class PublicAPIController extends Controller
                 $query = $query->leftJoin('module_assignments', 'module_assignments.module_id', 'modules.id')
                     ->leftJoin('users', 'module_assignments.user_id', 'users.id')
                     ->leftJoin('module_versions', 'modules.module_version_id', 'module_versions.id');
-                $query = $query->where('users.unique_id', $unique_id);
+                $query = $query->where('users.unique_id', $unique_id)
+                    ->where('module_assignments.module_id', $module->id);
                 if ($completed_date_condition_text != null) {
                     $query = $query->where($completed_where, 1);
                 }

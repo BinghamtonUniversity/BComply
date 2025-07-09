@@ -113,6 +113,15 @@ Route::get('/groups/{slug}/modules/{module}','PublicAPIController@get_group_modu
 Route::post('/groups/{slug}/modules/{module}','BulkAssignmentController@assign_module_to_group_members'); 
 
 /**
+ * Gets all users that are in a group
+ *  parameters:
+ *      none
+ *  returns:
+ *      the users in the group
+ */
+Route::get('/groups/{group}','PublicAPIController@get_all_group_users'); 
+
+/**
  * Create a group with the group slug
  *  parameters:
  *      group_name (optional): if not given, the group name is the same as the slug
