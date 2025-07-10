@@ -125,7 +125,10 @@ class PublicAPIController extends Controller
 
     public function get_all_group_users(Request $request, Group $group) {
         if ($group != null) {
-            $users = SimpleUser::select("*")
+            $users = SimpleUser::select("users.id", "unique_id", "first_name", "last_name", "email", 
+                    "supervisor", "department_id", "department_name", "division_id", "division", 
+                    "title", "role_type", "active", "users.created_at", "users.updated_at", 
+                    "group_memberships.group_id")
                 ->leftJoin('group_memberships', 'group_memberships.user_id', 'users.id')
                 ->where('group_memberships.group_id', $group->id)
                 ->get();
@@ -500,7 +503,7 @@ class PublicAPIController extends Controller
                 ->where('name', 'LIKE', $request['module_name'])->get();
                 $response = $modules;
             } else {
-                $response = ['error'=>'Please provide the parameter group_name'];
+                $response = ['error'=>'Please provide the parameter module_name'];
             }
         } catch (Exception $e) {
             $response = ["error"=>$e];
@@ -600,7 +603,7 @@ class PublicAPIController extends Controller
                     'slug' => $group_slug]
                 );
                 $group->save();
-                $response = json_encode($group);
+                $response = $group;
             } else {
                 $response = ["error"=>"group named '".$group_name."' already exists"];
             }
@@ -622,21 +625,6 @@ class PublicAPIController extends Controller
     }
 
     /**
-     * Assign module for everyone in a group
-     *  parameters:
-     *      not_completed_after (optional): don't assign it to anyone that has complete the module after date (fomatted like after=2025-05-01)
-     *      version (optional): assign a specific version, if not passed the latest version is used
-     *      due_date (optional): enter a due date for the assignment specified like 2025-05-01
-     *  returns:
-     *      the module that was assigned or an error message
-     */
-    public function assign_module_to_group_members(Request $request, Group $group, Module $module) {
-        if ($module != null && $group != null) {
-
-        }
-    }
-
-    /**
      * Assigns a module to a user
      *  parameters:
      *      due_date (optional) - (formated as 2025-04-29) - null if omitted
@@ -646,7 +634,7 @@ class PublicAPIController extends Controller
         if ($user != null) {
             if ($module != null) {
                 if ($request->has('due_date')) {
-                    $due_date = string_to_date($request['due_date']);
+                    $due_date = $this->string_to_date($request['due_date']);
                 } else {
                     $due_date = null;
                 }
@@ -665,21 +653,21 @@ class PublicAPIController extends Controller
                     ->first();
                 if ($assignment_record != null) {
                     if (($assignment_record->status == 'assigned' || $assignment_record->status == 'in_progress') && $due_date != null) {
-                        $assignment_record->due_date = $due_date;
+                        $assignment_record->date_due = $due_date;
                         $assignment_record->save();
                     }
                     $response = ['warning'=>"Module ".$module->id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their status is '".$assignment_record['status'].".'"];
                 } else {
                     $new_record = new ModuleAssignment([
-                        user_id => $unique_id,
-                        module_version_id => $module->module_version_id,
-                        module_id => $module->$module_id,
-                        date_assigned => now(),
-                        due_date => $due_date,
-                        status => 'assigned',
+                        'user_id' => $user->id,
+                        'module_version_id' => $module->module_version_id,
+                        'module_id' => $module->id,
+                        'date_assigned' => now(),
+                        'due_date' => $due_date,
+                        'status' => 'assigned'
                     ]);
                     $new_record->save();
-                    
+                    $response = $new_record;
                 }
             } else {
                 $response = ['error'=>'The specified module does not exist'];
