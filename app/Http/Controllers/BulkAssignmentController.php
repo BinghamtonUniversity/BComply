@@ -144,51 +144,6 @@ class BulkAssignmentController extends Controller
     }
 
     /**
-     * Add workshop_attendance record for everyone in a group
-     *  parameters:
-     *      status (optional) - "not_applicable", "uncompleted", "completed" defaults to uncomplete
-     *      attendance (optional) - "registered", "attended", "completed" defaults to registered
-     */
-    public function add_workshop_attendence_to_group_members(Request $request, $group_slug, $workshop_id){
-        try {
-            $users = SimpleUser::select(
-                    'USER.id AS USER_ID', 
-                    'workshop_attendances.id as workshop_attendances_id'
-                )
-                ->leftJoin('group_memberships', 'group_memberships.user_id', 'user.id')
-                ->leftJoin('groups', 'groups.id', 'group_memberships.group_id')
-                ->leftJoin('workshop_attendances', 'workshop.user_id', 'user.id')
-                ->leftJoin('workshop_offering', 'workshop_offering.workshop_id', 'workshop_attendances.workshop_id')
-                ->where('workshop_attendance.workshop_id', $workshop_id)
-                ->where('groups.slug', $group_slug);
-            if ($request->has('not_completed_after')) { 
-                $not_completed_after = $this->string_to_date($request['not_completed_after']);
-                $users = $users->where('workshop_offerings.workshop_date', '<', $not_completed_after)
-                                ->where('workshop_attendances.attendance', "attended");
-            }
-            $users = $users->get();
-            if (is_set($request['state'])) {
-                $status = $request["status"];
-            } else {
-                $status = "uncomplete";
-            }
-            if (is_set($request['attendance'])) {
-                $attendance = $request["attendance"];
-            } else {
-                $attendance = "registered";
-            }
-            foreach ($users AS $user) {
-                $pub_api = new PublicAPIController();
-                $this->add_or_update_workshop_attendance($user, $workshop_id, $workshop_offering_id, $attendance, $status, $$pub_api->get_current_user(request));
-            }
-            $response = $this->get_group_users_status($request, $group_slug, $module_id);
-        } catch (Exception $e) {
-            $response = ["error"=>$e];
-        }
-        return $response;
-    }
-
-    /**
      * Assign module for everyone in a group
      *  parameters:
      *      not_completed_after (optional): don't assign it to anyone that has complete the module after date (fomatted like after=2025-05-01)
@@ -203,7 +158,8 @@ class BulkAssignmentController extends Controller
                 ->leftJoin('groups', 'group_memberships.group_id', 'groups.id')
                 ->where('groups.slug', $group_slug);
             if ($request->has('not_completed_after')) { 
-                $not_completed_after = $this->string_to_date($request['not_completed_after']);
+                $helper = new ApiHelper();
+                $not_completed_after = $helper->string_to_date($request['not_completed_after']);
                 $users = $users->where('module_assignments.date_completed', '<', $not_completed_after);
             }
             $users = $users->get();
@@ -219,7 +175,7 @@ class BulkAssignmentController extends Controller
             if ($request->has('version')){
                 $version = $request['version'];
             } else {
-                $version = $pub_api->get_most_recent_version($module);
+                $version = $module->module_version_id;
             }
             foreach ($users AS $user) {
                 $pub_api->add_or_update_module_assignment($user->id, $version, $module->id, $date_due, $not_completed_after, $pub_api->get_current_user($request));

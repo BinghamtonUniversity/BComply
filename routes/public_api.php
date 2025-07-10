@@ -54,14 +54,6 @@ Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assig
 Route::get('/modules/{module}/users/{unique_id}','PublicAPIController@get_user_module_status');
 
 /**
- * set that status of a module for a user
- *  parameter:
- *      status (required) - "assigned", "attended", "in_progress", "passed", "failed", "completed", "incomplete"
- */
-
-Route::put('/modules/{module}/users/{unique_id}', 'PublicAPIController@update_user_module_status');
-
-/**
  * Assigns a module to a user
  *  parameters:
  *      due_date (optional) - (formated as 2025-04-29) - null if omitted

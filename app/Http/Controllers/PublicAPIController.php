@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\SimpleUser;
 use App\GroupMembership;
 use App\Group;
+use App\Libraries\ApiHelper;
 use App\Utilities;
 use App\User;
 use App\Mail\AssignmentNotification;
@@ -79,9 +80,10 @@ class PublicAPIController extends Controller
      * adds a user to a group (or updates the user if they already exist in the group)
      */
     public function add_group_membership(Request $request, $group_slug, $unique_id){
-        $group = $this->get_group_for_slug($group_slug);
+        $helper = new ApiHelper();
+        $group = $helper->get_group_for_slug($group_slug);
         if ($group != null) {
-            $user = $this->get_user_for_unique_id($unique_id);
+            $user = $helper->get_user_for_unique_id($unique_id);
             if ($user != null) {
                 $group_membership = GroupMembership::where('user_id', $user->id)
                     ->where("group_id", $group->id);
@@ -108,9 +110,10 @@ class PublicAPIController extends Controller
      * removes a user from a group
      */
     public function delete_group_membership(Request $request, $group_slug, $unique_id){
-        $group = $this->get_group_for_slug($group_slug);
+        $helper = new ApiHelper();
+        $group = $helper->get_group_for_slug($group_slug);
         if ($group != null) {
-            $user = $this->get_user_for_unique_id($unique_id);
+            $user = $helper->get_user_for_unique_id($unique_id);
             if ($user != null) {
                 GroupMembership::where('user_id',$user->id)->where("group_id",$group->id)->delete();
                 $response = ["success"=>$user->first_name." ".$user->last_name." was removed from the group '".$group->name."'"];
@@ -268,18 +271,6 @@ class PublicAPIController extends Controller
             }])->get();
     }
 
-    public function get_most_recent_version(Module $module) {
-        $version = null;
-        $mod_version = ModuleVersion::select("*")
-                                ->where('module_id', $module->id)
-                                ->where('deleted_at', null)
-                                ->orderBy('updated_at', 'desc')->first();
-        if (!empty($mod_version)) {
-            $version = $mod_version->id;
-        }
-        return $version;
-    }
-
     public function get_module_assignments(Request $request, Module $module){
         $query = ModuleAssignment::where('module_id',$module->id)
             ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
@@ -314,13 +305,14 @@ class PublicAPIController extends Controller
         $assigned_date_condition_text = null;
         $completed_date_condition_text = null;
         if ($curr_user != null) {
+            $helper = new ApiHelper();
             if ($request->has('completed_after')) {
-                $completed_after = $this->string_to_date($request['completed_after']); 
+                $completed_after = $helper->string_to_date($request['completed_after']); 
                 $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' ";
                 $add_assigned_after = true;
             }
             if ($request->has('assigned_after')) {
-                $assigned_after = $this->string_to_date($request['assigned_after']);
+                $assigned_after = $helper->string_to_date($request['assigned_after']);
                 $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' ";
 
             }
@@ -360,47 +352,6 @@ class PublicAPIController extends Controller
     }
 
     /**
-     * //TODO: look at this
-     * set that status of a module for a user
-     *  parameter:
-     *      status (required) - "assigned", "attended", "in_progress", "passed", "failed", "completed", "incomplete"
-     *                        - we might not specify the assigned status here, b/c that might only be used when the record create 
-     */
-    public function update_user_module_status(Request $request, Module $module, $unique_id) {
-        try {
-            if ($request->has('status')){
-                $status = $request['status'];
-                if (in_array($status, $this->allowed_module_statuses)) {
-                    $user = $this->get_user_for_unique_id($unique_id);
-                    if ($user != null) {
-                        $assignment = ModuleAssignment::where('module_id', $module->id)
-                                ->where('user_id', $user->id)->first();
-                        if ($assignment->status != $status) {
-                            $assignment->user_id = $user->id;
-                            $assignment->module_version_id = $module->module_version_id;
-                            $assignment->status = $status;
-                            $assignment->updated_at = now();
-                            $assignment->save();
-                            $response = $assignment;
-                        } else {
-                            $response = ["warning"=>"The user's status was already $status"];
-                        }
-                    } else {
-                        $response = ["error"=>"The user you specified was not found"];    
-                    }
-                } else {
-                    $response = ["error"=>"That status is not allowed"];
-                }
-            } else {
-                $response = ["error"=>"You must include a status to do this"];
-            }
-        } catch (Exception $e) {
-            $response = ["error"=>$e];
-        }
-        return $response;
-    }
-
-    /**
      *  gets all module assignments for the users of a group where the module id = module_id
      *  parameters:
      *      assigned_after (optional) - when returning the assigned boolean the specific date (formatted as 2025-04-29)
@@ -410,14 +361,15 @@ class PublicAPIController extends Controller
      *      all rows for module_assigments that fit the criteria plus the module_name, group_name, user_name, and boolean for completed
      */
     public function get_group_module_status(Request $request, $group_slug, Module $module) {
+        $helper = new ApiHelper();
         if ($request->has('completed_after')) {
-            $completed_after = $this->string_to_date($request['completed_after']); 
+            $completed_after = $helper->string_to_date($request['completed_after']); 
             $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' OR module_assignments.date_completed IS NULL;";
         } else {
             $completed_date_condition_text = "module_assignments.date_completed IS NULL";
         }
         if ($request->has('assigned_after')) {
-                $assigned_after = $this->string_to_date($request['assigned_after']);
+                $assigned_after = $helper->string_to_date($request['assigned_after']);
                 $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' OR module_assignments.date_assigned IS NULL";
             } else {
                 $assigned_date_condition_text = "module_assignments.date_assigned IS NULL";
@@ -438,7 +390,7 @@ class PublicAPIController extends Controller
             ->where('groups.slug', $group_slug)
             ->where('modules.id', $module->id);
         if ($request->has('assigned_after')) {
-            $assignment_date = $this->string_to_date($request['assigned_after']); 
+            $assignment_date = $helper->string_to_date($request['assigned_after']); 
             $users = $users->where('module_assignments.date_assigned', '>=', $assignment_date);
         }
         if ($request->has('version')) {
@@ -448,37 +400,9 @@ class PublicAPIController extends Controller
         return $users;
     }
 
-    /**
-     * lookup a group based on the slug
-     * 
-     * returns null if not found
-     */
-    public function get_group_for_slug($group_slug) {
-        $group = null;
-        if (!empty($group_slug)){
-            $group = Group::where('slug', $group_slug)->first();
-            if (empty($group)) {
-                $group = null;
-            }
-        }
-        return $group;
-    }
+    
 
-    /**
-     * lookup user by b_number
-     * 
-     * returns null if not found
-     */
-    public function get_user_for_unique_id($unique_id) {
-        $user = null;
-        if (!empty($unique_id)) {
-            $user = User::where('unique_id', $unique_id)->first();
-            if (empty($user)){
-                $user = null;
-            }
-        }
-        return $user;
-    }
+    
 
     /**
      *  lookup module versions
@@ -534,43 +458,6 @@ class PublicAPIController extends Controller
     }
 
     /**
-     * Create the module assignment and add it to the table or update it if it already exists
-     */
-    public function add_or_update_module_assignment($user_id, $version, $module_id, $due_date, $not_completed_after, $current_user){
-        $now = now()->timestamp;
-        $module_assignment = ModuleAssignment::select()
-                ->where('module_id', $module_id)
-                ->where('module_version_id', $version)
-                ->where('user_id', $user_id)
-                ->where('status', 'completed');
-        if ($not_completed_after != null) {
-            $module_assignment = $module_assignment->where('date_completed', '>=', $not_completed_after);
-        }
-        $module_assignment = $module_assignment->first();
-        if ($module_assignment == null) {
-            $module_assignment = ModuleAssignment::select()
-                ->where('module_id', $module_id)
-                ->where('module_version_id', $version)
-                ->where('user_id', $user_id);
-            if ($module_assignment == null) {
-                $module_assignment = new ModuleAssignment([
-                    'user_id' => $user_id,
-                    'module_version_id' => $version,
-                    'module_id' => $module_id,
-                    'due_date' => $due_date,
-                    'date_assigned' => $now,
-                    'assigned_by_user_id' => $current_user,
-                    'status' => 'assigned']
-                );
-                $module_assignment->save();
-            } else {
-                $module_assignment->updated_at = $now;
-            }
-            
-        } 
-    }
-
-    /**
      * can we get the current user from the request?
      */
     public function get_current_user() {
@@ -587,7 +474,8 @@ class PublicAPIController extends Controller
      *      the group row or a message why the group could not be created
      */
     public function create_group(Request $request, $group_slug) {
-        $duplicate = $this->get_group_for_slug($group_slug);
+        $helper = new ApiHelper();
+        $duplicate = $helper->get_group_for_slug($group_slug);
         if (empty($duplicate)) {
             $group_name = $group_slug;
             if ($request->has('group_name')) {
@@ -614,27 +502,17 @@ class PublicAPIController extends Controller
     }
 
     /**
-     * Takes a date formatted like YYYY-MM-DD and returns a 
-     * date object
-     * @param String string formatted like 2025-03-25
-     * @throws ValueError
-     */
-    public function string_to_date($s_date) {
-        $format = 'Y-m-d';
-        return Carbon::createFromFormat($format, $s_date);
-    }
-
-    /**
      * Assigns a module to a user
      *  parameters:
      *      due_date (optional) - (formated as 2025-04-29) - null if omitted
      */
     public function assign_module_to_user(Request $request, Module $module, $unique_id) {
-        $user = $this->get_user_for_unique_id($unique_id);
+        $helper = new ApiHelper();
+        $user = $helper->get_user_for_unique_id($unique_id);
         if ($user != null) {
             if ($module != null) {
                 if ($request->has('due_date')) {
-                    $due_date = $this->string_to_date($request['due_date']);
+                    $helper= $helper->string_to_date($request['due_date']);
                 } else {
                     $due_date = null;
                 }
@@ -676,11 +554,6 @@ class PublicAPIController extends Controller
             $response = ['error'=>'The specified user does not exist'];
         }
         return $response;
-    }
-
-    public function getAssignmentFromTemplate($templates) {
-        $json = json_decode($templates);
-        $assignment = $json->assignment;
     }
 
     public function impersonate_user(String $unique_id){
