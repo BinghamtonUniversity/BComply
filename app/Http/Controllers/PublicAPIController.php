@@ -291,36 +291,27 @@ class PublicAPIController extends Controller
         return $query->get();
     }
 
-    public function get_all_assignments(Request $request, Module $module){
+    public function get_all_assignments(Request $request){
         $completed_date_condition_text = null;
         $assigned_date_condition_text = null;
-        $query = ModuleAssignment::select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
-            ->with(['user'=>function($query){
-                $query->select('id','unique_id','email','first_name','last_name');
-            }])->with(['version'=>function($query){
-                $query->select('id','name');
-            }]);
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                            'module_assignments.updated_at', 'modules.name AS module_name');
+        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id');
 
         if ($request->has('completed_after')) {
             $completed_after = $helper->string_to_date($request['completed_after']); 
             $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' ";
-            $add_assigned_after = true;
+            $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
+            $query = $query->where($completed_where, 1);
         }
         if ($request->has('assigned_after')) {
             $assigned_after = $helper->string_to_date($request['assigned_after']);
             $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' ";
-
-        }
-        if ($request->has('latest_version')) {
-            $latest_version = $request['latest_version'] == "true";
-        } else {
-            $latest_version = false;
-        }
-        if ($completed_date_condition_text != null) {
-            $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
-        }
-        if ($assigned_date_condition_text != null) {
             $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 0 ELSE 1 END");
+            $query = $query->where($assigned_where, 1);
         }
         return $query->get();
     }
