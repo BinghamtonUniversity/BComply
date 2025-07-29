@@ -36,18 +36,6 @@ class BulkAssignmentController extends Controller
         return $bulkAssignment;
     }
 
-    public function add_bulk_assignments_with_json(Request $request, String $bulkAssignment_name) {
-        $assignment = $request['assignment'];
-        if ($request->has('description')) {
-            $description = $request['description'];
-        }
-        $module_assignment = BulkAssignment::create([
-            'name' => $bulkAssignment_name,
-            'description' => $description,
-            'assignment' => $assignment], ['type' => 'external']
-        );
-    }
-
     /**
      * @param Request $request
      * @return BulkAssignment

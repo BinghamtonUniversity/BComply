@@ -19,6 +19,17 @@ Route::get('/users/{unique_id}','PublicAPIController@get_user');
 Route::post('/users','PublicAPIController@create_user');
 Route::put('/users/{unique_id}','PublicAPIController@update_user');
 
+
+/**
+ * Get all assignments
+ *  parameters: 
+ *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
+ *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
+ *  
+ * 
+ */
+
+Route::get('/assignments', 'PublicAPIController@get_all_assignments');
 /**
  * Get all the assignments that fit a user
  *  return rows from the assignments table
@@ -42,7 +53,9 @@ Route::get('/users/{unique_id}/assignments','PublicAPIController@get_user_assign
 Route::get('/modules','PublicAPIController@get_modules_by_name');
 
 /**
- *  lookup all the users that have a module assigned
+ *  lookup all the users that have a module assigned (not necessarily with status assigned - status can be anything)
+ *   parameters:
+ *      latest_version (optional) - boolean to only return the latest version
  * 
  *  test - http://bcomplydev.local:8000/api/public/modules/2/assignments
  */
@@ -54,6 +67,7 @@ Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assig
  *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
  *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
  *      status (optional) - only return records that have the status specified
+ *      latest_version (optional) - boolean to only return the latest version
  *  returns:
  *      all rows from module_assignments for student and assignment
  * 

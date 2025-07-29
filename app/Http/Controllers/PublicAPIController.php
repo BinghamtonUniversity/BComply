@@ -279,7 +279,8 @@ class PublicAPIController extends Controller
             }])->with(['version'=>function($query){
                 $query->select('id','name');
             }]);
-        if($request->has('current_version') && $request->current_version=='true'){
+
+        if($request->has('latest_version') && $request->latest_version=='true'){
             $query->where('module_version_id',$module->module_version_id);
         }
         if($request->has('users') && gettype($request->users)==='array'){
@@ -287,7 +288,41 @@ class PublicAPIController extends Controller
                 $query->whereIn('unique_id', $request->users);
             });
         }
-        return $query->paginate(100);
+        return $query->get();
+    }
+
+    public function get_all_assignments(Request $request, Module $module){
+        $completed_date_condition_text = null;
+        $assigned_date_condition_text = null;
+        $query = ModuleAssignment::select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
+            ->with(['user'=>function($query){
+                $query->select('id','unique_id','email','first_name','last_name');
+            }])->with(['version'=>function($query){
+                $query->select('id','name');
+            }]);
+
+        if ($request->has('completed_after')) {
+            $completed_after = $helper->string_to_date($request['completed_after']); 
+            $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' ";
+            $add_assigned_after = true;
+        }
+        if ($request->has('assigned_after')) {
+            $assigned_after = $helper->string_to_date($request['assigned_after']);
+            $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' ";
+
+        }
+        if ($request->has('latest_version')) {
+            $latest_version = $request['latest_version'] == "true";
+        } else {
+            $latest_version = false;
+        }
+        if ($completed_date_condition_text != null) {
+            $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
+        }
+        if ($assigned_date_condition_text != null) {
+            $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 0 ELSE 1 END");
+        }
+        return $query->get();
     }
 
 /**
@@ -316,6 +351,11 @@ class PublicAPIController extends Controller
                 $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' ";
 
             }
+            if ($request->has('latest_version')) {
+                $latest_version = $request['latest_version'] == "true";
+            } else {
+                $latest_version = false;
+            }
             $select_fields = ['modules.name AS module_name', 'modules.description AS module_description', 'module_assignments.status AS assignment_status', 
                     'module_assignments.date_due', 'module_assignments.date_assigned', 'module_assignments.date_completed', 'users.first_name', 
                     'users.last_name', DB::raw("'$unique_id' as b_number"), 'module_versions.id AS module_version_id', 'module_versions.name AS version_name', 
@@ -338,6 +378,9 @@ class PublicAPIController extends Controller
                 }
                 if ($assigned_date_condition_text != null) {
                     $query = $query->where($assigned_where, 1);
+                }
+                if ($latest_version) {
+                    $query = $query->where('module_assignments.module_version_id', 'modules.id');
                 }
                 $query = $query->orderBy('modules.module_version_id', 'desc')
                     ->get();
