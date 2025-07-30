@@ -21,12 +21,11 @@ Route::put('/users/{unique_id}','PublicAPIController@update_user');
 
 
 /**
- * Get all assignments
+ * Get all assignments for all users
  *  parameters: 
  *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
  *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
- *  
- * 
+ *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
  */
 
 Route::get('/assignments', 'PublicAPIController@get_all_assignments');

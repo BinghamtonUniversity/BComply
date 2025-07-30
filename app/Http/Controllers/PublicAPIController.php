@@ -291,6 +291,14 @@ class PublicAPIController extends Controller
         return $query->get();
     }
 
+    /**
+ * Get all assignments for all users
+ *  parameters: 
+ *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
+ *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
+ *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
+ */
+
     public function get_all_assignments(Request $request){
         $completed_date_condition_text = null;
         $assigned_date_condition_text = null;
@@ -301,6 +309,13 @@ class PublicAPIController extends Controller
                        ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
                        ->leftJoin('modules', 'module_assignments.module_id', 'modules.id');
 
+        $helper = new ApiHelper();
+        if ($request->has('updated_after')) {
+            $updated_after = $helper->string_to_date($request['updated_after']); 
+            $updated_after_condition_text = "module_assignments.updated_at < '$updated_after' ";
+            $updated_after_where = DB::raw("case when $updated_after_condition_text THEN 0 ELSE 1 END");
+            $query = $query->where($updated_after_where, 1);
+        }
         if ($request->has('completed_after')) {
             $completed_after = $helper->string_to_date($request['completed_after']); 
             $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' ";
@@ -313,6 +328,7 @@ class PublicAPIController extends Controller
             $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 0 ELSE 1 END");
             $query = $query->where($assigned_where, 1);
         }
+        // return $query->toSql();
         return $query->get();
     }
 
