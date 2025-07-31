@@ -297,6 +297,7 @@ class PublicAPIController extends Controller
  *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
  *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
  *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
+ *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
  */
 
     public function get_all_assignments(Request $request){
@@ -312,20 +313,26 @@ class PublicAPIController extends Controller
         $helper = new ApiHelper();
         if ($request->has('updated_after')) {
             $updated_after = $helper->string_to_date($request['updated_after']); 
-            $updated_after_condition_text = "module_assignments.updated_at < '$updated_after' ";
-            $updated_after_where = DB::raw("case when $updated_after_condition_text THEN 0 ELSE 1 END");
+            $updated_after_condition_text = "module_assignments.updated_at >= '$updated_after' ";
+            $updated_after_where = DB::raw("case when $updated_after_condition_text THEN 1 ELSE 0 END");
             $query = $query->where($updated_after_where, 1);
+        }
+        if ($request->has('updated_before')) {
+            $updated_before = $helper->string_to_date($request['updated_before']); 
+            $updated_before_condition_text = "module_assignments.updated_at <= '$updated_before' ";
+            $updated_before_where = DB::raw("case when $updated_before_condition_text THEN 1 ELSE 0 END");
+            $query = $query->where($updated_before_where, 1);
         }
         if ($request->has('completed_after')) {
             $completed_after = $helper->string_to_date($request['completed_after']); 
-            $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' ";
-            $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
+            $completed_date_condition_text = "module_assignments.date_completed >= '$completed_after' ";
+            $completed_where = DB::raw("case when $completed_date_condition_text THEN 1 ELSE 0 END");
             $query = $query->where($completed_where, 1);
         }
         if ($request->has('assigned_after')) {
             $assigned_after = $helper->string_to_date($request['assigned_after']);
-            $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' ";
-            $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 0 ELSE 1 END");
+            $assigned_date_condition_text = "module_assignments.date_assigned >= '$assigned_after' ";
+            $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 1 ELSE 0 END");
             $query = $query->where($assigned_where, 1);
         }
         // return $query->toSql();
