@@ -271,35 +271,96 @@ class PublicAPIController extends Controller
             }])->get();
     }
 
+    /**
+     *  lookup all the module assignments(not necessarily with status assigned - status can be anything)
+     *   parameters:
+     *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
+     *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
+     *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
+     *      latest_version (optional) - if true, then only the latest version
+     *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
+     * 
+     */
     public function get_module_assignments(Request $request, Module $module){
-        $query = ModuleAssignment::where('module_id',$module->id)
-            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
-            ->with(['user'=>function($query){
-                $query->select('id','unique_id','email','first_name','last_name');
-            }])->with(['version'=>function($query){
-                $query->select('id','name');
-            }]);
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                            'module_assignments.updated_at', 'modules.name AS module_name');
+        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
+                       ->where ('module_assignments.module_id', $module->id);
 
+        $helper = new ApiHelper();
+        if ($request->has('updated_after')) {
+            $updated_after = $helper->string_to_date($request['updated_after']); 
+            $updated_after_condition_text = "module_assignments.updated_at >= '$updated_after' ";
+            $updated_after_where = DB::raw("case when $updated_after_condition_text THEN 1 ELSE 0 END");
+            $query = $query->where($updated_after_where, 1);
+        }
+        if ($request->has('updated_before')) {
+            $updated_before = $helper->string_to_date($request['updated_before']); 
+            $updated_before_condition_text = "module_assignments.updated_at <= '$updated_before' ";
+            $updated_before_where = DB::raw("case when $updated_before_condition_text THEN 1 ELSE 0 END");
+            $query = $query->where($updated_before_where, 1);
+        }
+        if ($request->has('assigned_after')) {
+            $assigned_after = $helper->string_to_date($request['assigned_after']);
+            $assigned_date_condition_text = "module_assignments.date_assigned >= '$assigned_after' ";
+            $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 1 ELSE 0 END");
+            $query = $query->where($assigned_where, 1);
+        }
         if($request->has('latest_version') && $request->latest_version=='true'){
             $query->where('module_version_id',$module->module_version_id);
         }
-        if($request->has('users') && gettype($request->users)==='array'){
-            $query->whereHas('user', function ($query) use($request) {
-                $query->whereIn('unique_id', $request->users);
-            });
+
+        return $query->get();
+    }
+    /**
+     *  lookup all the assignments that have been completed
+     *   parameters:
+     *      version (optional) - only return completions of a specific version
+     *      latest_version (optional) - boolean to only return the latest version
+     *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
+     * 
+     */
+    public function get_module_assignments_completed(Request $request, Module $module){
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                            'module_assignments.updated_at', 'modules.name AS module_name');
+        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
+                       ->where ('module_assignments.module_id', $module->id)
+                       ->where ('module_assignments.status', 'completed');
+
+        $helper = new ApiHelper();
+        if ($request->has('completed_after')) {
+            $completed_after = $helper->string_to_date($request['completed_after']); 
+            $completed_date_condition_text = "module_assignments.date_completed >= '$completed_after' ";
+            $completed_where = DB::raw("case when $completed_date_condition_text THEN 1 ELSE 0 END");
+            $query = $query->where($completed_where, 1);
         }
+        if ($request->has('version')) {
+            $version = $request['version']; 
+            $query = $query->where('module_assignments.module_version_id', $version);
+        }
+        if($request->has('latest_version') && $request->latest_version=='true'){
+            $query->where('module_version_id',$module->module_version_id);
+        }
+
         return $query->get();
     }
 
     /**
- * Get all assignments for all users
- *  parameters: 
- *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
- *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
- *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
- *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
- */
-
+     * Get all assignments for all users
+     *  parameters: 
+     *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
+     *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
+     *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
+     *      latest_version (optional) - if true, then only the latest version
+     *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
+     * 
+     */
     public function get_all_assignments(Request $request){
         $completed_date_condition_text = null;
         $assigned_date_condition_text = null;
@@ -323,19 +384,54 @@ class PublicAPIController extends Controller
             $updated_before_where = DB::raw("case when $updated_before_condition_text THEN 1 ELSE 0 END");
             $query = $query->where($updated_before_where, 1);
         }
-        if ($request->has('completed_after')) {
-            $completed_after = $helper->string_to_date($request['completed_after']); 
-            $completed_date_condition_text = "module_assignments.date_completed >= '$completed_after' ";
-            $completed_where = DB::raw("case when $completed_date_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($completed_where, 1);
-        }
         if ($request->has('assigned_after')) {
             $assigned_after = $helper->string_to_date($request['assigned_after']);
             $assigned_date_condition_text = "module_assignments.date_assigned >= '$assigned_after' ";
             $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 1 ELSE 0 END");
             $query = $query->where($assigned_where, 1);
         }
+        if($request->has('latest_version') && $request->latest_version=='true'){
+            $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
+        }
         // return $query->toSql();
+        return $query->get();
+    }
+
+    /**
+     *  lookup all completed assignments
+     *   parameters:
+     *      version(optional) - return only completions of a specific version
+     *      latest_version (optional) - boolean to only return the latest version
+     *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
+     * 
+     *  test - http://bcomplydev.local:8000/api/public/assignments_completed
+     */
+    public function get_all_assignments_completed(Request $request){
+        $completed_date_condition_text = null;
+        $assigned_date_condition_text = null;
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                            'module_assignments.updated_at', 'modules.name AS module_name');
+        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id');
+
+        $helper = new ApiHelper();
+        if ($request->has('completed_after')) {
+            $completed_after = $helper->string_to_date($request['completed_after']); 
+            $completed_after_condition_text = "module_assignments.date_completed >= '$completed_after' ";
+            $completed_after_where = DB::raw("case when $completed_after_condition_text THEN 1 ELSE 0 END");
+            $query = $query->where($completed_after_where, 1);
+        }
+        if ($request->has('version')) {
+            $version = $request['version']; 
+            $query = $query->where('module_assignments.module_version_id', $version);
+        }
+        if ($request->has('latest_version')) {
+            if ($request['latest_version'] == true) {
+                $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
+            }
+        }
         return $query->get();
     }
 
