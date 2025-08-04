@@ -292,25 +292,17 @@ class PublicAPIController extends Controller
 
         $helper = new ApiHelper();
         if ($request->has('updated_after')) {
-            $updated_after = $helper->string_to_date($request['updated_after']); 
-            $updated_after_condition_text = "module_assignments.updated_at >= '$updated_after' ";
-            $updated_after_where = DB::raw("case when $updated_after_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($updated_after_where, 1);
+            $query = $query->where('module_assignments.updated_at', '>=', $request['updated_after']);
+            
         }
         if ($request->has('updated_before')) {
-            $updated_before = $helper->string_to_date($request['updated_before']); 
-            $updated_before_condition_text = "module_assignments.updated_at <= '$updated_before' ";
-            $updated_before_where = DB::raw("case when $updated_before_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($updated_before_where, 1);
+            $query = $query->where('module_assignments.updated_at', '<=', $request['updated_before']);
         }
         if ($request->has('assigned_after')) {
-            $assigned_after = $helper->string_to_date($request['assigned_after']);
-            $assigned_date_condition_text = "module_assignments.date_assigned >= '$assigned_after' ";
-            $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($assigned_where, 1);
+            $query = $query->where('module_assignments.date_assigned', '>=', $request['assigned_after']);
         }
         if($request->has('latest_version') && $request->latest_version=='true'){
-            $query->where('module_version_id',$module->module_version_id);
+            $query->where('module_assignments.module_version_id',$module->module_version_id);
         }
 
         return $query->get();
@@ -330,22 +322,20 @@ class PublicAPIController extends Controller
         $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
                        ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
                        ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
-                       ->where ('module_assignments.module_id', $module->id)
-                       ->where ('module_assignments.status', 'completed');
+                       ->where ('module_assignments.module_id', $module->id);
 
         $helper = new ApiHelper();
         if ($request->has('completed_after')) {
-            $completed_after = $helper->string_to_date($request['completed_after']); 
-            $completed_date_condition_text = "module_assignments.date_completed >= '$completed_after' ";
-            $completed_where = DB::raw("case when $completed_date_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($completed_where, 1);
+            $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
+        } else {
+            $query = $query->whereNotNull('module_assignments.date_completed');
         }
         if ($request->has('version')) {
             $version = $request['version']; 
             $query = $query->where('module_assignments.module_version_id', $version);
         }
         if($request->has('latest_version') && $request->latest_version=='true'){
-            $query->where('module_version_id',$module->module_version_id);
+            $query->where('module_assignments.module_version_id', $module->module_version_id);
         }
 
         return $query->get();
@@ -373,22 +363,13 @@ class PublicAPIController extends Controller
 
         $helper = new ApiHelper();
         if ($request->has('updated_after')) {
-            $updated_after = $helper->string_to_date($request['updated_after']); 
-            $updated_after_condition_text = "module_assignments.updated_at >= '$updated_after' ";
-            $updated_after_where = DB::raw("case when $updated_after_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($updated_after_where, 1);
+            $query = $query->where("module_assignments.updated_at", ">=", $request['updated_after']);
         }
         if ($request->has('updated_before')) {
-            $updated_before = $helper->string_to_date($request['updated_before']); 
-            $updated_before_condition_text = "module_assignments.updated_at <= '$updated_before' ";
-            $updated_before_where = DB::raw("case when $updated_before_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($updated_before_where, 1);
+            $query = $query->where("module_assignments.updated_at", "<=", $request['updated_before']);
         }
         if ($request->has('assigned_after')) {
-            $assigned_after = $helper->string_to_date($request['assigned_after']);
-            $assigned_date_condition_text = "module_assignments.date_assigned >= '$assigned_after' ";
-            $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($assigned_where, 1);
+            $query = $query->where("module_assignments.date_assigned", ">=", $request['assigned_after']);
         }
         if($request->has('latest_version') && $request->latest_version=='true'){
             $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
@@ -418,10 +399,9 @@ class PublicAPIController extends Controller
 
         $helper = new ApiHelper();
         if ($request->has('completed_after')) {
-            $completed_after = $helper->string_to_date($request['completed_after']); 
-            $completed_after_condition_text = "module_assignments.date_completed >= '$completed_after' ";
-            $completed_after_where = DB::raw("case when $completed_after_condition_text THEN 1 ELSE 0 END");
-            $query = $query->where($completed_after_where, 1);
+            $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
+        } else {
+            $query = $query->whereNotNull("module_assignments.date_completed");
         }
         if ($request->has('version')) {
             $version = $request['version']; 
