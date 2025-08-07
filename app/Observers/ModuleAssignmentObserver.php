@@ -68,6 +68,9 @@ class ModuleAssignmentObserver
                     }
                 }
             }
+            //update the DataProxy to update the ODS table
+            $api_helper = new ApiHelper();
+            $api_helper->trigger_data_proxy_resync($moduleAssignment->module_id, $user->unique_id);
         }
     }
 }

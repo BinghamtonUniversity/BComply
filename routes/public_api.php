@@ -38,6 +38,7 @@ Route::get('/assignments', 'PublicAPIController@get_all_assignments');
  *   parameters:
  *      version(optional) - return only completions of a specific version
  *      latest_version (optional) - boolean to only return the latest version
+ *      grace_period (optional) - used only if latest_version is true - number of days users have to complete a new version once it's created
  *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
  * 
  *  test - http://bcomplydev.local:8000/api/public/assignments_completed
@@ -84,11 +85,20 @@ Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assig
  *   parameters:
  *      version (optional) - only return completions of a specific version
  *      latest_version (optional) - boolean to only return the latest version
+ *      grace_period (optional) - used only if latest_version is true - number of days users have to complete a new version once it's created
  *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
  * 
  *  test - http://bcomplydev.local:8000/api/public/modules/2/assignment_completions
  */
 Route::get('/modules/{module}/assignments_completed','PublicAPIController@get_module_assignments_completed');
+
+
+/**
+ *  lookup the assignment for the module and user and return it if it has been completed
+ * 
+ *  test - http://bcomplydev.local:8000/api/public/modules/1/users/B00168387/assignments_completed
+ */
+Route::get('/modules/{module}/users/{unique_id}/assignments_completed', 'publicAPIController@get_module_assignments_completed_for_user');
 
 /**
  * get the status of an assignment for a user

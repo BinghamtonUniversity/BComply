@@ -335,10 +335,35 @@ class PublicAPIController extends Controller
             $query = $query->where('module_assignments.module_version_id', $version);
         }
         if($request->has('latest_version') && $request->latest_version=='true'){
-            $query->where('module_assignments.module_version_id', $module->module_version_id);
+            if ($request->has('grace_period')) {
+                $allowed_versions = $helper->get_allowed_versions($module->id, $request->grace_period);
+                // return $allowed_versions;
+                $query = $query->whereIn('module_assignments.module_version_id', $allowed_versions);
+            } else {
+                $query = $query->where('module_assignments.module_version_id', $module->module_version_id);
+            }
         }
-
         return $query->get();
+    }
+
+    /**
+     *  lookup the assignment for the module and user and return it if it has been completed
+     * 
+     */
+    public function get_module_assignments_completed_for_user(Request $request, Module $module, String $unique_id) {
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                            'module_assignments.updated_at', 'modules.name AS module_name');
+        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
+                       ->where ('module_assignments.module_id', $module->id)
+                       ->where ('assigned_user.unique_id', $unique_id)
+                       ->whereNotNull('module_assignments.date_completed')
+                       ->orderBy('module_assignments.module_version_id', 'desc')
+                       ->first();
+
+        return $query;
     }
 
     /**
@@ -374,7 +399,6 @@ class PublicAPIController extends Controller
         if($request->has('latest_version') && $request->latest_version=='true'){
             $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
         }
-        // return $query->toSql();
         return $query->get();
     }
 

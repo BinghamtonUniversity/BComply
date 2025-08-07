@@ -1,11 +1,14 @@
 <?php 
 
 namespace App\Libraries;
+use App\ModuleVersion;
 
 use App\User;
 use Carbon\Carbon;
 
 class ApiHelper {
+    private $DEV_DATA_PROXY_URL = "https://hermesdev.binghamton.edu/bcomply/";
+    private $PROD_DATA_PROXY_URL = "https://hermesprod.binghamton.edu/bcomply/";
     /**
      * lookup user by b_number
      * 
@@ -39,8 +42,9 @@ class ApiHelper {
      * @throws ValueError
      */
     public function string_to_date($s_date) {
+        $truncated = substr($s_date, 0, 10);
         $format = 'Y-m-d';
-        return Carbon::createFromFormat($format, $s_date);
+        return Carbon::createFromFormat($format, $truncated);
     }
 
     /**
@@ -79,5 +83,42 @@ class ApiHelper {
             }
             
         } 
+    }
+
+    public function get_allowed_versions($module_id, $grace_period) {
+        $allowed_versions = [];
+        $days_ago_timestamp = strtotime("-$grace_period days");
+        $days_ago_date = date("Y-m-d", $days_ago_timestamp);
+        $versions = ModuleVersion::select('id', 'created_at')
+            ->where('deleted_at', null)
+            ->where('module_id', $module_id)
+            ->orderBy('id', 'desc')
+            ->limit(2)->get();
+        if (count($versions) > 1) {
+            $allowed_versions[] = $versions[0]->id;
+            $last_create_date = $versions[0]->created_at;
+            if ($days_ago_date < $this->string_to_date($last_create_date)) {
+                if (count($versions) > 1) {
+                   $allowed_versions[] = $versions[1]->id;
+                }
+            }
+        }
+        return $allowed_versions;
+    }
+
+    public function trigger_data_proxy_resync($module_id, $bnumber) {
+        if (is_set($_SERVER['HTTP_HOST'])){
+            $this_url = $_SERVER['HTTP_HOST'];
+            if (str_contains(strtolower($this_url), "localhost")) {
+                $url = $DEV_DATA_PROXY_URL;
+            } else if (str_contains(strtolower($this_url), "bcomplydev")) {
+                $url = $DEV_DATA_PROXY_URL;
+            } else {
+                $url = $PROD_DATA_PROXY_URL;
+            }
+        } else {
+            $url = $PROD_DATA_PROXY_URL;
+        }
+        return file_get_contents($url."ods/completed/syncOne?module_id=".$module_id."&bnumber=".$bnumber);
     }
 }
