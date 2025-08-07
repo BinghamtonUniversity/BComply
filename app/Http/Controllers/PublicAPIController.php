@@ -337,7 +337,6 @@ class PublicAPIController extends Controller
         if($request->has('latest_version') && $request->latest_version=='true'){
             if ($request->has('grace_period')) {
                 $allowed_versions = $helper->get_allowed_versions($module->id, $request->grace_period);
-                // return $allowed_versions;
                 $query = $query->whereIn('module_assignments.module_version_id', $allowed_versions);
             } else {
                 $query = $query->where('module_assignments.module_version_id', $module->module_version_id);
