@@ -124,6 +124,6 @@ class ApiHelper {
         } else {
             $url = $PROD_DATA_PROXY_URL;
         }
-        return file_get_contents($url."ods/completed/syncOne?module_id=".$module_id."&bnumber=".$bnumber);
+        return file_get_contents($url."completed/syncOne?module_id=".$module_id."&bnumber=".$bnumber);
     }
 }
