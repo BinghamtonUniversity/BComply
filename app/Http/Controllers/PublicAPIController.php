@@ -277,7 +277,8 @@ class PublicAPIController extends Controller
      *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
      *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
      *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
-     *      latest_version (optional) - if true, then only the latest version
+     *      latest_version (optional) - if false, then all versions, else just the latest version
+     *      status (optional) - only return the passed statuses
      *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
      * 
      */
@@ -301,8 +302,11 @@ class PublicAPIController extends Controller
         if ($request->has('assigned_after')) {
             $query = $query->where('module_assignments.date_assigned', '>=', $request['assigned_after']);
         }
-        if($request->has('latest_version') && $request->latest_version=='true'){
+        if(!$request->has('latest_version') || $request->latest_version!='false'){
             $query->where('module_assignments.module_version_id',$module->module_version_id);
+        }
+        if ($request->has('status')) {
+            $query = $query->whereIn('status', $request['status']);
         }
 
         return $query->get();
@@ -311,12 +315,12 @@ class PublicAPIController extends Controller
      *  lookup all the assignments that have been completed
      *   parameters:
      *      version (optional) - only return completions of a specific version
-     *      latest_version (optional) - boolean to only return the latest version
+     *      latest_version (optional) - boolean returns latest version by default, but can be set to false to return all versions
      *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
      * 
      */
     public function get_module_assignments_completed(Request $request, Module $module){
-        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
                                             'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
                                             'module_assignments.updated_at', 'modules.name AS module_name');
         $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
@@ -333,16 +337,18 @@ class PublicAPIController extends Controller
         if ($request->has('version')) {
             $version = $request['version']; 
             $query = $query->where('module_assignments.module_version_id', $version);
-        }
-        if($request->has('latest_version') && $request->latest_version=='true'){
-            if ($request->has('grace_period')) {
-                $allowed_versions = $helper->get_allowed_versions($module->id, $request->grace_period);
-                $query = $query->whereIn('module_assignments.module_version_id', $allowed_versions);
-            } else {
-                $query = $query->where('module_assignments.module_version_id', $module->module_version_id);
+        } else {
+            if(!$request->has('latest_version') || $request->latest_version!='false'){
+                if ($request->has('grace_period')) {
+                    $allowed_versions = $helper->get_allowed_versions($module->id, $request->grace_period);
+                    $query = $query->whereIn('module_assignments.module_version_id', $allowed_versions);
+                } else {
+                    $query = $query->where('module_assignments.module_version_id', $module->module_version_id);
+                }
             }
         }
         $query = $query->whereIn('status', ['completed', 'passed']);
+
         return $query->get();
     }
 
@@ -351,7 +357,7 @@ class PublicAPIController extends Controller
      * 
      */
     public function get_module_assignments_completed_for_user(Request $request, Module $module, String $unique_id) {
-        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
                                             'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
                                             'module_assignments.updated_at', 'modules.name AS module_name');
         $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
@@ -372,14 +378,15 @@ class PublicAPIController extends Controller
      *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
      *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
      *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
-     *      latest_version (optional) - if true, then only the latest version
+     *      latest_version (optional) - if false, then all version, else only the latest
+     *      status (optional) - only return the passed statuses
      *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
      * 
      */
     public function get_all_assignments(Request $request){
         $completed_date_condition_text = null;
         $assigned_date_condition_text = null;
-        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
                                             'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
                                             'module_assignments.updated_at', 'modules.name AS module_name');
         $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
@@ -396,8 +403,11 @@ class PublicAPIController extends Controller
         if ($request->has('assigned_after')) {
             $query = $query->where("module_assignments.date_assigned", ">=", $request['assigned_after']);
         }
-        if($request->has('latest_version') && $request->latest_version=='true'){
+        if(!$request->has('latest_version') || $request->latest_version!='false'){
             $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
+        }
+        if ($request->has('status')) {
+            $query = $query->whereIn('status', $request['status']);
         }
         return $query->get();
     }
@@ -414,7 +424,7 @@ class PublicAPIController extends Controller
     public function get_all_assignments_completed(Request $request){
         $completed_date_condition_text = null;
         $assigned_date_condition_text = null;
-        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
                                             'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
                                             'module_assignments.updated_at', 'modules.name AS module_name');
         $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
@@ -431,10 +441,8 @@ class PublicAPIController extends Controller
             $version = $request['version']; 
             $query = $query->where('module_assignments.module_version_id', $version);
         }
-        if ($request->has('latest_version')) {
-            if ($request['latest_version'] == true) {
-                $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
-            }
+        if (!$request->has('latest_version') || ($request['latest_version'] != false)) {
+            $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
         }
         $query = $query->whereIn('status', ['completed', 'passed']);
         return $query->get();
@@ -533,7 +541,7 @@ class PublicAPIController extends Controller
                 $assigned_date_condition_text = "module_assignments.date_assigned IS NULL";
             }
         $select_fields = ["modules.name AS module_name", "modules.id AS module_id", "groups.name AS group_name", "groups.id AS group_id",
-                    "users.unique_id AS bnumber", "module_assignments.id AS module_id", "module_assignments.module_version_id",
+                    "users.unique_id AS unique_id", "module_assignments.id AS module_id", "module_assignments.module_version_id",
                     "module_assignments.date_assigned", "module_assignments.date_due", "module_assignments.date_started",
                     "module_assignments.date_completed", "module_assignments.status", "module_assignments.score",
                     "module_assignments.current_state",
