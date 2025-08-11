@@ -342,6 +342,7 @@ class PublicAPIController extends Controller
                 $query = $query->where('module_assignments.module_version_id', $module->module_version_id);
             }
         }
+        $query = $query->whereIn('status', ['completed', 'passed']);
         return $query->get();
     }
 
@@ -435,6 +436,7 @@ class PublicAPIController extends Controller
                 $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
             }
         }
+        $query = $query->whereIn('status', ['completed', 'passed']);
         return $query->get();
     }
 
