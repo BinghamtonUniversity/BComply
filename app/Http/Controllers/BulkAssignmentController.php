@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\BulkAssignment;
-use App\Http\Controllers\PublicAPIController;
-use App\GroupMembership;
 use App\Module;
-use App\ModuleAssignment;
-use App\SimpleUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -140,38 +136,38 @@ class BulkAssignmentController extends Controller
      *  returns:
      *      the module that was assigned or an error message
      */
-    public function assign_module_to_group_members(Request $request, $group_slug, Module $module) {
-        try {
-            $users = GroupMembership::select()
-                ->leftJoin('groups', 'group_memberships.group_id', 'groups.id')
-                ->where('groups.slug', $group_slug);
-            if ($request->has('not_completed_after')) { 
-                $helper = new ApiHelper();
-                $not_completed_after = $helper->string_to_date($request['not_completed_after']);
-                $users = $users->where('module_assignments.date_completed', '<', $not_completed_after);
-            }
-            $users = $users->get();
-            $date_due = null;
-            if ($request->has('date_due')) { 
-                $date_due = $request['date_due'];
-            }
-            $not_completed_after = null;
-            if ($request->has('not_completed_after')) {
-                $not_completed_after = $request['not_completed_after'];
-            }
-            $pub_api = new PublicAPIController();
-            if ($request->has('version')){
-                $version = $request['version'];
-            } else {
-                $version = $module->module_version_id;
-            }
-            foreach ($users AS $user) {
-                $pub_api->add_or_update_module_assignment($user->id, $version, $module->id, $date_due, $not_completed_after, $pub_api->get_current_user($request));
-            }
-            $response = $pub_api->get_group_module_status($request, $group_slug, $module);
-        } catch (Exception $e) {
-            $response = ["error"=>$e];
-        }
-        return $response;
-    }
+    // public function assign_module_to_group_members(Request $request, $group_slug, Module $module) {
+    //     try {
+    //         $users = GroupMembership::select()
+    //             ->leftJoin('groups', 'group_memberships.group_id', 'groups.id')
+    //             ->where('groups.slug', $group_slug);
+    //         if ($request->has('not_completed_after')) { 
+    //             $helper = new ApiHelper();
+    //             $not_completed_after = $helper->string_to_date($request['not_completed_after']);
+    //             $users = $users->where('module_assignments.date_completed', '<', $not_completed_after);
+    //         }
+    //         $users = $users->get();
+    //         $date_due = null;
+    //         if ($request->has('date_due')) { 
+    //             $date_due = $request['date_due'];
+    //         }
+    //         $not_completed_after = null;
+    //         if ($request->has('not_completed_after')) {
+    //             $not_completed_after = $request['not_completed_after'];
+    //         }
+    //         $pub_api = new PublicAPIController();
+    //         if ($request->has('version')){
+    //             $version = $request['version'];
+    //         } else {
+    //             $version = $module->module_version_id;
+    //         }
+    //         foreach ($users AS $user) {
+    //             $pub_api->add_or_update_module_assignment($user->id, $version, $module->id, $date_due, $not_completed_after, $pub_api->get_current_user($request));
+    //         }
+    //         $response = $pub_api->get_group_module_status($request, $group_slug, $module);
+    //     } catch (Exception $e) {
+    //         $response = ["error"=>$e];
+    //     }
+    //     return $response;
+    // }
 }

@@ -175,7 +175,7 @@ Route::get('/groups/{slug}/modules/{module}','PublicAPIController@get_group_modu
  *  test - http://bcomplydev.local:8000/api/public/groups/test_group/modules/2?due_date=2026-01-01
  */
 
-Route::post('/groups/{slug}/modules/{module}','BulkAssignmentController@assign_module_to_group_members'); 
+//Route::post('/groups/{slug}/modules/{module}','BulkAssignmentController@assign_module_to_group_members'); 
 
 /**
  * Gets all users that are in a group
