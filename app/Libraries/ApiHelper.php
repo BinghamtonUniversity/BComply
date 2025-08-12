@@ -7,8 +7,8 @@ use App\User;
 use Carbon\Carbon;
 
 class ApiHelper {
-    private $DEV_DATA_PROXY_URL = "https://hermesdev.binghamton.edu/bcomply/";
-    private $PROD_DATA_PROXY_URL = "https://hermesprod.binghamton.edu/bcomply/";
+    private $DEV_DATA_PROXY_URL = "";
+    private $PROD_DATA_PROXY_URL = "";
     /**
      * lookup user by b_number
      * 
