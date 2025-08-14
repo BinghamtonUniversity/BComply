@@ -10,7 +10,7 @@ class ApiHelper {
     private $DEV_DATA_PROXY_URL = "";
     private $PROD_DATA_PROXY_URL = "";
     /**
-     * lookup user by b_number
+     * lookup user by unique_id
      * 
      * returns null if not found
      */
@@ -111,7 +111,7 @@ class ApiHelper {
         return $allowed_versions;
     }
 
-    public function trigger_data_proxy_resync($module_id, $bnumber) {
+    public function trigger_data_proxy_resync($module_id, $unique_id) {
         if (is_set($_SERVER['HTTP_HOST'])){
             $this_url = $_SERVER['HTTP_HOST'];
             if (str_contains(strtolower($this_url), "localhost")) {
@@ -124,6 +124,6 @@ class ApiHelper {
         } else {
             $url = $PROD_DATA_PROXY_URL;
         }
-        return file_get_contents($url."completed/syncOne?module_id=".$module_id."&bnumber=".$bnumber);
+        return file_get_contents($url."completed/syncOne?module_id=".$module_id."&unique_id=".$unique_id);
     }
 }

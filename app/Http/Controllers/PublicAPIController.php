@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\SimpleUser;
 use App\GroupMembership;
 use App\Group;
@@ -67,7 +66,7 @@ class PublicAPIController extends Controller
     public function update_user(Request $request, $unique_id){
         $user = User::where('unique_id', $unique_id)->first();
         if ($user){
-            $user->save($request->all());
+            $user->update($request->all());
             return $user;
         }else{
             return response("User not found!",404);
@@ -77,52 +76,34 @@ class PublicAPIController extends Controller
     /**
      * adds a user to a group (or updates the user if they already exist in the group)
      */
-    public function add_group_membership(Request $request, $group_slug, $unique_id){
-        $helper = new ApiHelper();
-        $group = $helper->get_group_for_slug($group_slug);
-        if ($group != null) {
-            $user = $helper->get_user_for_unique_id($unique_id);
-            if ($user != null) {
-                $group_membership = GroupMembership::where('user_id', $user->id)
-                    ->where("group_id", $group->id);
-                if ($group_membership != null){
-                    $response = ["success"=>$user->first_name." ".$user->last_name." was already a member of the group '".$group->name."'"];
-                } else {
-                    $group_membership = new GroupMembership([
-                        "user_id"=>$user->id,
-                        "group_id"=>$group->id
-                    ]);
-                    $group_membership->save();
-                }
-                $response = ["success"=>$user->first_name." ".$user->last_name." was added to the group '".$group->name."'"];
-            } else {
-                $response = ["error"=>"User not found"];
-            }
-        } else {
-            $response = ["error"=>"Group not found"];
+
+     public function add_group_membership(Request $request, $group_slug, $unique_id){
+        $group = Group::where("slug",$group_slug)->first();
+        if(!isset($group) || is_null($group)){
+            return response("Group not found!",404);
         }
-        return response($response, 200);
+        $user = User::where("unique_id",$unique_id)->first();
+
+        if(!isset($user) || is_null($user)){
+            return response("User not found!",404);
+        }
+        $group_membership = GroupMembership::updateOrCreate([
+            'user_id'=>$user->id,
+            "group_id"=>$group->id,
+            ],['type' => 'external']);
+        return response("Successfully added to the group",200);
     }
     
     /**
      * removes a user from a group
      */
-    public function delete_group_membership(Request $request, $group_slug, $unique_id){
-        $helper = new ApiHelper();
-        $group = $helper->get_group_for_slug($group_slug);
-        if ($group != null) {
-            $user = $helper->get_user_for_unique_id($unique_id);
-            if ($user != null) {
-                GroupMembership::where('user_id',$user->id)->where("group_id",$group->id)->delete();
-                $response = ["success"=>$user->first_name." ".$user->last_name." was removed from the group '".$group->name."'"];
-            } else {
-                $response = ["error"=>"User not found"];
-            }
-        } else {
-            $response = ["error"=>"Group not found"];
-        }
-        return response($response, 200);
-    }
+
+     public function delete_group_membership(Request $request, $group_slug, $unique_id){
+        $group = Group::where("slug",$group_slug)->first();
+        $user = User::where("unique_id",$unique_id)->first();
+        GroupMembership::where('user_id',$user->id)->where("group_id",$group->id)->delete();
+        return response("Successfully removed from the group",200);
+     }
 
     public function get_all_group_users(Request $request, Group $group) {
         if ($group != null) {
@@ -261,7 +242,7 @@ class PublicAPIController extends Controller
             return response(['error'=>'The specified user does not exist'], 404)->header('Content-Type', 'application/json');
         }
         return ModuleAssignment::where('user_id',$user->id)
-            ->select('id as module_assignment_id','module_id','module_version_id','user_id', DB::raw("'$unique_id' as b_number"),'date_assigned','date_completed','date_due','date_started','status')
+            ->select('id','module_id','module_version_id','user_id', 'date_assigned','date_completed','date_due','date_started','status')
             ->with(['version'=>function($query){
                 $query->select('id','name');
             }])->with(['module'=>function($query){
@@ -275,21 +256,27 @@ class PublicAPIController extends Controller
      *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
      *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
      *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
-     *      latest_version (optional) - if false, then all versions, else just the latest version
+     *      current_version (optional) - if false, then all versions, else just the latest version
      *      status (optional) - only return the passed statuses
      *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
      * 
      */
-    public function get_module_assignments(Request $request, Module $module){
-        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS bnumber',
-                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
-                                            'module_assignments.updated_at', 'modules.name AS module_name');
-        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
-                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
-                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
-                       ->where ('module_assignments.module_id', $module->id);
-
-        $helper = new ApiHelper();
+     public function get_module_assignments(Request $request, Module $module){
+        $query = ModuleAssignment::where('module_id',$module->id)
+            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
+            ->with(['user'=>function($query){
+                $query->select('id','unique_id','email','first_name','last_name');
+            }])->with(['version'=>function($query){
+                $query->select('id','name');
+            }]);
+        if($request->has('current_version') && $request->current_version=='true'){
+            $query->where('module_version_id',$module->module_version_id);
+        }
+        if($request->has('users') && gettype($request->users)==='array'){
+            $query->whereHas('user', function ($query) use($request) {
+                $query->whereIn('unique_id', $request->users);
+            });
+        }
         if ($request->has('updated_after')) {
             $query = $query->where('module_assignments.updated_at', '>=', $request['updated_after']);
             
@@ -300,15 +287,14 @@ class PublicAPIController extends Controller
         if ($request->has('assigned_after')) {
             $query = $query->where('module_assignments.date_assigned', '>=', $request['assigned_after']);
         }
-        if(!$request->has('latest_version') || $request->latest_version!='false'){
-            $query->where('module_assignments.module_version_id',$module->module_version_id);
+        if ($request->has('status') && gettype($request->status)==='array'){
+            $query->whereHas('user', function ($query) use($request) {
+                $query->whereIn('status', $request->status);
+            });
         }
-        if ($request->has('status')) {
-            $query = $query->whereIn('status', $request['status']);
-        }
-
-        return $query->get();
+        return $query->paginate(100);
     }
+
     /**
      *  lookup all the assignments that have been completed
      *   parameters:
@@ -404,8 +390,10 @@ class PublicAPIController extends Controller
         if(!$request->has('latest_version') || $request->latest_version!='false'){
             $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
         }
-        if ($request->has('status')) {
-            $query = $query->whereIn('status', $request['status']);
+        if ($request->has('status') && gettype($request->status)==='array'){
+            $query->whereHas('user', function ($query) use($request) {
+                $query->whereIn('status', $request->status);
+            });
         }
         return $query->get();
     }
@@ -479,7 +467,7 @@ class PublicAPIController extends Controller
             }
             $select_fields = ['modules.name AS module_name', 'modules.description AS module_description', 'module_assignments.status AS assignment_status', 
                     'module_assignments.date_due', 'module_assignments.date_assigned', 'module_assignments.date_completed', 'users.first_name', 
-                    'users.last_name', DB::raw("'$unique_id' as b_number"), 'module_versions.id AS module_version_id', 'module_versions.name AS version_name', 
+                    'users.last_name', DB::raw("'$unique_id' as unique_id"), 'module_versions.id AS module_version_id', 'module_versions.name AS version_name', 
                     'module_versions.created_at AS version_date'];
             if ($completed_date_condition_text != null) {
                 $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
