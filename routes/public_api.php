@@ -141,14 +141,14 @@ Route::get('/groups', 'PublicAPIController@get_groups_by_name');
  * 
  *  test - http://bcomplydev.local:8000/api/public/groups/api_group1/users/B00168387
  */
-Route::post('/groups/{slug}/users/{unique_id}','PublicAPIController@add_group_membership');
+Route::post('/groups/{group_slug}/users/{unique_id}','PublicAPIController@add_group_membership');
 
 /**
  * removes a user from a group
  * 
  *  test - http://bcomplydev.local:8000/api/public/groups/api_group1/users/B00168387
  */
-Route::delete('/groups/{slug}/users/{unique_id}','PublicAPIController@delete_group_membership');
+Route::delete('/groups/{group_slug}/users/{unique_id}','PublicAPIController@delete_group_membership');
 
 /**
  *  gets all module assignments for the users of a group where the module id = module
