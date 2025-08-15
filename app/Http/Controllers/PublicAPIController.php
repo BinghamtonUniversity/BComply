@@ -184,7 +184,7 @@ class PublicAPIController extends Controller
                         $memberships= new GroupMembership([
                             'user_id' => $current_user->id,
                             'group_id' => $local_group->id,
-                            'type' => 'external',
+                            'type' => 'external'
                         ]);
                         try {
                             $memberships->save();
@@ -567,7 +567,8 @@ class PublicAPIController extends Controller
                 if (empty($duplicate)) {
                     $group = new Group([
                         'name' => $group_name,
-                        'slug' => $group_slug]
+                        'slug' => $group_slug,
+                        'type' => 'external']
                     );
                     $group->save();
                     $response = $group;
@@ -625,7 +626,8 @@ class PublicAPIController extends Controller
                                 'module_id' => $module->id,
                                 'date_assigned' => now(),
                                 'due_date' => $due_date,
-                                'status' => 'assigned'
+                                'status' => 'assigned',
+                                'type' => 'external'
                             ]);
                             $new_record->save();
                             $response = $new_record;
