@@ -262,6 +262,14 @@ class PublicAPIController extends Controller
             }])->with(['version'=>function($query){
                 $query->select('id','name');
             }]);
+        if($request->has('current_version') && $request->current_version=='true'){
+            $query->where('module_version_id',$module->module_version_id);
+        }
+        if($request->has('users') && gettype($request->users)==='array'){
+            $query->whereHas('user', function ($query) use($request) {
+                $query->whereIn('unique_id', $request->users);
+            });
+        }
         return $query->paginate(100);
     }
 
