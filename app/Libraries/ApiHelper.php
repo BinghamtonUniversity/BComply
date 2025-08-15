@@ -1,6 +1,7 @@
 <?php 
 
 namespace App\Libraries;
+use App\Group;
 use App\ModuleVersion;
 
 use App\User;

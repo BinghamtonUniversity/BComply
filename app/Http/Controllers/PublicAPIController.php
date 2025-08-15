@@ -53,7 +53,7 @@ class PublicAPIController extends Controller
             }
             return $user;
         }else{
-            return response("User Not Found!",404);
+            return response("User Not Found!", 404);
         }
     }
 
@@ -69,7 +69,7 @@ class PublicAPIController extends Controller
             $user->update($request->all());
             return $user;
         }else{
-            return response("User not found!",404);
+            return response("User not found!", 404);
         }   
     }
 
@@ -91,7 +91,7 @@ class PublicAPIController extends Controller
             'user_id'=>$user->id,
             "group_id"=>$group->id,
             ],['type' => 'external']);
-        return response("Successfully added to the group",200);
+        return response("Successfully added to the group", 200);
     }
     
     /**
@@ -102,7 +102,7 @@ class PublicAPIController extends Controller
         $group = Group::where("slug",$group_slug)->first();
         $user = User::where("unique_id",$unique_id)->first();
         GroupMembership::where('user_id',$user->id)->where("group_id",$group->id)->delete();
-        return response("Successfully removed from the group",200);
+        return response("Successfully removed from the group", 200);
      }
 
     public function get_all_group_users(Request $request, Group $group) {
@@ -251,14 +251,7 @@ class PublicAPIController extends Controller
     }
 
     /**
-     *  lookup all the module assignments(not necessarily with status assigned - status can be anything)
-     *   parameters:
-     *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
-     *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
-     *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
-     *      current_version (optional) - if false, then all versions, else just the latest version
-     *      status (optional) - only return the passed statuses
-     *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
+     *  lookup all the module assignments
      * 
      */
      public function get_module_assignments(Request $request, Module $module){
@@ -269,41 +262,19 @@ class PublicAPIController extends Controller
             }])->with(['version'=>function($query){
                 $query->select('id','name');
             }]);
-        if($request->has('current_version') && $request->current_version=='true'){
-            $query->where('module_version_id',$module->module_version_id);
-        }
-        if($request->has('users') && gettype($request->users)==='array'){
-            $query->whereHas('user', function ($query) use($request) {
-                $query->whereIn('unique_id', $request->users);
-            });
-        }
-        if ($request->has('updated_after')) {
-            $query = $query->where('module_assignments.updated_at', '>=', $request['updated_after']);
-            
-        }
-        if ($request->has('updated_before')) {
-            $query = $query->where('module_assignments.updated_at', '<=', $request['updated_before']);
-        }
-        if ($request->has('assigned_after')) {
-            $query = $query->where('module_assignments.date_assigned', '>=', $request['assigned_after']);
-        }
-        if ($request->has('status') && gettype($request->status)==='array'){
-            $query->whereHas('user', function ($query) use($request) {
-                $query->whereIn('status', $request->status);
-            });
-        }
         return $query->paginate(100);
     }
 
     /**
-     *  lookup all the assignments that have been completed
+     *  lookup all the assignments 
      *   parameters:
      *      version (optional) - only return completions of a specific version
-     *      latest_version (optional) - boolean returns latest version by default, but can be set to false to return all versions
+     *      current_version (optional) - boolean returns current version by default, but can be set to false to return all versions
      *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
+     *      status (optional) - an array that specifies which statuses should be returned
      * 
      */
-    public function get_module_assignments_completed(Request $request, Module $module){
+    public function get_module_assignments_data(Request $request, Module $module){
         $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
                                             'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
                                             'module_assignments.updated_at', 'modules.name AS module_name');
@@ -315,14 +286,12 @@ class PublicAPIController extends Controller
         $helper = new ApiHelper();
         if ($request->has('completed_after')) {
             $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
-        } else {
-            $query = $query->whereNotNull('module_assignments.date_completed');
         }
         if ($request->has('version')) {
             $version = $request['version']; 
             $query = $query->where('module_assignments.module_version_id', $version);
         } else {
-            if(!$request->has('latest_version') || $request->latest_version!='false'){
+            if(!$request->has('current_version') || $request['current_version'] !='false'){
                 if ($request->has('grace_period')) {
                     $allowed_versions = $helper->get_allowed_versions($module->id, $request->grace_period);
                     $query = $query->whereIn('module_assignments.module_version_id', $allowed_versions);
@@ -331,7 +300,9 @@ class PublicAPIController extends Controller
                 }
             }
         }
-        $query = $query->whereIn('status', ['completed', 'passed']);
+        if ($request->has('status') && gettype($request->status)==='array'){
+            $query->whereIn('status', $request->status);
+        }
 
         return $query->get();
     }
@@ -349,6 +320,7 @@ class PublicAPIController extends Controller
                        ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
                        ->where ('module_assignments.module_id', $module->id)
                        ->where ('assigned_user.unique_id', $unique_id)
+                       ->whereIn('status', ['completed', 'passed'])
                        ->whereNotNull('module_assignments.date_completed')
                        ->orderBy('module_assignments.module_version_id', 'desc')
                        ->first();
@@ -362,76 +334,49 @@ class PublicAPIController extends Controller
      *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
      *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
      *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
-     *      latest_version (optional) - if false, then all version, else only the latest
-     *      status (optional) - only return the passed statuses
+     *      current_version (optional) - if false, then all version, else only the current
+     *      completed_after (optional) - a date 
+     *      status (optional) - an array arg - only return the passed statuses
      *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
      * 
      */
     public function get_all_assignments(Request $request){
         $completed_date_condition_text = null;
         $assigned_date_condition_text = null;
-        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
-                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
-                                            'module_assignments.updated_at', 'modules.name AS module_name');
-        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
-                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
-                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id');
+        try {
+            $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
+                                                'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                                'module_assignments.updated_at', 'modules.name AS module_name');
+            $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                        ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                        ->leftJoin('modules', 'module_assignments.module_id', 'modules.id');
 
-        $helper = new ApiHelper();
-        if ($request->has('updated_after')) {
-            $query = $query->where("module_assignments.updated_at", ">=", $request['updated_after']);
-        }
-        if ($request->has('updated_before')) {
-            $query = $query->where("module_assignments.updated_at", "<=", $request['updated_before']);
-        }
-        if ($request->has('assigned_after')) {
-            $query = $query->where("module_assignments.date_assigned", ">=", $request['assigned_after']);
-        }
-        if(!$request->has('latest_version') || $request->latest_version!='false'){
-            $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
-        }
-        if ($request->has('status') && gettype($request->status)==='array'){
-            $query->whereHas('user', function ($query) use($request) {
+            $helper = new ApiHelper();
+            if ($request->has('updated_after')) {
+                $query = $query->where("module_assignments.updated_at", ">=", $request['updated_after']);
+            }
+            if ($request->has('updated_before')) {
+                $query = $query->where("module_assignments.updated_at", "<=", $request['updated_before']);
+            }
+            if ($request->has('assigned_after')) {
+                $query = $query->where("module_assignments.date_assigned", ">=", $request['assigned_after']);
+            }
+            if (!$request->has('current_version') || ($request['current_version'] != 'false')) {
+                $query = $query->whereColumn('modules.module_version_id', 'module_assignments.module_version_id');
+            }
+            if ($request->has('completed_after')) {
+                $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
+            }
+            if ($request->has('status') && gettype($request->status)==='array'){
                 $query->whereIn('status', $request->status);
-            });
+            }
+            $response = $query->get();
+            $response_code = 200;
+        } catch (Exception $e) {
+                $response = ["error"=>$e];
+                $response_code = 500;
         }
-        return $query->get();
-    }
-
-    /**
-     *  lookup all completed assignments
-     *   parameters:
-     *      version(optional) - return only completions of a specific version
-     *      latest_version (optional) - boolean to only return the latest version
-     *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
-     * 
-     *  test - http://bcomplydev.local:8000/api/public/assignments_completed
-     */
-    public function get_all_assignments_completed(Request $request){
-        $completed_date_condition_text = null;
-        $assigned_date_condition_text = null;
-        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
-                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
-                                            'module_assignments.updated_at', 'modules.name AS module_name');
-        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
-                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
-                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id');
-
-        $helper = new ApiHelper();
-        if ($request->has('completed_after')) {
-            $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
-        } else {
-            $query = $query->whereNotNull("module_assignments.date_completed");
-        }
-        if ($request->has('version')) {
-            $version = $request['version']; 
-            $query = $query->where('module_assignments.module_version_id', $version);
-        }
-        if (!$request->has('latest_version') || ($request['latest_version'] != false)) {
-            $query = $query->where('modules.module_version_id', 'module_assignments.module_version_id');
-        }
-        $query = $query->whereIn('status', ['completed', 'passed']);
-        return $query->get();
+        return response($response, $response_code);
     }
 
 /**
@@ -439,68 +384,46 @@ class PublicAPIController extends Controller
  *  parameters:
  *      assigned_after (optional) - when returning the assigned boolean the specific date (formatted as 2025-04-29)
  *      completed_after (optional) - when returning the completed boolean the specific date (formatted as 2025-04-29) is considered
+ *      current_version (optional) - default to true
+ *      status (optional) - array arg - only return assigments with specific statuses
  *  returns:
  *      all rows from module_assignments for student and assignment
  */
 
      public function get_user_module_status(Request $request, Module $module, String $unique_id) {
-        $after = null;
-        $curr_user = User::where('unique_id', $unique_id)->first();
-        $assigned_date_condition_text = null;
-        $completed_date_condition_text = null;
-        if ($curr_user != null) {
-            $helper = new ApiHelper();
+        try {
+            $curr_user = User::where('unique_id', $unique_id)->first();
+
+            $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_assignments.module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
+                                                'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                                'module_assignments.updated_at', 'modules.name AS module_name');
+            $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                        ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                        ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
+                        ->where ('module_assignments.module_id', $module->id)
+                        ->where ('assigned_user.unique_id', $unique_id);
+        
+            $query = $query->leftJoin('users', 'module_assignments.user_id', 'users.id')
+                ->leftJoin('module_versions', 'modules.module_version_id', 'module_versions.id');
             if ($request->has('completed_after')) {
-                $completed_after = $helper->string_to_date($request['completed_after']); 
-                $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' ";
-                $add_assigned_after = true;
+                $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
             }
             if ($request->has('assigned_after')) {
-                $assigned_after = $helper->string_to_date($request['assigned_after']);
-                $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' ";
-
+                $query = $query->where('module_assignments.date_assigned', '>=', $request['assigned_after']);
             }
-            if ($request->has('latest_version')) {
-                $latest_version = $request['latest_version'] == "true";
-            } else {
-                $latest_version = false;
+            if (!$request->has('current_version') || 'current_version' != 'false') {
+                $query = $query->whereColumn('module_assignments.module_version_id', 'modules.module_version_id');
             }
-            $select_fields = ['modules.name AS module_name', 'modules.description AS module_description', 'module_assignments.status AS assignment_status', 
-                    'module_assignments.date_due', 'module_assignments.date_assigned', 'module_assignments.date_completed', 'users.first_name', 
-                    'users.last_name', DB::raw("'$unique_id' as unique_id"), 'module_versions.id AS module_version_id', 'module_versions.name AS version_name', 
-                    'module_versions.created_at AS version_date'];
-            if ($completed_date_condition_text != null) {
-                $completed_where = DB::raw("case when $completed_date_condition_text THEN 0 ELSE 1 END");
+            if ($request->has('status') && gettype($request->status)==='array'){
+                $query->whereIn('status', $request->status);
             }
-            if ($assigned_date_condition_text != null) {
-                $assigned_where = DB::raw("case when $assigned_date_condition_text THEN 0 ELSE 1 END");
-            }
-            $query = $module->select($select_fields);
-            try {
-                $query = $query->leftJoin('module_assignments', 'module_assignments.module_id', 'modules.id')
-                    ->leftJoin('users', 'module_assignments.user_id', 'users.id')
-                    ->leftJoin('module_versions', 'modules.module_version_id', 'module_versions.id');
-                $query = $query->where('users.unique_id', $unique_id)
-                    ->where('module_assignments.module_id', $module->id);
-                if ($completed_date_condition_text != null) {
-                    $query = $query->where($completed_where, 1);
-                }
-                if ($assigned_date_condition_text != null) {
-                    $query = $query->where($assigned_where, 1);
-                }
-                if ($latest_version) {
-                    $query = $query->where('module_assignments.module_version_id', 'modules.id');
-                }
-                $query = $query->orderBy('modules.module_version_id', 'desc')
-                    ->get();
-                $response = $query;
-            } catch (Exception $e) {
-                $response = ["error"=>$e];
-            }
-        } else {
-            $response = ["error"=>"The user with the b number: ".$unique_id." was not found in BComply"];
+            $response = $query->orderBy('modules.module_version_id', 'desc')->get();
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
         }
-        return $response;
+        return response($response, $response_code);
     }
 
     /**
@@ -509,46 +432,45 @@ class PublicAPIController extends Controller
      *      assigned_after (optional) - when returning the assigned boolean the specific date (formatted as 2025-04-29)
      *      completed_after (optional) - when returning the completed boolean the specific date (formatted as 2025-04-29) is considered
      *      version (optional) - only return records that have the specified version
+     *      current_version (optional) - defaults to true unless version is specified
      *  returns: 
      *      all rows for module_assigments that fit the criteria plus the module_name, group_name, user_name, and boolean for completed
      */
     public function get_group_module_status(Request $request, $group_slug, Module $module) {
-        $helper = new ApiHelper();
-        if ($request->has('completed_after')) {
-            $completed_after = $helper->string_to_date($request['completed_after']); 
-            $completed_date_condition_text = "module_assignments.date_completed < '$completed_after' OR module_assignments.date_completed IS NULL;";
-        } else {
-            $completed_date_condition_text = "module_assignments.date_completed IS NULL";
-        }
-        if ($request->has('assigned_after')) {
-                $assigned_after = $helper->string_to_date($request['assigned_after']);
-                $assigned_date_condition_text = "module_assignments.date_assigned < '$assigned_after' OR module_assignments.date_assigned IS NULL";
-            } else {
-                $assigned_date_condition_text = "module_assignments.date_assigned IS NULL";
+        try {
+            $select_fields = ["modules.name AS module_name", "modules.id AS module_id", "groups.name AS group_name", "groups.id AS group_id",
+                        "users.unique_id AS unique_id", "module_assignments.id AS module_id", "module_assignments.module_version_id",
+                        "module_assignments.date_assigned", "module_assignments.date_due", "module_assignments.date_started",
+                        "module_assignments.date_completed", "module_assignments.status", "module_assignments.score",
+                        "module_assignments.current_state",
+                        DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS user_name")];
+            $users = ModuleAssignment::select($select_fields)
+                ->leftJoin("users", 'users.id', 'module_assignments.user_id')
+                ->leftJoin("group_memberships", 'group_memberships.user_id', 'users.id')
+                ->leftJoin("modules", "modules.id", "module_assignments.module_id")
+                ->leftJoin("groups", "groups.id", "group_memberships.group_id")
+                ->where('groups.slug', $group_slug)
+                ->where('modules.id', $module->id);
+            if ($request->has('assigned_after')) {
+                $query = $query->where('module_assignments.date_assigned', '>=', $request['assigned_after']);
             }
-        $select_fields = ["modules.name AS module_name", "modules.id AS module_id", "groups.name AS group_name", "groups.id AS group_id",
-                    "users.unique_id AS unique_id", "module_assignments.id AS module_id", "module_assignments.module_version_id",
-                    "module_assignments.date_assigned", "module_assignments.date_due", "module_assignments.date_started",
-                    "module_assignments.date_completed", "module_assignments.status", "module_assignments.score",
-                    "module_assignments.current_state",
-                    DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS user_name"),
-                    DB::raw("(case when $completed_date_condition_text THEN 0 ELSE 1 END) AS completed_within_range"),
-                    DB::raw("(case when $assigned_date_condition_text THEN 0 ELSE 1 END) AS assigned_within_range")];
-        $users = ModuleAssignment::select($select_fields)
-            ->leftJoin("users", 'users.id', 'module_assignments.user_id')
-            ->leftJoin("group_memberships", 'group_memberships.user_id', 'users.id')
-            ->leftJoin("modules", "modules.id", "module_assignments.module_id")
-            ->leftJoin("groups", "groups.id", "group_memberships.group_id")
-            ->where('groups.slug', $group_slug)
-            ->where('modules.id', $module->id);
-        if ($request->has('assigned_after')) {
-            $assignment_date = $helper->string_to_date($request['assigned_after']); 
-            $users = $users->where('module_assignments.date_assigned', '>=', $assignment_date);
+            if ($request->has('assigned_after')) {
+                $users = $users->where('module_assignments.date_assigned', '>=', $request['assigned_after']);
+            }
+            if ($request->has('version')) {
+                $users = $users->where('version', $request['version']);
+            } else {
+                if (!$request->has('current_version') || ($request['current_version'] != false)) {
+                    $users = $users->whereColumn('modules.module_version_id', 'module_assignments.module_version_id');
+                }
+            }
+            $response = $users->get();
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
         }
-        if ($request->has('version')) {
-            $users = $users->where('version', $request['version']);
-        }
-        $users = $users->get();
+        return response($response, $response_code);
         return $users;
     }
 
@@ -581,10 +503,12 @@ class PublicAPIController extends Controller
             } else {
                 $response = ['error'=>'Please provide the parameter module_name'];
             }
+            $response_code = 200;
         } catch (Exception $e) {
             $response = ["error"=>$e];
+            $response_code = 500;
         }
-        return $response;
+        return response($response, $response_code);
     }
     
     /**
@@ -603,10 +527,12 @@ class PublicAPIController extends Controller
             } else {
                 $response = ['error'=>'Please provide the parameter group_name'];
             }
+            $response_code = 200;
         } catch (Exception $e) {
             $response = ["error"=>$e];
+            $response_code = 500;
         }
-        return $response;
+        return response($response, $response_code);
     }
 
     /**
@@ -626,31 +552,38 @@ class PublicAPIController extends Controller
      *      the group row or a message why the group could not be created
      */
     public function create_group(Request $request, $group_slug) {
-        $helper = new ApiHelper();
-        $duplicate = $helper->get_group_for_slug($group_slug);
-        if (empty($duplicate)) {
-            $group_name = $group_slug;
-            if ($request->has('group_name')) {
-                $group_name = $request['group_name'];
-            } else {
-                $group_name = $group_slug;
-            }
-            $date_due = $request['date_due'];
-            $duplicate = GROUP::where('name', $group_name)->first();
+        try {
+            $helper = new ApiHelper();
+            $duplicate = $helper->get_group_for_slug($group_slug);
             if (empty($duplicate)) {
-                $group = new Group([
-                    'name' => $group_name,
-                    'slug' => $group_slug]
-                );
-                $group->save();
-                $response = $group;
+                $group_name = $group_slug;
+                if ($request->has('group_name')) {
+                    $group_name = $request['group_name'];
+                } else {
+                    $group_name = $group_slug;
+                }
+                $date_due = $request['date_due'];
+                $duplicate = GROUP::where('name', $group_name)->first();
+                if (empty($duplicate)) {
+                    $group = new Group([
+                        'name' => $group_name,
+                        'slug' => $group_slug]
+                    );
+                    $group->save();
+                    $response = $group;
+                    $response_code = 200;
+                } else {
+                    $response = ["error"=>"group named '".$group_name."' already exists"];
+                }
             } else {
-                $response = ["error"=>"group named '".$group_name."' already exists"];
+                $response = ["error"=>"group with slug '".$group_slug."' already exists"];
             }
-        } else {
-            $response = ["error"=>"group with slug '".$group_slug."' already exists"];
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
         }
-        return $response;
+        return response($response, $response_code);
     }
 
     /**
@@ -659,53 +592,59 @@ class PublicAPIController extends Controller
      *      due_date (optional) - (formated as 2025-04-29) - null if omitted
      */
     public function assign_module_to_user(Request $request, Module $module, $unique_id) {
-        $helper = new ApiHelper();
-        $user = $helper->get_user_for_unique_id($unique_id);
-        if ($user != null) {
-            if ($module != null) {
-                if ($request->has('due_date')) {
-                    $helper= $helper->string_to_date($request['due_date']);
-                } else {
-                    $due_date = null;
-                }
-                //does the record already exist?
-                $assignment_record = ModuleAssignment::where('module_id', $module->id)
-                    ->where('module_version_id', $module->module_version_id)
-                    ->where('user_id', $user->id)
-                    ->where(function($query) {
-                        $query->where('status', 'assigned')
-                        ->orWhere('status', 'attended')
-                        ->orWhere('status', 'in_progress')
-                        ->orWhere('status', 'passed')
-                        ->orWhere('status', 'completed');
-                    })
-                    ->orderBy('date_assigned', 'desc')
-                    ->first();
-                if ($assignment_record != null) {
-                    if (($assignment_record->status == 'assigned' || $assignment_record->status == 'in_progress') && $due_date != null) {
-                        $assignment_record->date_due = $due_date;
-                        $assignment_record->save();
+        try {
+            $helper = new ApiHelper();
+            $user = $helper->get_user_for_unique_id($unique_id);
+            if ($user != null) {
+                if ($module != null) {
+                    if ($request->has('due_date')) {
+                        $due_date = $helper->string_to_date($request['due_date']);
+                        //does the record already exist?
+                        $assignment_record = ModuleAssignment::where('module_id', $module->id)
+                            ->where('module_version_id', $module->module_version_id)
+                            ->where('user_id', $user->id)
+                            ->where(function($query) {
+                                $query->where('status', 'assigned')
+                                ->orWhere('status', 'attended')
+                                ->orWhere('status', 'in_progress')
+                                ->orWhere('status', 'passed')
+                                ->orWhere('status', 'completed');
+                            })
+                            ->orderBy('date_assigned', 'desc')
+                            ->first();
+                        if ($assignment_record != null) {
+                            if (($assignment_record->status == 'assigned' || $assignment_record->status == 'in_progress')) {
+                                $assignment_record->date_due = $due_date;
+                                $assignment_record->save();
+                            }
+                            $response = ['warning'=>"Module ".$module->id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their status is '".$assignment_record['status'].".'"];
+                        } else {
+                            $new_record = new ModuleAssignment([
+                                'user_id' => $user->id,
+                                'module_version_id' => $module->module_version_id,
+                                'module_id' => $module->id,
+                                'date_assigned' => now(),
+                                'due_date' => $due_date,
+                                'status' => 'assigned'
+                            ]);
+                            $new_record->save();
+                            $response = $new_record;
+                        }
+                    } else {
+                        $response = ['error'=>'You must include a due_date as a parameter'];
                     }
-                    $response = ['warning'=>"Module ".$module->id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their status is '".$assignment_record['status'].".'"];
                 } else {
-                    $new_record = new ModuleAssignment([
-                        'user_id' => $user->id,
-                        'module_version_id' => $module->module_version_id,
-                        'module_id' => $module->id,
-                        'date_assigned' => now(),
-                        'due_date' => $due_date,
-                        'status' => 'assigned'
-                    ]);
-                    $new_record->save();
-                    $response = $new_record;
+                    $response = ['error'=>'The specified module does not exist'];
                 }
             } else {
-                $response = ['error'=>'The specified module does not exist'];
+                $response = ['error'=>'The specified user does not exist'];
             }
-        } else {
-            $response = ['error'=>'The specified user does not exist'];
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
         }
-        return $response;
+        return response($response, $response_code);
     }
 
     public function impersonate_user(String $unique_id){
@@ -794,10 +733,11 @@ class PublicAPIController extends Controller
             } else {
                 $response = ['error'=>'Please provide the parameter workshop_name'];
             }
-            
+            $response_code = 200;
         } catch (Exception $e) {
             $response = ["error"=>$e];
+            $response_code = 500;
         }
-        return $response;
+        return response($response, $response_code);
     }
 }

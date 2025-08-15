@@ -23,27 +23,17 @@ Route::put('/users/{unique_id}','PublicAPIController@update_user');
 /**
  * Get all assignments for all users
  *  parameters: 
- *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
- *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
+ *       assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
+ *       updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
  *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
- *      latest_version (optional) - if true, then only the latest version
+ *      current_version (optional) - if false, then all version, else only the current version
+ *      status (optional) - only return the passed statuses
  *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
  * 
+ * test - http://bcomplydev.local:8000/api/public/assignments
  */
 
 Route::get('/assignments', 'PublicAPIController@get_all_assignments');
-
-/**
- *  lookup all completed assignments
- *   parameters:
- *      version(optional) - return only completions of a specific version
- *      latest_version (optional) - boolean to only return the latest version
- *      grace_period (optional) - used only if latest_version is true - number of days users have to complete a new version once it's created
- *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
- * 
- *  test - http://bcomplydev.local:8000/api/public/assignments_completed
- */
-Route::get('/assignments_completed','PublicAPIController@get_all_assignments_completed');
 
 /**
  * Get all the assignments that fit a user
@@ -55,7 +45,7 @@ Route::get('/users/{unique_id}/assignments','PublicAPIController@get_user_assign
 
 // Modules
 /**
- *  lookup module versions
+ *  lookup module 
  *  parameters:
  *      module_name (required) - name to look up, can include %s for LIKE comparisons
  *                               if omitted return all modules
@@ -64,41 +54,36 @@ Route::get('/users/{unique_id}/assignments','PublicAPIController@get_user_assign
  *      rows from modules table
  * 
  *  test - http://bcomplydev.local:8000/api/public/modules?module_name=%test%
+ *         http://bcomplydev.binghamton.edu/api/public/modules?module_name=%test%
  */
 Route::get('/modules','PublicAPIController@get_modules_by_name');
 
 /**
- *  lookup all the module assignments(not necessarily with status assigned - status can be anything)
+ *  lookup all the module assignments (not necessarily with status assigned - status can be anything)
  *   parameters:
  *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
  *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
  *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
- *      latest_version (optional) - if true, then only the latest version
+ *      current_version (optional) - if false, then return all versions
+ *      status (optional) - an array of statuses
  *    -- all of the above are inclusive (>= or <=) so the names are slightly misleading
  * 
  *  test - http://bcomplydev.local:8000/api/public/modules/2/assignments
  */
 Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assignments');
 
+
 /**
- *  lookup all the assignments that have been completed
+ *  lookup all the assignments data
  *   parameters:
  *      version (optional) - only return completions of a specific version
- *      latest_version (optional) - boolean to only return the latest version
- *      grace_period (optional) - used only if latest_version is true - number of days users have to complete a new version once it's created
+ *      current_version (optional) - boolean to only return the current version - default to true
+ *      grace_period (optional) - used only if current version is true - number of days users have to complete a new version once it's created
  *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
- * 
- *  test - http://bcomplydev.local:8000/api/public/modules/2/assignment_completions
+ *      status (optional) - an array that specifies which statuses should be returned
+ *  test - http://bcomplydev.local:8000/api/public/modules/2/assignment_data
  */
-Route::get('/modules/{module}/assignments_completed','PublicAPIController@get_module_assignments_completed');
-
-
-/**
- *  lookup the assignment for the module and user and return it if it has been completed
- * 
- *  test - http://bcomplydev.local:8000/api/public/modules/1/users/B00168387/assignments_completed
- */
-Route::get('/modules/{module}/users/{unique_id}/assignments_completed', 'publicAPIController@get_module_assignments_completed_for_user');
+Route::get('/modules/{module}/assignments_data','PublicAPIController@get_module_assignments_data');
 
 /**
  * get the status of an assignment for a user
@@ -106,7 +91,7 @@ Route::get('/modules/{module}/users/{unique_id}/assignments_completed', 'publicA
  *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
  *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
  *      status (optional) - only return records that have the status specified
- *      latest_version (optional) - boolean to only return the latest version
+ *      current_version (optional) - boolean to only return the current version
  *  returns:
  *      all rows from module_assignments for student and assignment
  * 
@@ -117,7 +102,7 @@ Route::get('/modules/{module}/users/{unique_id}','PublicAPIController@get_user_m
 /**
  * Assigns a module to a user
  *  parameters:
- *      due_date (optional) - (formated as 2025-04-29) - null if omitted
+ *      due_date (required) - (formated as 2025-04-29) - null if omitted
  * 
  * test - http://bcomplydev.local:8000/api/public/modules/2/users/B00168387?due_date=2025-08-15
  */
@@ -156,6 +141,7 @@ Route::delete('/groups/{group_slug}/users/{unique_id}','PublicAPIController@dele
  *      assigned_after (optional) - only return records that were assigned after a specifice date (formated as 2025-04-29)
  *      completed_after (optional) - returns the completed status after the date for all of the users of the group 
  *      version (optional) 
+ *      current_version (optional) - default to true unless version is specified
  *  returns: 
  *      all rows for module_assigments that fit the criteria plus the module_name, group_name, user_name, and boolean for completed
  * 
@@ -167,7 +153,7 @@ Route::get('/groups/{slug}/modules/{module}','PublicAPIController@get_group_modu
  * Assign module for everyone in a group
  *  parameters:
  *      not_completed_after (optional): don't assign it to anyone that has complete the module after date (fomatted like after=2025-05-01)
- *      version (optional): assign a specific version, if not passed the latest version is used
+ *      version (optional): assign a specific version, if not passed the current version is used
  *      due_date (optional): enter a due date for the assignment specified like 2025-05-01
  *  returns:
  *      the module that was assigned or an error message
