@@ -23,7 +23,6 @@ Route::put('/users/{unique_id}','PublicAPIController@update_user');
 /**
  * Get all assignments for all users
  *  parameters: 
- *      module_id (required) - only return records that are from this module
  *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
  *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
  *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
