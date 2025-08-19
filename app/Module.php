@@ -90,6 +90,30 @@ class Module extends Model
         return $permissions_arr;
     }
 
-    
+    /**
+     * returns which versions are allow for a module if only the latest version is 
+     * accepted with a grace period if the latest version was recently 
+     * created
+     */
+    public function get_allowed_versions($module_id, $grace_period) {
+        $allowed_versions = [];
+        $days_ago_timestamp = strtotime("-$grace_period days");
+        $days_ago_date = date("Y-m-d", $days_ago_timestamp);
+        $versions = ModuleVersion::select('id', 'created_at')
+            ->where('deleted_at', null)
+            ->where('module_id', $module_id)
+            ->orderBy('id', 'desc')
+            ->limit(2)->get();
+        if (count($versions) > 1) {
+            $allowed_versions[] = $versions[0]->id;
+            $last_create_date = $versions[0]->created_at;
+            if ($days_ago_date < $this->string_to_date($last_create_date)) {
+                if (count($versions) > 1) {
+                   $allowed_versions[] = $versions[1]->id;
+                }
+            }
+        }
+        return $allowed_versions;
+    }
 
 }
