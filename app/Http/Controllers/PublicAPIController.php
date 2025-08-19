@@ -335,7 +335,8 @@ class PublicAPIController extends Controller
 
     /**
      * Get all assignments for all users
-     *  parameters: 
+     *  parameters:
+     *      module_id (required) - only return records that are from this module
      *      assigned_after (optional) - only return records that were assigned after a specific date (formatted as 2025-04-29)
      *      updated_after (optional) - only return records that were updated after a specific date (formatted as 2025-04-29)
      *      updated_before (optional) - only return records that were updated before a specific date (formatted as 2025-04-29)
@@ -349,33 +350,37 @@ class PublicAPIController extends Controller
         $completed_date_condition_text = null;
         $assigned_date_condition_text = null;
         try {
-            $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
-                                                'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
-                                                'module_assignments.updated_at', 'modules.name AS module_name');
-            $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
-                        ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
-                        ->leftJoin('modules', 'module_assignments.module_id', 'modules.id');
-
-            $helper = new ApiHelper();
-            if ($request->has('updated_after')) {
-                $query = $query->where("module_assignments.updated_at", ">=", $request['updated_after']);
+            if ($request->has('module_id')) {
+                $module_id = $request['module_id'];
+                $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
+                                                    'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                                    'module_assignments.updated_at', 'modules.name AS module_name');
+                $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                            ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                            ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
+                            ->where('module_id', $module_id);
+                if ($request->has('updated_after')) {
+                    $query = $query->where("module_assignments.updated_at", ">=", $request['updated_after']);
+                }
+                if ($request->has('updated_before')) {
+                    $query = $query->where("module_assignments.updated_at", "<=", $request['updated_before']);
+                }
+                if ($request->has('assigned_after')) {
+                    $query = $query->where("module_assignments.date_assigned", ">=", $request['assigned_after']);
+                }
+                if (!$request->has('current_version') || ($request['current_version'] != 'false')) {
+                    $query = $query->whereColumn('modules.module_version_id', 'module_assignments.module_version_id');
+                }
+                if ($request->has('completed_after')) {
+                    $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
+                }
+                if ($request->has('status') && gettype($request->status)==='array'){
+                    $query->whereIn('status', $request->status);
+                }
+                $response = $query->get();
+            } else {
+                $response = "You must specify a module ID in your request";
             }
-            if ($request->has('updated_before')) {
-                $query = $query->where("module_assignments.updated_at", "<=", $request['updated_before']);
-            }
-            if ($request->has('assigned_after')) {
-                $query = $query->where("module_assignments.date_assigned", ">=", $request['assigned_after']);
-            }
-            if (!$request->has('current_version') || ($request['current_version'] != 'false')) {
-                $query = $query->whereColumn('modules.module_version_id', 'module_assignments.module_version_id');
-            }
-            if ($request->has('completed_after')) {
-                $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
-            }
-            if ($request->has('status') && gettype($request->status)==='array'){
-                $query->whereIn('status', $request->status);
-            }
-            $response = $query->get();
             $response_code = 200;
         } catch (Exception $e) {
                 $response = ["error"=>$e];
