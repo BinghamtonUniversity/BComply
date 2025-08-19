@@ -110,7 +110,7 @@ class PublicAPIController extends Controller
                     "group_memberships.group_id")
                 ->leftJoin('group_memberships', 'group_memberships.user_id', 'users.id')
                 ->where('group_memberships.group_id', $group->id)
-                ->get();
+                ->paginate(100);
             $response = $users;
         } else {
             $response = ["error"=>"Group not found"];
@@ -309,7 +309,7 @@ class PublicAPIController extends Controller
             $query->whereIn('status', $request->status);
         }
 
-        return $query->get();
+        return $query->paginate(100);
     }
 
     /**
@@ -377,7 +377,7 @@ class PublicAPIController extends Controller
                 if ($request->has('status') && gettype($request->status)==='array'){
                     $query->whereIn('status', $request->status);
                 }
-                $response = $query->get();
+                $response = $query->paginate(100);;
             } else {
                 $response = "You must specify a module ID in your request";
             }
