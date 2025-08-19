@@ -287,7 +287,6 @@ class PublicAPIController extends Controller
                        ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
                        ->where ('module_assignments.module_id', $module->id);
 
-        $module_cls = new Module();
         if ($request->has('completed_after')) {
             $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
         }
@@ -296,7 +295,7 @@ class PublicAPIController extends Controller
         }
         if(!$request->has('current_version') || $request['current_version'] !='false'){
             if ($request->has('grace_period')) {
-                $allowed_versions = $module_cls->get_allowed_versions($module->id, $request->grace_period);
+                $allowed_versions = $module->get_allowed_versions($request->grace_period);
                 $query = $query->whereIn('module_assignments.module_version_id', $allowed_versions);
             } else {
                 $query = $query->where('module_assignments.module_version_id', $module->module_version_id);

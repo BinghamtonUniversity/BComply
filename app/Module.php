@@ -95,13 +95,13 @@ class Module extends Model
      * accepted with a grace period if the latest version was recently 
      * created
      */
-    public function get_allowed_versions($module_id, $grace_period) {
+    public function get_allowed_versions($grace_period) {
         $allowed_versions = [];
         $days_ago_timestamp = strtotime("-$grace_period days");
         $days_ago_date = date("Y-m-d", $days_ago_timestamp);
         $versions = ModuleVersion::select('id', 'created_at')
             ->where('deleted_at', null)
-            ->where('module_id', $module_id)
+            ->where('module_id', $this->id)
             ->orderBy('id', 'desc')
             ->limit(2)->get();
         if (count($versions) > 1) {
