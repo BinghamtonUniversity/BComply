@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\BulkAssignment;
 use App\Module;
-use App\ModuleAssignment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;

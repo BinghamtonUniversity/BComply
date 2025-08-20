@@ -1,12 +1,15 @@
 <?php
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use App\SimpleUser;
 use App\GroupMembership;
 use App\Group;
+use App\Libraries\ApiHelper;
 use App\User;
 use App\ModuleAssignment;
 use App\Module;
@@ -29,6 +32,11 @@ use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 
 class PublicAPIController extends Controller
 {
+
+    private $allowed_workshop_statuses = array("not_applicable", "uncompleted", "completed");
+    private $allowed_workshop_attendances = array("registered", "attended", "completed");
+    private $allowed_module_statuses = array("assigned", "attended", "in_progress", "passed", "failed", "completed", "incomplete");
+
     public function get_user(Request $request, $unique_id){
         $user = User::where('unique_id', $unique_id);
         if ($request->has('include_memberships') && $request->include_memberships == 'true'){
@@ -42,7 +50,7 @@ class PublicAPIController extends Controller
             }
             return $user;
         }else{
-            return response("User Not Found!",404);
+            return response("User Not Found!", 404);
         }
     }
 
@@ -58,16 +66,21 @@ class PublicAPIController extends Controller
             $user->update($request->all());
             return $user;
         }else{
-            return response("User not found!",404);
+            return response("User not found!", 404);
         }   
     }
-    public function add_group_membership(Request $request, $group_slug, $unique_id){
+
+    /**
+     * adds a user to a group (or updates the user if they already exist in the group)
+     */
+
+     public function add_group_membership(Request $request, $group_slug, $unique_id){
         $group = Group::where("slug",$group_slug)->first();
         if(!isset($group) || is_null($group)){
             return response("Group not found!",404);
         }
         $user = User::where("unique_id",$unique_id)->first();
-        
+
         if(!isset($user) || is_null($user)){
             return response("User not found!",404);
         }
@@ -75,14 +88,34 @@ class PublicAPIController extends Controller
             'user_id'=>$user->id,
             "group_id"=>$group->id,
             ],['type' => 'external']);
-        return response("Successfully added to the group",200);
+        return response("Successfully added to the group", 200);
     }
     
-    public function delete_group_membership(Request $request, $group_slug, $unique_id){
+    /**
+     * removes a user from a group
+     */
+
+     public function delete_group_membership(Request $request, $group_slug, $unique_id){
         $group = Group::where("slug",$group_slug)->first();
         $user = User::where("unique_id",$unique_id)->first();
         GroupMembership::where('user_id',$user->id)->where("group_id",$group->id)->delete();
-        return response("Successfully removed from the group",200);
+        return response("Successfully removed from the group", 200);
+     }
+
+    public function get_all_group_users(Request $request, Group $group) {
+        if ($group != null) {
+            $users = SimpleUser::select("users.id", "unique_id", "first_name", "last_name", "email", 
+                    "supervisor", "department_id", "department_name", "division_id", "division", 
+                    "title", "role_type", "active", "users.created_at", "users.updated_at", 
+                    "group_memberships.group_id")
+                ->leftJoin('group_memberships', 'group_memberships.user_id', 'users.id')
+                ->where('group_memberships.group_id', $group->id)
+                ->paginate(100);
+            $response = $users;
+        } else {
+            $response = ["error"=>"Group not found"];
+        }
+        return response($response, 200);
     }
 
     private function sync_users(&$remote_users, &$local_users) {
@@ -148,7 +181,7 @@ class PublicAPIController extends Controller
                         $memberships= new GroupMembership([
                             'user_id' => $current_user->id,
                             'group_id' => $local_group->id,
-                            'type' => 'external',
+                            'type' => 'external'
                         ]);
                         try {
                             $memberships->save();
@@ -201,12 +234,12 @@ class PublicAPIController extends Controller
     }
 
     public function get_user_assignments(Request $request, $unique_id) {
-        $user = SimpleUser::where('unique_id',$unique_id)->first();
+        $user = SimpleUser::where('unique_id', $unique_id)->first();
         if (is_null($user)) {
             return response(['error'=>'The specified user does not exist'], 404)->header('Content-Type', 'application/json');
         }
         return ModuleAssignment::where('user_id',$user->id)
-            ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
+            ->select('id','module_id','module_version_id','user_id', 'date_assigned','date_completed','date_due','date_started','status')
             ->with(['version'=>function($query){
                 $query->select('id','name');
             }])->with(['module'=>function($query){
@@ -214,7 +247,11 @@ class PublicAPIController extends Controller
             }])->get();
     }
 
-    public function get_module_assignments(Request $request, Module $module){
+    /**
+     *  lookup all the module assignments
+     * 
+     */
+     public function get_module_assignments(Request $request, Module $module){
         $query = ModuleAssignment::where('module_id',$module->id)
             ->select('id','module_id','module_version_id','user_id','date_assigned','date_completed','date_due','date_started','status')
             ->with(['user'=>function($query){
@@ -233,7 +270,163 @@ class PublicAPIController extends Controller
         return $query->paginate(100);
     }
 
-     public function impersonate_user(String $unique_id){
+    /**
+     *  lookup all the assignments 
+     *   parameters:
+     *      current_version (optional) - boolean returns current version by default, but can be set to false to return all versions
+     *      completed_after (optional) - only return records that were completed after a specific date (formatted as 2025-04-29)
+     *      status (optional) - an array that specifies which statuses should be returned
+     *      unique_id (optional) - a user's bnumber
+     */
+    public function get_module_assignments_data(Request $request, Module $module){
+        $query = ModuleAssignment::select('module_assignments.id AS assignment_id','module_id','module_assignments.module_version_id','assigned_user.unique_id AS unique_id',
+                                            'date_assigned','date_completed','date_due','date_started','status', 'assigned_by_user.unique_id AS assigned_by', 
+                                            'module_assignments.updated_at', 'modules.name AS module_name');
+        $query = $query->leftJoin('users AS assigned_user', 'assigned_user.id', 'module_assignments.user_id')
+                       ->leftJoin('users AS assigned_by_user', 'assigned_by_user.id', 'module_assignments.assigned_by_user_id')
+                       ->leftJoin('modules', 'module_assignments.module_id', 'modules.id')
+                       ->where ('module_assignments.module_id', $module->id);
+
+        if ($request->has('completed_after')) {
+            $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
+        }
+        if ($request->has('unique_id')){
+            $query = $query->where('module_assignments.user_id', $request['unique_id']);
+        }
+        if(!$request->has('current_version') || $request['current_version'] !='false'){
+            if ($request->has('grace_period')) {
+                $allowed_versions = $module->get_allowed_versions($request->grace_period);
+                $query = $query->whereIn('module_assignments.module_version_id', $allowed_versions);
+            } else {
+                $query = $query->where('module_assignments.module_version_id', $module->module_version_id);
+            }
+        }
+        if ($request->has('status') && gettype($request->status)==='array'){
+            $query->whereIn('status', $request->status);
+        }
+
+        return $query->paginate(100);
+    }
+
+    /**
+     *  lookup module versions
+     *  parameters:
+     *      module_name (required) - name to look up, can include %s for LIKE comparisons
+     *                               if omitted return all modules
+     *      
+     *  returns:
+     *      rows from modules table
+     */
+    public function get_modules_by_name(Request $request){
+        try {
+            if ($request->has('module_name')) {
+                $modules = Module::select(
+                    "modules.id as module_id", "modules.name as module_name", "modules.description", "users.unique_id as owner_b_number", 
+                    "modules.message_configuration", "modules.assignment_configuration", "modules.public", "modules.past_due", 
+                    "modules.reminders", "modules.past_due_reminders", "modules.module_version_id", "modules.created_at", "modules.updated_at", 
+                    "modules.deleted_at"
+                )
+                ->leftJoin('users', 'users.id', 'modules.owner_user_id')
+                ->where('name', 'LIKE', $request['module_name'])->get();
+                $response = $modules;
+            } else {
+                $response = ['error'=>'Please provide the parameter module_name'];
+            }
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
+        }
+        return response($response, $response_code);
+    }
+    
+    /**
+     *  lookup groups  
+     *  parameters:
+     *      group_name (required) - name to look up, can include %s for LIKE comparisons
+     *                               if omitted return all groups
+     *  returns:
+     *      rows from groups table
+     */
+    public function get_groups_by_name(Request $request){
+        try {
+            if ($request->has('group_name')) {
+                $modules = Group::where('name', 'LIKE', $request['group_name'])->get();
+                $response = $modules;
+            } else {
+                $response = ['error'=>'Please provide the parameter group_name'];
+            }
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
+        }
+        return response($response, $response_code);
+    }
+
+    /**
+     * Assigns a module to a user
+     *  parameters:
+     *      due_date (required) - (formated as 2025-04-29) - null if omitted
+     */
+    public function assign_module_to_user(Request $request, Module $module, $unique_id) {
+        try {
+            $helper = new ApiHelper();
+            $user = $helper->get_user_for_unique_id($unique_id);
+            if ($user != null) {
+                if ($module != null) {
+                    if ($request->has('due_date')) {
+                        $due_date = $helper->string_to_date($request['due_date']);
+                        //does the record already exist?
+                        $assignment_record = ModuleAssignment::where('module_id', $module->id)
+                            ->where('module_version_id', $module->module_version_id)
+                            ->where('user_id', $user->id)
+                            ->where(function($query) {
+                                $query->where('status', 'assigned')
+                                ->orWhere('status', 'attended')
+                                ->orWhere('status', 'in_progress')
+                                ->orWhere('status', 'passed')
+                                ->orWhere('status', 'completed');
+                            })
+                            ->orderBy('date_assigned', 'desc')
+                            ->first();
+                        if ($assignment_record != null) {
+                            if (($assignment_record->status == 'assigned' || $assignment_record->status == 'in_progress')) {
+                                $assignment_record->date_due = $due_date;
+                                $assignment_record->save();
+                            }
+                            $response = ['warning'=>"Module ".$module->id." has already been assigned to ".$user['first_name']." ".$user['last_name'].". Their status is '".$assignment_record['status'].".'"];
+                        } else {
+                            $new_record = new ModuleAssignment([
+                                'user_id' => $user->id,
+                                'module_version_id' => $module->module_version_id,
+                                'module_id' => $module->id,
+                                'date_assigned' => now(),
+                                'due_date' => $due_date,
+                                'status' => 'assigned',
+                                'type' => 'external'
+                            ]);
+                            $new_record->save();
+                            $response = $new_record;
+                        }
+                    } else {
+                        $response = ['error'=>'You must include a due_date as a parameter'];
+                    }
+                } else {
+                    $response = ['error'=>'The specified module does not exist'];
+                }
+            } else {
+                $response = ['error'=>'The specified user does not exist'];
+            }
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
+        }
+        return response($response, $response_code);
+    }
+
+    public function impersonate_user(String $unique_id){
         $encryption_obj = [
             'unique_id'=>$unique_id,
             'timestamp'=>now()->timestamp
@@ -302,4 +495,28 @@ class PublicAPIController extends Controller
             ->header('Content-Type', 'text/calendar; charset=utf-8')
             ->header('Content-Disposition', 'attachment; filename="cal.ics"');
     }    
+
+    /**
+     *  lookup workshop  
+     *  parameters:
+     *      workshop_name (required) - name to look up, can include %s for LIKE comparisons
+     *                               if omitted return all groups
+     *  returns:
+     *      rows from workshops table
+     */
+    public function get_workshops_by_name(Request $request) {
+        try{
+            if ($request->has('workshop_name')) {
+                $workshops = Workshop::where('name', 'LIKE', $request['workshop_name'])->get();
+                $response = json_encode($workshops);
+            } else {
+                $response = ['error'=>'Please provide the parameter workshop_name'];
+            }
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ["error"=>$e];
+            $response_code = 500;
+        }
+        return response($response, $response_code);
+    }
 }
