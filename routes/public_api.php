@@ -67,6 +67,13 @@ Route::get('/modules/{module}/assignments','PublicAPIController@get_module_assig
  */
 Route::get('/modules/{module}/assignments_data','PublicAPIController@get_module_assignments_data');
 
+/**
+ *   Given a module and a user, update the assignment status. If the assignment does not exist,
+ *   parameters:
+ *      status (required) - the new status
+ */
+
+Route::put('/modules/{module}/users/{unique_id}', 'PublicAPIController@update_assignment_status');
 
 /**
  * Assigns a module to a user
@@ -76,6 +83,7 @@ Route::get('/modules/{module}/assignments_data','PublicAPIController@get_module_
  * test - http://bcomplydev.local:8000/api/public/modules/2/users/B00168387?due_date=2025-08-15
  */
 Route::post('/modules/{module}/users/{unique_id}', 'PublicAPIController@assign_module_to_user');
+
 
 // Groups
 /**

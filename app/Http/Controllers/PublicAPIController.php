@@ -308,6 +308,39 @@ class PublicAPIController extends Controller
         return $query->paginate(100);
     }
 
+    public function update_assignment_status(Request $request, Module $module, $unique_id) {
+        try {
+            if ($request->has('status')) {
+                $status = $request["status"];
+                if (in_array($status, $this->allowed_module_statuses)) {
+                    $helper = new ApiHelper();
+                    $user = $helper->get_user_for_unique_id($unique_id);
+                    if (!empty($user)) {
+                        $mod_assignment = ModuleAssignment::select()
+                                    ->leftJoin('users', 'users.id', 'module_assignments.user_id')
+                                ->where ('module_assignments.module_id', $module->id)
+                                ->where('module_assignments.module_version_id', $module->module_version_id)
+                                ->where('module_assignments.user_id', $user->id)
+                                ->update(['status'=>$status]);
+                        $response = ['success', true];
+                    } else {
+                        $response = ['error'=>'A user with ID: '.$unique_id.' could not be found'];
+                    }
+                } else {
+                    $statuses = implode(", ", $this->allowed_module_statuses);
+                    $response = ['error'=>'Please use one of the allowed status: '.$statuses];
+                }
+            } else {
+                $response = ['error'=>'Please provide a status'];
+            }
+            $response_code = 200;
+        } catch (Exception $e) {
+            $response = ['error'=>$e.getMessage()];
+            $response_code = 500;
+        }
+        return response($response, $response_code);
+    }
+
     /**
      *  lookup module versions
      *  parameters:
