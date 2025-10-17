@@ -291,7 +291,7 @@ class PublicAPIController extends Controller
             $query = $query->where('module_assignments.date_completed', '>=', $request['completed_after']);
         }
         if ($request->has('unique_id')){
-            $query = $query->where('module_assignments.user_id', $request['unique_id']);
+            $query = $query->where('assigned_user.unique_id', $request['unique_id']);
         }
         if(!$request->has('current_version') || $request['current_version'] !='false'){
             if ($request->has('grace_period')) {
