@@ -36,8 +36,7 @@
                         </div>
                     </div>
                     <div class="panel-footer" style="background-color: rgb(239 239 239);">
-                        <div class="badge" style="color: whitesmoke;background-color: #777">Overdue: {{$assignment->date_due->format('m/d/y')}}</div>
-                    </div>
+                    <div class="badge" style="color: whitesmoke;background-color: #777">Overdue: {{$assignment->date_due?->format('m/d/y') ?? 'N/A'}}</div>                    </div>
                 </div>
             </a>
         </div>
