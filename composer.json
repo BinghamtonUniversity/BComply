@@ -9,26 +9,25 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "barryvdh/laravel-dompdf": "^2.2",
-        "eluceo/ical": "^2.13",
-        "guzzlehttp/guzzle": "^7.8",
-        "laravel/framework": "^11.0",
-        "laravel/horizon": "^5.9",
-        "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9",
-        "mustache/mustache": "^2.14",
-        "predis/predis": "^2.2",
-        "subfission/cas": "^5.0"
+        "php": "^8.4",
+        "avanza-git/laravel-cas": "^2.0",
+        "barryvdh/laravel-dompdf": "^3.1",
+        "eluceo/ical": "^2.17",
+        "laravel/framework": "^13.0",
+        "laravel/horizon": "^5.50",
+        "laravel/sanctum": "^4.3",
+        "laravel/tinker": "^3.0",
+        "mustache/mustache": "^3.2",
+        "predis/predis": "^3.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/pint": "^1.13",
-        "laravel/sail": "^1.26",
+        "laravel/pint": "^1.18",
+        "laravel/sail": "^1.38",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^11.0.1",
-        "spatie/laravel-ignition": "^2.4"
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^12.0",
+        "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {
         "psr-4": {
@@ -66,7 +65,9 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
-        "platform": {"php": "8.2"}
+        "platform": {
+            "php": "8.4"
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true
