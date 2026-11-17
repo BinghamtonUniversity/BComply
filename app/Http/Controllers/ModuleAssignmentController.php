@@ -8,7 +8,6 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PDF;
 
 class ModuleAssignmentController extends Controller
 {
@@ -97,7 +96,7 @@ class ModuleAssignmentController extends Controller
                 <div class="container">
                     <div class="row">
                         '.$custom_certificate.'
-                        <img style="max-width: 150px" src="'.config('app.certificate_img_url').'">
+                        <img style="max-width: 150px" src="'.config('app.certificate_img_url').'" alt="Binghamton University Logo">
                         <h3>SUNY Binghamton</h3>
                     </div>
                 </div>
