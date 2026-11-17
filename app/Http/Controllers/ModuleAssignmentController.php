@@ -52,7 +52,13 @@ class ModuleAssignmentController extends Controller
     public function certificate(Request $request, ModuleAssignment $module_assignment){
         if (!is_null(Auth::user())){
             if (($module_assignment->status==='completed')||($module_assignment->status==='passed')){
-                $pdf = \App::make('dompdf.wrapper');
+                $pdf = app('dompdf.wrapper');
+                $pdf->setOptions([
+                    'dpi' => 150,
+                    'defaultFont' => 'sans-serif',
+                    'isRemoteEnabled' => true,
+                ]);
+                
                 $pdf->loadHTML($this->convert_to_html($module_assignment));
                 return $pdf->stream();
             } else {
@@ -64,7 +70,7 @@ class ModuleAssignmentController extends Controller
     }
 
     public function convert_to_html(ModuleAssignment $module_assignment){
-        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
         $module_version = $module_assignment->version()->first();
         $module = Module::where('id',$module_version->module_id)->first();
         if(isset($module->templates->certificate) && !is_null($module->templates->certificate)){
